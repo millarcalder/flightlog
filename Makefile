@@ -18,24 +18,25 @@ build-backend-dist:
 	@cd backend; \
 	python -m build
 
-build-backend-local-docker-image: build-backend-dist
+build-backend-docker-image: build-backend-dist
 	@cd ./backend/docker; \
-	sh ./build-local.sh ${VERSION}
+	sh ./build-local.sh ${VERSION} \
+	docker push ghcr.io/millarcalder/flightlog:${VERSION}
 
-build-rp4-docker-image: build-backend-dist
+build-backend-docker-image-rp4: build-backend-dist
 	@cd ./backend; \
 	ansible-playbook ./ansible/build.yml -i ./ansible/inventory/build.ini --ask-vault-password --ask-become-pass --extra-vars "version=${VERSION}"
 
 run-webapp-backend:
 	@cd backend; \
-	uvicorn flightlog.webapp.app:app --reload
+	uvicorn flightlog.webapp.app:app --port 5000 --reload
 
 run-webapp-frontend:
 	@cd frontend; \
 	npm start
 
 deploy-backend-production:
-	ansible-playbook ./backend/ansible/deploy.yml --ask-vault-password --extra-vars "env_name=production version=local-${VERSION}"
+	ansible-playbook ./backend/ansible/deploy.yml --ask-vault-password --extra-vars "env_name=production version=${VERSION}"
 
 deploy-backend-production-rp4:
 	ansible-playbook ./backend/ansible/deploy.yml --ask-vault-password --extra-vars "env_name=production version=pi-${VERSION}"

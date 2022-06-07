@@ -9,7 +9,7 @@ function App() {
   const handleSubmit = (e: any) => {
     let formdata = new FormData();
     formdata.append('igc', e.target.files[0]);
-    fetch('http://flightlog.kube.millarcalder.com/parse-igc/get-path', {
+    fetch(`${process.env.REACT_APP_FLIGHTLOG_API_URL}parse-igc/get-path`, {
       method: 'POST',
       body: formdata
     })
