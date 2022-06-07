@@ -1,0 +1,8 @@
+.vscode/
+backend/.virtualenv/
+backend/dist/
+backend/docker/*.whl
+frontend/node_modules/
+*__pycache__*
+*.pytest_cache*
+*.egg-info*
