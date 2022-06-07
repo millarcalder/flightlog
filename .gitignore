@@ -2,6 +2,7 @@
 backend/.virtualenv/
 backend/dist/
 backend/docker/*.whl
+backend/ansible/inventory/build.ini
 frontend/node_modules/
 frontend/.env
 *__pycache__*
