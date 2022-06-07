@@ -4,6 +4,8 @@ This is a small personal project I have started to practice frontend development
 
 You can upload a `.igc` flight log file, commonly used in gliders and paragliders, and view a 3D map of your flight.
 
+![Screenshot](screenshot.png)
+
 ## Developer Guide
 
 ### Running locally
