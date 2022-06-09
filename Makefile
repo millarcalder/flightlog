@@ -20,12 +20,16 @@ build-backend-dist:
 
 build-backend-docker-image: build-backend-dist
 	@cd ./backend/docker; \
-	sh ./build-local.sh ${VERSION} \
-	docker push ghcr.io/millarcalder/flightlog:${VERSION}
+	sh ./build-local.sh ${VERSION}
 
 build-backend-docker-image-rp4: build-backend-dist
-	@cd ./backend; \
-	ansible-playbook ./ansible/build.yml -i ./ansible/inventory/build.ini --ask-vault-password --ask-become-pass --extra-vars "version=${VERSION}"
+	@ansible-playbook ./ansible/build.yml -i ./ansible/inventory/build.ini --ask-vault-password --ask-become-pass --extra-vars "version=${VERSION}"
+
+build-frontend-docker-image:
+	@cd ./frontend; \
+	npm run build; \
+	cd ./docker; \
+	sh ./build-local.sh ${VERSION}
 
 run-webapp-backend:
 	@cd backend; \
@@ -36,7 +40,10 @@ run-webapp-frontend:
 	npm start
 
 deploy-backend-production:
-	ansible-playbook ./backend/ansible/deploy.yml --ask-vault-password --extra-vars "env_name=production version=${VERSION}"
+	ansible-playbook ./ansible/deploy.yml --ask-vault-password --extra-vars "env_name=production version=${VERSION} backend=yes"
 
 deploy-backend-production-rp4:
-	ansible-playbook ./backend/ansible/deploy.yml --ask-vault-password --extra-vars "env_name=production version=pi-${VERSION}"
+	ansible-playbook ./ansible/deploy.yml --ask-vault-password --extra-vars "env_name=production version=pi-${VERSION} backend=yes"
+
+deploy-frontend-production:
+	ansible-playbook ./ansible/deploy.yml --ask-vault-password --extra-vars "env_name=production version=${VERSION} frontend=yes"

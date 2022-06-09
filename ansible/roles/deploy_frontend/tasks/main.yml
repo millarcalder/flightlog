@@ -1,0 +1,74 @@
+- name: Deploy flightlog API
+  kubernetes.core.k8s:
+    name: flightlog-frontend
+    state: present
+    kubeconfig: ~/.kube/config
+    namespace: '{{ namespace }}'
+    resource_definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: flightlog-frontend-deployment
+        labels:
+          app: flightlog-frontend
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: flightlog-frontend
+        template:
+          metadata:
+            labels:
+              app: flightlog-frontend
+          spec:
+            imagePullSecrets:
+              - name: flightlog-docker-registry-secret
+            containers:
+              - name: flightlog-frontend
+                image: 'ghcr.io/millarcalder/flightlog-frontend:{{ version }}'
+                imagePullPolicy: Always
+                ports:
+                  - containerPort: 80
+                resources:
+                  limits:
+                    cpu: '500m'
+                    memory: '500Mi'
+
+- name: Deploy flightlog API http port
+  kubernetes.core.k8s:
+    state: present
+    namespace: '{{ namespace }}'
+    kubeconfig: ~/.kube/config
+    name: flightlog-frontend
+    resource_definition:
+      apiVersion: v1
+      kind: Service
+      spec:
+        selector:
+          app: flightlog-frontend
+        ports:
+          - name: http
+            port: 80
+            targetPort: 80
+
+- name: Deploy flightlog API ingress
+  kubernetes.core.k8s:
+    state: present
+    namespace: '{{ namespace }}'
+    kubeconfig: ~/.kube/config
+    name: flightlog
+    resource_definition:
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      spec:
+        rules:
+          - host: flightlog.kube.millarcalder.com
+            http:
+              paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: flightlog-frontend
+                      port:
+                        number: 80

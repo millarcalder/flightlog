@@ -1,0 +1,77 @@
+- name: Deploy flightlog API
+  kubernetes.core.k8s:
+    name: flightlog-api
+    state: present
+    kubeconfig: ~/.kube/config
+    namespace: '{{ namespace }}'
+    resource_definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: flightlog-api-deployment
+        labels:
+          app: flightlog-api
+      spec:
+        replicas: 2
+        selector:
+          matchLabels:
+            app: flightlog-api
+        template:
+          metadata:
+            labels:
+              app: flightlog-api
+          spec:
+            imagePullSecrets:
+              - name: flightlog-docker-registry-secret
+            containers:
+              - name: flightlog-api
+                image: 'ghcr.io/millarcalder/flightlog-api:{{ version }}'
+                imagePullPolicy: Always
+                ports:
+                  - containerPort: 5000
+                args:
+                  - production
+                  - run-webapp
+                resources:
+                  limits:
+                    cpu: '500m'
+                    memory: '500Mi'
+
+- name: Deploy flightlog API http port
+  kubernetes.core.k8s:
+    state: present
+    namespace: '{{ namespace }}'
+    kubeconfig: ~/.kube/config
+    name: flightlog-api
+    resource_definition:
+      apiVersion: v1
+      kind: Service
+      spec:
+        selector:
+          app: flightlog-api
+        ports:
+          - name: http
+            port: 80
+            targetPort: 5000
+
+- name: Deploy flightlog API ingress
+  kubernetes.core.k8s:
+    state: present
+    namespace: '{{ namespace }}'
+    kubeconfig: ~/.kube/config
+    name: flightlog
+    resource_definition:
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      spec:
+        rules:
+          - host: flightlog-api.kube.millarcalder.com
+            http:
+              paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: flightlog-api
+                      port:
+                        number: 80

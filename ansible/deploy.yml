@@ -1,0 +1,13 @@
+- name: Deploy the frontend to Kubernetes
+  hosts: localhost
+  pre_tasks:
+    - name: Load secrets
+      include_vars:
+        file: vault.yml
+        name: secrets
+  roles:
+    - role: setup_namespace
+    - role: deploy_frontend
+      when: frontend is defined and frontend == "yes"
+    - role: deploy_backend
+      when: backend is defined and backend == "yes"
