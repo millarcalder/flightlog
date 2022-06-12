@@ -33,6 +33,7 @@ build-frontend-docker-image:
 
 run-webapp-backend:
 	@cd backend; \
+	source .virtualenv/bin/activate; \
 	uvicorn flightlog.webapp.app:app --port 5000 --reload
 
 run-webapp-frontend:

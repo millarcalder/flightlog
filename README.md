@@ -12,7 +12,6 @@ You can upload a `.igc` flight log file, commonly used in gliders and paraglider
 
 ```bash
 make developer-setup
-source ./backend/.virtualenv/bin/activate  # activate virtualenv
 make run-webapp-backend
 make run-webapp-frontend  # remember to create a .env file! See .env.example for a template
 ```
@@ -20,11 +19,13 @@ make run-webapp-frontend  # remember to create a .env file! See .env.example for
 ### Deployment
 
 *Note: the ansible playbooks in this repo are setup for my environment, so they use my domain names, docker registry, encrypted secrets, etc...*
-*Also note: I haven't setup deployment for the frontend yet*
 
 You need to have already setup [kubectl](https://kubernetes.io/docs/reference/kubectl/kubectl/).
 
 #### Raspberry Pi k8s cluster
+
+
+##### Backend
 
 The Raspberry Pi 4 has arm64 cpu architecture, so you'll most likely need to build the docker image on a remote Pi since your PC will have a different cpu architecture.
 
@@ -39,6 +40,12 @@ Build the Raspberry Pi image (this simply just runs it on the remote Pi and tags
 
 Deploy to kubernetes using the Raspberry Pi image `make deploy-backend-production-rp4`.
 
+##### Frontend
+
+```bash
+deploy-frontend-production
+```
+
 #### Other clusters
 
 If you want to deploy to a local minikube cluster for example.
@@ -46,6 +53,7 @@ If you want to deploy to a local minikube cluster for example.
 ```bash
 make build-backend-docker-image
 make deploy-backend-production
+make deploy-frontend-production
 ```
 
 ### Helpful links
