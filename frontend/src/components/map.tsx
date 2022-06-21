@@ -1,7 +1,8 @@
+import { PropsWithChildren, useMemo } from 'react';
 import DeckGL from '@deck.gl/react';
 import { LineLayer } from '@deck.gl/layers'
 import { TerrainLayer } from '@deck.gl/geo-layers';
-import { PropsWithChildren, useMemo } from 'react';
+import { TrackPoint } from '../types';
 
 const TERRAIN_IMAGE = `https://api.mapbox.com/v4/mapbox.terrain-rgb/{z}/{x}/{y}.png?access_token=${process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}`;
 const SURFACE_IMAGE = `https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}@2x.png?access_token=${process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}`;
@@ -12,14 +13,27 @@ const ELEVATION_DECODER = {
   offset: -10000
 };
 
-interface TestMapProps {
-  data: Array<{
-    sourcePosition: Array<number>,
-    targetPosition: Array<number>
-  }>
+interface MapProps {
+  data: TrackPoint[]
 }
 
-const TestMap = (props: PropsWithChildren<TestMapProps>) => {
+interface Path {
+  sourcePosition: number[],
+  targetPosition: number[]
+}
+
+const Map = (props: PropsWithChildren<MapProps>) => {
+  const path = useMemo<Path[]>(() => {
+    let path_arr: Path[] = [];
+    for (let i=1; i<props.data.length; i++) {
+      path_arr.push({
+        sourcePosition: [props.data[i-1].longitude, props.data[i-1].latitude, props.data[i-1].altitude],
+        targetPosition: [props.data[i].longitude, props.data[i].latitude, props.data[i].altitude]
+      });
+    }
+    return path_arr
+  }, [props.data]);
+
   const terrainlayer = new TerrainLayer({
     id: 'terrainlayer',
     minZoom: 0,
@@ -35,7 +49,7 @@ const TestMap = (props: PropsWithChildren<TestMapProps>) => {
     if (props.data.length > 0) {
       return new LineLayer({
         id: 'linelayer',
-        data: props.data,
+        data: path,
         getWidth: () => 5,
         getColor: (d: any) => {
           const r = d.sourcePosition[2] / 1000;
@@ -53,8 +67,8 @@ const TestMap = (props: PropsWithChildren<TestMapProps>) => {
 
   return <DeckGL
     initialViewState={{
-      latitude: props.data.length > 0 ? props.data[0].sourcePosition[1] : -39.281540,
-      longitude: props.data.length > 0 ? props.data[0].sourcePosition[0] : 175.564541,
+      latitude: props.data.length > 0 ? path[0].sourcePosition[1] : -39.281540,
+      longitude: props.data.length > 0 ? path[0].sourcePosition[0] : 175.564541,
       zoom: 11.5,
       bearing: 140,
       pitch: 60,
@@ -67,4 +81,4 @@ const TestMap = (props: PropsWithChildren<TestMapProps>) => {
   </DeckGL>;
 }
 
-export default TestMap;
+export default Map;

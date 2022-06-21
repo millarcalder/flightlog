@@ -38,15 +38,5 @@ def _parse_line(line: str) -> TrackPoint:
         raise InvalidTrackPointLine()
 
 
-def extract_path(igc: str):
-    path = []
-    prev = None
-    for line in igc.splitlines():
-        if line.startswith('B'):
-            trackpoint = _parse_line(line)
-            pos = [trackpoint['longitude'], trackpoint['latitude'], trackpoint['altitude']]
-            if prev:
-                path.append({'sourcePosition': prev, 'targetPosition': pos})
-            prev = pos
-
-    return path
+def extract_points(igc: str):
+    return [_parse_line(line) for line in igc.splitlines() if line.startswith('B')]

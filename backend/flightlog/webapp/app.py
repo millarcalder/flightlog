@@ -2,7 +2,7 @@ import logging
 from fastapi import FastAPI
 from fastapi import File
 from fastapi.middleware.cors import CORSMiddleware
-from flightlog.lib.igc_parser import extract_path
+from flightlog.lib.igc_parser import extract_points
 
 
 app = FastAPI()
@@ -20,7 +20,7 @@ app.add_middleware(
 )
 
 
-@app.post('/parse-igc/get-path')
-def get_path_from_igc(igc: bytes = File()):
+@app.post('/parse-igc/extract-points')
+def extract_points_from_igc(igc: bytes = File()):
     igc_str = igc.decode('utf8')
-    return extract_path(igc_str)
+    return extract_points(igc_str)

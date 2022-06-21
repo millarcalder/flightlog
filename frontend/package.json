@@ -13,6 +13,8 @@
     "@types/react-dom": "^18.0.4",
     "@types/react-map-gl": "^6.1.2",
     "deck.gl": "^8.7.10",
+    "highcharts": "^10.1.0",
+    "highcharts-react-official": "^3.1.0",
     "mapbox-gl": "^2.8.2",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
