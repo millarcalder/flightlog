@@ -2,7 +2,7 @@ import { PropsWithChildren, useMemo } from 'react';
 import DeckGL from '@deck.gl/react';
 import { LineLayer } from '@deck.gl/layers'
 import { TerrainLayer } from '@deck.gl/geo-layers';
-import { TrackPoint } from '../types';
+import { Position } from '../../types';
 
 const TERRAIN_IMAGE = `https://api.mapbox.com/v4/mapbox.terrain-rgb/{z}/{x}/{y}.png?access_token=${process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}`;
 const SURFACE_IMAGE = `https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}@2x.png?access_token=${process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}`;
@@ -14,7 +14,7 @@ const ELEVATION_DECODER = {
 };
 
 interface MapProps {
-  data: TrackPoint[]
+  position_logs: Position[]
 }
 
 interface Path {
@@ -22,17 +22,17 @@ interface Path {
   targetPosition: number[]
 }
 
-const Map = (props: PropsWithChildren<MapProps>) => {
+const FlightPath3DMap = (props: PropsWithChildren<MapProps>) => {
   const path = useMemo<Path[]>(() => {
     let path_arr: Path[] = [];
-    for (let i=1; i<props.data.length; i++) {
+    for (let i=1; i<props.position_logs.length; i++) {
       path_arr.push({
-        sourcePosition: [props.data[i-1].longitude, props.data[i-1].latitude, props.data[i-1].altitude],
-        targetPosition: [props.data[i].longitude, props.data[i].latitude, props.data[i].altitude]
+        sourcePosition: [props.position_logs[i-1].longitude, props.position_logs[i-1].latitude, props.position_logs[i-1].altitude],
+        targetPosition: [props.position_logs[i].longitude, props.position_logs[i].latitude, props.position_logs[i].altitude]
       });
     }
     return path_arr
-  }, [props.data]);
+  }, [props.position_logs]);
 
   const terrainlayer = new TerrainLayer({
     id: 'terrainlayer',
@@ -46,7 +46,7 @@ const Map = (props: PropsWithChildren<MapProps>) => {
   });
 
   const linelayer = useMemo<any>(() => {
-    if (props.data.length > 0) {
+    if (props.position_logs.length > 0) {
       return new LineLayer({
         id: 'linelayer',
         data: path,
@@ -57,7 +57,7 @@ const Map = (props: PropsWithChildren<MapProps>) => {
         }
       });
     }
-  }, [props.data]);
+  }, [props.position_logs]);
 
   const layers = useMemo<Array<any>>(() => {
     let res = [terrainlayer];
@@ -67,8 +67,8 @@ const Map = (props: PropsWithChildren<MapProps>) => {
 
   return <DeckGL
     initialViewState={{
-      latitude: props.data.length > 0 ? path[0].sourcePosition[1] : -39.281540,
-      longitude: props.data.length > 0 ? path[0].sourcePosition[0] : 175.564541,
+      latitude: props.position_logs.length > 0 ? path[0].sourcePosition[1] : -39.281540,
+      longitude: props.position_logs.length > 0 ? path[0].sourcePosition[0] : 175.564541,
       zoom: 11.5,
       bearing: 140,
       pitch: 60,
@@ -81,4 +81,4 @@ const Map = (props: PropsWithChildren<MapProps>) => {
   </DeckGL>;
 }
 
-export default Map;
+export default FlightPath3DMap;

@@ -1,9 +1,9 @@
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
-import { TrackPoint } from '../types'
+import { Position } from '../../types'
 
 interface AltitudeGraphProps {
-  data: TrackPoint[],
+  data: Position[],
   style?: any
 }
   
