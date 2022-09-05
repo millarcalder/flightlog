@@ -1,6 +1,6 @@
 import { PropsWithChildren, useMemo } from 'react';
 import DeckGL from '@deck.gl/react';
-import { LineLayer } from '@deck.gl/layers'
+import MultiColorPathLayer from '../custom_deckgl_layers/multicolor_path_layer/layer';
 import { TerrainLayer } from '@deck.gl/geo-layers';
 import { Position } from '../../types';
 
@@ -17,19 +17,11 @@ interface MapProps {
   position_logs: Position[]
 }
 
-interface Path {
-  sourcePosition: number[],
-  targetPosition: number[]
-}
-
 const FlightPath3DMap = (props: PropsWithChildren<MapProps>) => {
-  const path = useMemo<Path[]>(() => {
-    let path_arr: Path[] = [];
+  const path = useMemo<number[][]>(() => {
+    let path_arr: number[][] = [];
     for (let i=1; i<props.position_logs.length; i++) {
-      path_arr.push({
-        sourcePosition: [props.position_logs[i-1].longitude, props.position_logs[i-1].latitude, props.position_logs[i-1].altitude],
-        targetPosition: [props.position_logs[i].longitude, props.position_logs[i].latitude, props.position_logs[i].altitude]
-      });
+      path_arr.push([props.position_logs[i].longitude, props.position_logs[i].latitude, props.position_logs[i].altitude]);
     }
     return path_arr
   }, [props.position_logs]);
@@ -47,14 +39,23 @@ const FlightPath3DMap = (props: PropsWithChildren<MapProps>) => {
 
   const linelayer = useMemo<any>(() => {
     if (props.position_logs.length > 0) {
-      return new LineLayer({
-        id: 'linelayer',
-        data: path,
-        getWidth: () => 5,
-        getColor: (d: any) => {
-          const r = d.sourcePosition[2] / 1000;
-          return [255 * r, 0, 255, 255];
-        }
+      // @ts-ignore
+      return new MultiColorPathLayer({
+        id: 'pathlayer',
+        data: [{
+          path
+        }],
+        getWidth: () => 10,
+        // @ts-ignore
+        getColor: () => {
+          return path.map((p) => {
+            const r = p[2] / 1000;
+            return [255 * r, 0, 255, 255];
+          });
+        },
+        capRounded: true,
+        jointRounded: true,
+        billboard: true
       });
     }
   }, [props.position_logs]);
@@ -67,8 +68,8 @@ const FlightPath3DMap = (props: PropsWithChildren<MapProps>) => {
 
   return <DeckGL
     initialViewState={{
-      latitude: props.position_logs.length > 0 ? path[0].sourcePosition[1] : -39.281540,
-      longitude: props.position_logs.length > 0 ? path[0].sourcePosition[0] : 175.564541,
+      latitude: props.position_logs.length > 0 ? path[0][1] : -39.281540,
+      longitude: props.position_logs.length > 0 ? path[0][0] : 175.564541,
       zoom: 11.5,
       bearing: 140,
       pitch: 60,
