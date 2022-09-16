@@ -8,6 +8,8 @@ You can upload a `.igc` flight log file, commonly used in gliders and paraglider
 
 ## Developer Guide
 
+This project is setup for debian based operating systems, trying to run this on anything else will cause some issues with automated scripts that install dependencies and deploy the apps.
+
 ### Running locally
 
 ```bash

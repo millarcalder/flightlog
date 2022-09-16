@@ -2,7 +2,10 @@ SHELL := /bin/bash
 
 VERSION=0.0.1
 
-developer-setup: developer-setup-backend developer-setup-frontend
+developer-setup: install-system-dependencies developer-setup-backend developer-setup-frontend
+
+install-system-dependencies:
+	@sudo apt install python3.10-venv
 
 developer-setup-backend:
 	@cd ./backend; \
