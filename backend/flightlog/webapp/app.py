@@ -8,7 +8,7 @@ from flightlog.lib.igc_parser import FlightLog
 app = FastAPI()
 
 origins = [
-    "http://localhost:3000",
+    "http://flightlog.kube.millarcalder.com/",
 ]
 
 app.add_middleware(

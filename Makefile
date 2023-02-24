@@ -20,6 +20,7 @@ developer-setup-frontend:
 
 build-backend-dist:
 	@cd backend; \
+	source .virtualenv/bin/activate; \
 	python -m build
 
 build-backend-docker-image: build-backend-dist

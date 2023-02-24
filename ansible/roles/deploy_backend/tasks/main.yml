@@ -53,25 +53,3 @@
           - name: http
             port: 80
             targetPort: 5000
-
-- name: Deploy flightlog API ingress
-  kubernetes.core.k8s:
-    state: present
-    namespace: '{{ namespace }}'
-    kubeconfig: ~/.kube/config
-    name: flightlog
-    resource_definition:
-      apiVersion: networking.k8s.io/v1
-      kind: Ingress
-      spec:
-        rules:
-          - host: flightlog-api.kube.millarcalder.com
-            http:
-              paths:
-                - path: /
-                  pathType: Prefix
-                  backend:
-                    service:
-                      name: flightlog-api
-                      port:
-                        number: 80

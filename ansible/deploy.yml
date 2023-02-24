@@ -11,3 +11,4 @@
       when: frontend is defined and frontend == "yes"
     - role: deploy_backend
       when: backend is defined and backend == "yes"
+    - role: setup_ingress
