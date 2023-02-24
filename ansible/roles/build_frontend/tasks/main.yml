@@ -1,17 +1,17 @@
 - name: Create a directory if it does not exist
   ansible.builtin.file:
-    path: /tmp/flightlog-docker
+    path: /tmp/flightlog-frontend-docker
     state: directory
 
-- name: Upload python wheel
+- name: Upload build directory
   ansible.builtin.copy:
-    src: '{{ project_dir }}/backend/dist/{{ wheel_name }}'
-    dest: '/tmp/flightlog-docker/{{ wheel_name }}'
+    src: '{{ project_dir }}/frontend/build/'
+    dest: /tmp/flightlog-frontend-docker/build
 
 - name: Upload docker file
   ansible.builtin.copy:
-    src: '{{ project_dir }}/backend/docker/Dockerfile'
-    dest: /tmp/flightlog-docker/Dockerfile
+    src: '{{ project_dir }}/frontend/docker/Dockerfile'
+    dest: /tmp/flightlog-frontend-docker/Dockerfile
 
 - name: Docker login
   become: yes
@@ -24,10 +24,8 @@
   become: yes
   community.docker.docker_image:
     build:
-      args:
-        wheel_name: '{{ wheel_name }}'
-      path: /tmp/flightlog-docker
-    name: ghcr.io/millarcalder/flightlog-api
+      path: /tmp/flightlog-frontend-docker
+    name: ghcr.io/millarcalder/flightlog-frontend
     tag: 'pi-{{ version }}'
     push: yes
     source: build

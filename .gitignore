@@ -3,7 +3,7 @@
 *.pytest_cache*
 *.egg-info*
 
-ansible/inventory/build.ini
+ansible/inventory/
 
 backend/.virtualenv/
 backend/dist/

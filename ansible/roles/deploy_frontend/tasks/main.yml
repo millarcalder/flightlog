@@ -1,4 +1,4 @@
-- name: Deploy flightlog API
+- name: Deploy flightlog webapp
   kubernetes.core.k8s:
     name: flightlog-frontend
     state: present
@@ -34,7 +34,7 @@
                     cpu: '500m'
                     memory: '500Mi'
 
-- name: Deploy flightlog API http port
+- name: Deploy flightlog webapp http port
   kubernetes.core.k8s:
     state: present
     namespace: '{{ namespace }}'
@@ -51,7 +51,7 @@
             port: 80
             targetPort: 80
 
-- name: Deploy flightlog API ingress
+- name: Deploy flightlog webapp ingress
   kubernetes.core.k8s:
     state: present
     namespace: '{{ namespace }}'

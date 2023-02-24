@@ -1,1 +1,2 @@
 namespace: 'flightlog-{{ env_name }}'
+project_dir: '{{ playbook_dir }}/../'

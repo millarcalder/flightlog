@@ -11,7 +11,8 @@ developer-setup-backend:
 	@cd ./backend; \
 	python3 -m venv .virtualenv; \
 	source .virtualenv/bin/activate; \
-	pip install -r requirements.txt
+	pip install -r requirements.txt; \
+	pip install -r requirements-dev.txt
 
 developer-setup-frontend:
 	@cd frontend; \
@@ -26,13 +27,21 @@ build-backend-docker-image: build-backend-dist
 	sh ./build-local.sh ${VERSION}
 
 build-backend-docker-image-rp4: build-backend-dist
-	@ansible-playbook ./ansible/build.yml -i ./ansible/inventory/build.ini --ask-vault-password --ask-become-pass --extra-vars "version=${VERSION}"
+	@ansible-playbook ./ansible/build.yml -i ./ansible/inventory/build.ini --ask-vault-password --ask-become-pass --extra-vars "version=${VERSION} backend=yes"
 
 build-frontend-docker-image:
 	@cd ./frontend; \
+	npm install; \
 	npm run build; \
 	cd ./docker; \
 	sh ./build-local.sh ${VERSION}
+
+build-frontend-docker-image-rp4:
+	@cd ./frontend; \
+	npm install; \
+	npm run build; \
+	cd ../;\
+	ansible-playbook ./ansible/build.yml -i ./ansible/inventory/build.ini --ask-vault-password --ask-become-pass --extra-vars "version=${VERSION} frontend=yes"
 
 run-webapp-backend:
 	@cd backend; \
@@ -51,3 +60,6 @@ deploy-backend-production-rp4:
 
 deploy-frontend-production:
 	ansible-playbook ./ansible/deploy.yml --ask-vault-password --extra-vars "env_name=production version=${VERSION} frontend=yes"
+
+deploy-frontend-production-rp4:
+	ansible-playbook ./ansible/deploy.yml --ask-vault-password --extra-vars "env_name=production version=pi-${VERSION} frontend=yes"

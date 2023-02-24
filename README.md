@@ -22,16 +22,17 @@ make run-webapp-frontend  # remember to create a .env file! See .env.example for
 
 *Note: the ansible playbooks in this repo are setup for my environment, so they use my domain names, docker registry, encrypted secrets, etc...*
 
-You need to have already setup [kubectl](https://kubernetes.io/docs/reference/kubectl/kubectl/).
+Requirements:
+  - install [kubectl](https://kubernetes.io/docs/reference/kubectl/kubectl/) and connect to your Kubernetes cluster
+  - install [npm](https://www.npmjs.com/)
 
 #### Raspberry Pi k8s cluster
-
 
 ##### Backend
 
 The Raspberry Pi 4 has arm64 cpu architecture, so you'll most likely need to build the docker image on a remote Pi since your PC will have a different cpu architecture.
 
-You'll need to create an ansible inventory file `backend/ansible/inventory/build.ini` to run an ansible playbook on a remote Pi, e.g.
+You'll need to create the ansible inventory files `build.ini` and `deploy.ini` in `ansible/inventory/` to run the ansible playbooks on a remote Pi, e.g.
 
 ```
 [webservers]

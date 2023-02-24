@@ -1,7 +1,4 @@
-build
 click
 fastapi
-pytest
 python-multipart
-setuptools
 uvicorn[standard]
