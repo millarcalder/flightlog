@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCircleInfo,
   faRepeat,
-  faCog,
+  faCog
 } from '@fortawesome/free-solid-svg-icons'
 import AltitudeGraph from './components/graphs/altitude_graph'
 import FlightPath3DMap from './components/maps/flight_path_3d_map'
@@ -62,7 +62,7 @@ const App = () => {
       `${process.env.REACT_APP_FLIGHTLOG_API_URL}parse-igc/extract-flight-log`,
       {
         method: 'POST',
-        body: formdata,
+        body: formdata
       }
     )
       .then((resp) => resp.json())
@@ -88,14 +88,14 @@ const App = () => {
               height: '100%',
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'space-between',
+              justifyContent: 'space-between'
             }}
           >
             <div
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                alignItems: 'center',
+                alignItems: 'center'
               }}
             >
               <Form.Control
@@ -103,7 +103,7 @@ const App = () => {
                 onChange={handleSubmit}
                 style={{
                   margin: 10,
-                  width: 'auto',
+                  width: 'auto'
                 }}
               />
               <div>
@@ -113,7 +113,7 @@ const App = () => {
                   inverse
                   className="icon-button"
                   style={{
-                    margin: 10,
+                    margin: 10
                   }}
                   onClick={() => {
                     if (view === 'terrain') setView('satallite')
@@ -126,7 +126,7 @@ const App = () => {
                   inverse
                   className="icon-button"
                   style={{
-                    margin: 10,
+                    margin: 10
                   }}
                   onClick={() => {
                     setShowSettings(true)
@@ -138,7 +138,7 @@ const App = () => {
                   inverse
                   className="icon-button"
                   style={{
-                    margin: 10,
+                    margin: 10
                   }}
                   onClick={() => {
                     setShowFlightlogInfo(flightlog !== undefined)

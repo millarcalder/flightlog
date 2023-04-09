@@ -25,9 +25,8 @@ export const generateHeatMapLayer = (
     radiusPixels: 30,
     intensity: 1,
     threshold: 0.03,
-    visible,
+    visible
   })
-
 
 interface GeneratePathDataProps {
   positionLogs: Position[]
@@ -43,7 +42,7 @@ export const generatePathData = ({
     path_arr.push([
       positionLogs[i].longitude,
       positionLogs[i].latitude,
-      flat ? 0 : positionLogs[i].altitude,
+      flat ? 0 : positionLogs[i].altitude
     ])
   }
   return path_arr
@@ -58,14 +57,14 @@ interface generatePathLayerProps {
 export const generatePathLayer = ({
   pathData,
   width = 10,
-  visible = true,
+  visible = true
 }: generatePathLayerProps): MultiColorPathLayer => {
   return new MultiColorPathLayer({
     id: 'pathlayer',
     data: [
       {
-        path: pathData,
-      },
+        path: pathData
+      }
     ],
     getWidth: () => width,
     // @ts-ignore
@@ -78,6 +77,6 @@ export const generatePathLayer = ({
     capRounded: true,
     jointRounded: true,
     billboard: true,
-    visible,
+    visible
   })
 }

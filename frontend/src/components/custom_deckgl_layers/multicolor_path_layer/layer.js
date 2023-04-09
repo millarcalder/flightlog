@@ -9,8 +9,8 @@ export default class MultiColorPathLayer extends PathLayer {
         size: 4,
         type: GL.UNSIGNED_BYTE,
         normalized: true,
-        update: this.calculateColors,
-      },
+        update: this.calculateColors
+      }
     })
   }
 

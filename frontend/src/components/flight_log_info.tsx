@@ -18,7 +18,7 @@ const FlightLogInfo = (props: FlightLogInfoProps) => {
             width: '100%',
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center',
+            alignItems: 'center'
           }}
         >
           <h3 className="m-0">Flight Info</h3>

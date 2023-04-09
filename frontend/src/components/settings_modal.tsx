@@ -27,7 +27,7 @@ const SettingsModal = (props: SettingsModalProps) => {
             width: '100%',
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center',
+            alignItems: 'center'
           }}
         >
           <h3 className="m-0">Settings</h3>

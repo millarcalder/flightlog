@@ -10,7 +10,7 @@ const ELEVATION_DECODER = {
   rScaler: 6553.6,
   gScaler: 25.6,
   bScaler: 0.1,
-  offset: -10000,
+  offset: -10000
 }
 
 interface MapProps {
@@ -20,7 +20,7 @@ interface MapProps {
 
 const FlightPath3DMap = (props: PropsWithChildren<MapProps>) => {
   const pathData = useMemo<number[][]>(
-    () => generatePathData({positionLogs: props.positionLogs}),
+    () => generatePathData({ positionLogs: props.positionLogs }),
     [props.positionLogs]
   )
 
@@ -37,7 +37,7 @@ const FlightPath3DMap = (props: PropsWithChildren<MapProps>) => {
     elevationData: TERRAIN_IMAGE,
     texture: SURFACE_IMAGE,
     wireframe: false,
-    color: [255, 255, 255],
+    color: [255, 255, 255]
   })
 
   return (
@@ -48,7 +48,7 @@ const FlightPath3DMap = (props: PropsWithChildren<MapProps>) => {
         zoom: 11.5,
         bearing: 140,
         pitch: 60,
-        maxPitch: 70,
+        maxPitch: 70
       }}
       controller={true}
       layers={[terrainLayer, pathLayer]}

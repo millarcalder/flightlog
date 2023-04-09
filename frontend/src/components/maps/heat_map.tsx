@@ -6,7 +6,7 @@ import {
   generateHeatMapData,
   generateHeatMapLayer,
   generatePathData,
-  generatePathLayer,
+  generatePathLayer
 } from './helpers'
 
 interface HeatMapProps {
@@ -22,7 +22,7 @@ const HeatMap = (props: PropsWithChildren<HeatMapProps>) => {
   )
 
   const pathData = useMemo<number[][]>(
-    () => generatePathData({positionLogs: props.positionLogs, flat: true}),
+    () => generatePathData({ positionLogs: props.positionLogs, flat: true }),
     [props.positionLogs]
   )
 
@@ -36,7 +36,7 @@ const HeatMap = (props: PropsWithChildren<HeatMapProps>) => {
       generatePathLayer({
         pathData,
         width: 5,
-        visible: props.showPathLayer,
+        visible: props.showPathLayer
       }),
     [pathData, props.showPathLayer]
   )
@@ -56,7 +56,7 @@ const HeatMap = (props: PropsWithChildren<HeatMapProps>) => {
         maxZoom: 16,
         pitch: 0,
         bearing: 0,
-        maxPitch: 0,
+        maxPitch: 0
       }}
       controller={true}
       layers={[pathLayer, heatMapLayer]}

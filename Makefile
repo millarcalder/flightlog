@@ -15,6 +15,10 @@ developer-setup-frontend:
 	@cd frontend; \
 	npm install
 
+format-frontend-code:
+	@cd frontend; \
+	npx prettier --write .
+
 build-backend-dist:
 	@cd backend; \
 	source .virtualenv/bin/activate; \

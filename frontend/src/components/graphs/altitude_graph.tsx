@@ -27,7 +27,7 @@ const AltitudeGraph = (props: AltitudeGraphProps) => {
         ...props.style,
         display: 'flex',
         flexDirection: 'row',
-        height: 250,
+        height: 250
       }}
     >
       <button
@@ -36,7 +36,7 @@ const AltitudeGraph = (props: AltitudeGraphProps) => {
           border: 'none',
           borderRadius: 10,
           padding: 10,
-          marginRight: 10,
+          marginRight: 10
         }}
         onClick={() => {
           setShowGraph(!showGraph)
@@ -48,7 +48,7 @@ const AltitudeGraph = (props: AltitudeGraphProps) => {
             writingMode: 'vertical-rl',
             textOrientation: 'mixed',
             margin: 0,
-            padding: 0,
+            padding: 0
           }}
         >
           Altitude
@@ -64,13 +64,13 @@ const AltitudeGraph = (props: AltitudeGraphProps) => {
                 spacing: [0, 0, 0, 0],
                 borderWidth: 0,
                 borderRadius: 10,
-                height: 250,
+                height: 250
               },
               credits: {
-                enabled: false,
+                enabled: false
               },
               title: {
-                text: '',
+                text: ''
               },
               series: [
                 {
@@ -80,30 +80,30 @@ const AltitudeGraph = (props: AltitudeGraphProps) => {
                     linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
                     stops: props.data.map((tp, i) => [
                       (i + 1) / props.data.length,
-                      `rgb(${(255 * tp.altitude) / 1000}, 0, 255)`,
-                    ]),
+                      `rgb(${(255 * tp.altitude) / 1000}, 0, 255)`
+                    ])
                   },
-                  data: props.data.map((tp) => tp.altitude),
-                },
+                  data: props.data.map((tp) => tp.altitude)
+                }
               ],
               legend: {
-                enabled: false,
+                enabled: false
               },
               xAxis: {
                 labels: {
-                  enabled: false,
+                  enabled: false
                 },
-                tickLength: 0,
+                tickLength: 0
               },
               yAxis: {
                 title: {
-                  enabled: false,
+                  enabled: false
                 },
                 labels: {
-                  enabled: false,
+                  enabled: false
                 },
-                gridLineWidth: 0,
-              },
+                gridLineWidth: 0
+              }
             }}
           />
         </div>

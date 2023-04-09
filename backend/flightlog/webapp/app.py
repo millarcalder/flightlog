@@ -1,4 +1,3 @@
-import logging
 from fastapi import FastAPI
 from fastapi import File
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,7 +7,7 @@ from flightlog.lib.igc_parser import FlightLog
 app = FastAPI()
 
 origins = [
-    "http://flightlog.kube.millarcalder.com/",
+    "http://localhost:3000",
 ]
 
 app.add_middleware(
