@@ -1,47 +1,67 @@
-import { PropsWithChildren, useMemo } from 'react';
-import Map from 'react-map-gl';
-import DeckGL from '@deck.gl/react';
-import { HeatmapLayer } from '@deck.gl/aggregation-layers';
-import { Position } from '../../types';
+import { PropsWithChildren, useMemo } from 'react'
+import Map from 'react-map-gl'
+import DeckGL from '@deck.gl/react'
+import { Position } from '../../types'
+import {
+  generateHeatMapData,
+  generateHeatMapLayer,
+  generatePathData,
+  generatePathLayer,
+} from './helpers'
 
 interface HeatMapProps {
-  position_logs: Position[]
+  positionLogs: Position[]
+  showHeatMapLayer?: boolean
+  showPathLayer?: boolean
 }
 
 const HeatMap = (props: PropsWithChildren<HeatMapProps>) => {
-  const data = useMemo(() => {
-    let res = []
-    for(let i=1; i < props.position_logs.length; i++) {
-      let pos = props.position_logs[i]
-      let prev_pos = props.position_logs[i-1]
-      res.push([pos.longitude, pos.latitude, pos.altitude - prev_pos.altitude])
-    }
-    return res
-  }, [props.position_logs])
+  const heatMapData = useMemo<number[][]>(
+    () => generateHeatMapData(props.positionLogs),
+    [props.positionLogs]
+  )
 
-  const layers = [
-    new HeatmapLayer({
-      data,
-      id: 'heatmp-layer',
-      pickable: false,
-      getPosition: d => [d[0], d[1]],
-      getWeight: d => d[2],
-      radiusPixels: 30,
-      intensity: 1,
-      threshold: 0.03
-    })
-  ]
+  const pathData = useMemo<number[][]>(
+    () => generatePathData({positionLogs: props.positionLogs, flat: true}),
+    [props.positionLogs]
+  )
+
+  const heatMapLayer = useMemo<any>(
+    () => generateHeatMapLayer(heatMapData, props.showHeatMapLayer),
+    [heatMapData, props.showHeatMapLayer]
+  )
+
+  const pathLayer = useMemo<any>(
+    () =>
+      generatePathLayer({
+        pathData,
+        width: 5,
+        visible: props.showPathLayer,
+      }),
+    [pathData, props.showPathLayer]
+  )
 
   return (
-    <DeckGL initialViewState={{
-      latitude: props.position_logs.length > 0 ? props.position_logs[0].latitude : -39.281540,
-      longitude: props.position_logs.length > 0 ? props.position_logs[0].longitude : 175.564541,
-      zoom: 9,
-      maxZoom: 16,
-      pitch: 0,
-      bearing: 0
-    }} controller={true} layers={layers}>
-      <Map mapStyle='mapbox://styles/mapbox/satellite-v9' />
+    <DeckGL
+      initialViewState={{
+        latitude:
+          props.positionLogs.length > 0
+            ? props.positionLogs[0].latitude
+            : -39.28154,
+        longitude:
+          props.positionLogs.length > 0
+            ? props.positionLogs[0].longitude
+            : 175.564541,
+        zoom: 9,
+        maxZoom: 16,
+        pitch: 0,
+        bearing: 0,
+        maxPitch: 0,
+      }}
+      controller={true}
+      layers={[pathLayer, heatMapLayer]}
+    >
+      <Map mapStyle="mapbox://styles/mapbox/satellite-v9" />
       {props.children}
     </DeckGL>
   )
