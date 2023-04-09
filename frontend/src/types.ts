@@ -6,7 +6,7 @@ export interface Position {
 }
 
 export interface FlightLog {
-  positionLogs: Position[]
+  position_logs: Position[]
   start: Position
   finish: Position
   min_altitude: number

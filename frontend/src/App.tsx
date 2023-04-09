@@ -78,7 +78,7 @@ const App = () => {
     <div className="App">
       <div>
         <ComponentSelector
-          positionLogs={flightlog ? flightlog.positionLogs : []}
+          positionLogs={flightlog ? flightlog.position_logs : []}
           view={view}
           showPathLayer={showPathLayer}
           showHeatMapLayer={showHeatMapLayer}
@@ -147,7 +147,7 @@ const App = () => {
               </div>
             </div>
             <AltitudeGraph
-              data={flightlog ? flightlog.positionLogs : []}
+              data={flightlog ? flightlog.position_logs : []}
               style={{ margin: 10 }}
             />
           </div>
