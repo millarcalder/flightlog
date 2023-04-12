@@ -6,11 +6,11 @@ import {
   faRepeat,
   faCog
 } from '@fortawesome/free-solid-svg-icons'
-import AltitudeGraph from './components/graphs/altitude_graph'
-import FlightPath3DMap from './components/maps/flight_path_3d_map'
-import HeatMap from './components/maps/heat_map'
-import FlightLogInfo from './components/flight_log_info'
-import SettingsModal from './components/settings_modal'
+import AltitudeGraph from './components/graphs/AltitudeGraph'
+import FlightPath3DMap from './components/maps/FlightPath3DMap'
+import HeatMap from './components/maps/HeatMap'
+import FlightLogInfoModal from './components/modals/FlightLogInfoModal'
+import SettingsModal from './components/modals/SettingsModal'
 import { FlightLog, Position } from './types'
 
 window.addEventListener('contextmenu', (e) => e.preventDefault())
@@ -155,7 +155,7 @@ const App = () => {
       </div>
 
       {showFlightlogInfo && flightlog !== undefined ? (
-        <FlightLogInfo
+        <FlightLogInfoModal
           show={true}
           handleClose={() => {
             setShowFlightlogInfo(false)

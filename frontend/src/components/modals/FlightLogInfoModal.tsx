@@ -1,14 +1,14 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMultiply } from '@fortawesome/free-solid-svg-icons'
 import Modal from 'react-bootstrap/Modal'
-import StandardModal, { StandardModalProps } from './standard_modal'
-import { FlightLog } from '../types'
+import StandardModal, { StandardModalProps } from './StandardModal'
+import { FlightLog } from '../../types'
 
-interface FlightLogInfoProps extends StandardModalProps {
+interface FlightLogInfoModalProps extends StandardModalProps {
   flightlog: FlightLog
 }
 
-const FlightLogInfo = (props: FlightLogInfoProps) => {
+const FlightLogInfoModal = (props: FlightLogInfoModalProps) => {
   const { flightlog, ...otherProps } = props
   return (
     <StandardModal {...otherProps}>
@@ -44,4 +44,4 @@ const FlightLogInfo = (props: FlightLogInfoProps) => {
   )
 }
 
-export default FlightLogInfo
+export default FlightLogInfoModal

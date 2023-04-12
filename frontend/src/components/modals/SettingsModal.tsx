@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMultiply } from '@fortawesome/free-solid-svg-icons'
 import Form from 'react-bootstrap/Form'
 import Modal from 'react-bootstrap/Modal'
-import StandardModal, { StandardModalProps } from './standard_modal'
+import StandardModal, { StandardModalProps } from './StandardModal'
 
 interface SettingsModalProps extends StandardModalProps {
   showPathLayer: boolean
