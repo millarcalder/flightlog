@@ -1,26 +1,19 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMultiply } from '@fortawesome/free-solid-svg-icons'
 import Form from 'react-bootstrap/Form'
 import Modal from 'react-bootstrap/Modal'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMultiply } from '@fortawesome/free-solid-svg-icons'
 import StandardModal, { StandardModalProps } from './StandardModal'
+import { useAppSelector, useAppDispatch } from '../store/hooks'
+import { showMapLayer } from '../store/mainReducer'
 
-interface SettingsModalProps extends StandardModalProps {
-  showPathLayer: boolean
-  setShowPathLayer: Function
-  showHeatMapLayer: boolean
-  setShowHeatMapLayer: Function
-}
 
-const SettingsModal = (props: SettingsModalProps) => {
-  const {
-    showPathLayer,
-    setShowPathLayer,
-    showHeatMapLayer,
-    setShowHeatMapLayer,
-    ...otherProps
-  } = props
+const SettingsModal = (props: StandardModalProps) => {
+  const dispatch = useAppDispatch()
+  const showPathLayer = useAppSelector(state => state.main.mapLayers.pathLayer)
+  const showHeatMapLayer = useAppSelector(state => state.main.mapLayers.heatMapLayer)
+
   return (
-    <StandardModal {...otherProps}>
+    <StandardModal {...props}>
       <Modal.Header>
         <div
           style={{
@@ -36,7 +29,7 @@ const SettingsModal = (props: SettingsModalProps) => {
             size="2x"
             className="icon-button"
             onClick={() => {
-              otherProps.handleClose()
+              props.handleClose()
             }}
           />
         </div>
@@ -46,7 +39,7 @@ const SettingsModal = (props: SettingsModalProps) => {
           type="checkbox"
           label={'Show Path'}
           onChange={() => {
-            setShowPathLayer(!showPathLayer)
+            dispatch(showMapLayer({layer: 'pathLayer', show: !showPathLayer}))
           }}
           checked={showPathLayer}
         />
@@ -54,7 +47,7 @@ const SettingsModal = (props: SettingsModalProps) => {
           type="checkbox"
           label={'Show Heat Map'}
           onChange={() => {
-            setShowHeatMapLayer(!showHeatMapLayer)
+            dispatch(showMapLayer({layer: 'heatMapLayer', show: !showHeatMapLayer}))
           }}
           checked={showHeatMapLayer}
         />

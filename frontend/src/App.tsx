@@ -1,4 +1,4 @@
-import { PropsWithChildren, useState } from 'react'
+import { PropsWithChildren, useMemo } from 'react'
 import Form from 'react-bootstrap/Form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -9,36 +9,34 @@ import {
 import AltitudeGraph from './components/graphs/AltitudeGraph'
 import FlightPath3DMap from './components/maps/FlightPath3DMap'
 import HeatMap from './components/maps/HeatMap'
-import FlightLogInfoModal from './components/modals/FlightLogInfoModal'
-import SettingsModal from './components/modals/SettingsModal'
-import { FlightLog, Position } from './types'
+import FlightLogInfoModal from './modals/FlightLogInfoModal'
+import SettingsModal from './modals/SettingsModal'
+import { useAppSelector, useAppDispatch } from './store/hooks'
+import { setFlightlog, clearFlightlog, setView, showModal } from './store/mainReducer'
 
 window.addEventListener('contextmenu', (e) => e.preventDefault())
 
-type MapView = 'terrain' | 'satallite'
 
-interface ComponentSelectorProps {
-  positionLogs: Position[]
-  view: MapView
-  showPathLayer: boolean
-  showHeatMapLayer: boolean
-}
+const ComponentSelector = (props: PropsWithChildren<any>) => {
+  const flightlog = useAppSelector(state => state.main.flightlog)
+  const view = useAppSelector(state => state.main.view)
+  const showPathLayer = useAppSelector(state => state.main.mapLayers.pathLayer)
+  const showHeatMapLayer = useAppSelector(state => state.main.mapLayers.heatMapLayer)
+  
+  const positionLogs = useMemo(() => flightlog ? flightlog.position_logs : [], [flightlog])
 
-const ComponentSelector = (
-  props: PropsWithChildren<ComponentSelectorProps>
-) => {
-  return props.view === 'terrain' ? (
+  return view === 'terrain' ? (
     <FlightPath3DMap
-      positionLogs={props.positionLogs}
-      showPathLayer={props.showPathLayer}
+      positionLogs={positionLogs}
+      showPathLayer={showPathLayer}
     >
       {props.children}
     </FlightPath3DMap>
-  ) : props.view === 'satallite' ? (
+  ) : view === 'satallite' ? (
     <HeatMap
-      positionLogs={props.positionLogs}
-      showHeatMapLayer={props.showHeatMapLayer}
-      showPathLayer={props.showPathLayer}
+      positionLogs={positionLogs}
+      showPathLayer={showPathLayer}
+      showHeatMapLayer={showHeatMapLayer}
     >
       {props.children}
     </HeatMap>
@@ -48,12 +46,11 @@ const ComponentSelector = (
 }
 
 const App = () => {
-  const [flightlog, setFlightlog] = useState<FlightLog>()
-  const [showFlightlogInfo, setShowFlightlogInfo] = useState<boolean>(false)
-  const [showSettings, setShowSettings] = useState<boolean>(false)
-  const [view, setView] = useState<MapView>('terrain')
-  const [showPathLayer, setshowPathLayer] = useState<boolean>(true)
-  const [showHeatMapLayer, setShowHeatMapLayer] = useState<boolean>(true)
+  const dispatch = useAppDispatch()
+  const flightlog = useAppSelector(state => state.main.flightlog)
+  const view = useAppSelector(state => state.main.view)
+  const showFlightlogInfoModal = useAppSelector(state => state.main.modals.flightlogInfo)
+  const showSettingsModal = useAppSelector(state => state.main.modals.settings)
 
   const handleSubmit = (e: any) => {
     let formdata = new FormData()
@@ -67,22 +64,17 @@ const App = () => {
     )
       .then((resp) => resp.json())
       .then((result) => {
-        setFlightlog(result)
+        dispatch(setFlightlog(result))
       })
       .catch((err) => {
-        console.log('caught error')
+        dispatch(clearFlightlog())
       })
   }
 
   return (
     <div className="App">
       <div>
-        <ComponentSelector
-          positionLogs={flightlog ? flightlog.position_logs : []}
-          view={view}
-          showPathLayer={showPathLayer}
-          showHeatMapLayer={showHeatMapLayer}
-        >
+        <ComponentSelector>
           <div
             style={{
               height: '100%',
@@ -116,8 +108,7 @@ const App = () => {
                     margin: 10
                   }}
                   onClick={() => {
-                    if (view === 'terrain') setView('satallite')
-                    else setView('terrain')
+                    dispatch(setView(view == 'terrain' ? 'satallite' : 'terrain'))
                   }}
                 />
                 <FontAwesomeIcon
@@ -129,7 +120,7 @@ const App = () => {
                     margin: 10
                   }}
                   onClick={() => {
-                    setShowSettings(true)
+                    dispatch(showModal({modal: 'settings', 'show': true}))
                   }}
                 />
                 <FontAwesomeIcon
@@ -141,7 +132,7 @@ const App = () => {
                     margin: 10
                   }}
                   onClick={() => {
-                    setShowFlightlogInfo(flightlog !== undefined)
+                    dispatch(showModal({modal: 'flightlogInfo', 'show': true}))
                   }}
                 />
               </div>
@@ -154,25 +145,21 @@ const App = () => {
         </ComponentSelector>
       </div>
 
-      {showFlightlogInfo && flightlog !== undefined ? (
+      {showFlightlogInfoModal && flightlog !== undefined ? (
         <FlightLogInfoModal
           show={true}
           handleClose={() => {
-            setShowFlightlogInfo(false)
+            dispatch(showModal({modal: 'flightlogInfo', show: false}))
           }}
           flightlog={flightlog!}
         />
       ) : null}
-      {showSettings ? (
+      {showSettingsModal ? (
         <SettingsModal
           show={true}
           handleClose={() => {
-            setShowSettings(false)
+            dispatch(showModal({modal: 'settings', show: false}))
           }}
-          showPathLayer={showPathLayer}
-          setShowPathLayer={setshowPathLayer}
-          showHeatMapLayer={showHeatMapLayer}
-          setShowHeatMapLayer={setShowHeatMapLayer}
         />
       ) : null}
     </div>
