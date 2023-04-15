@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { FlightLog } from '../types'
 
-type MapView = 'terrain'|'satallite';
+type MapView = 'terrain' | 'satallite'
 
 interface MainState {
+  loading: boolean
   flightlog?: FlightLog
   view: MapView
   modals: {
@@ -17,6 +18,7 @@ interface MainState {
 }
 
 const initialState: MainState = {
+  loading: false,
   flightlog: undefined,
   view: 'terrain',
   modals: {
@@ -30,12 +32,12 @@ const initialState: MainState = {
 }
 
 interface ShowModalPayload {
-  modal: 'flightlogInfo'|'settings'
+  modal: 'flightlogInfo' | 'settings'
   show: boolean
 }
 
 interface ShowMapLayerPayload {
-  layer: 'pathLayer'|'heatMapLayer'
+  layer: 'pathLayer' | 'heatMapLayer'
   show: boolean
 }
 
@@ -43,10 +45,13 @@ export const mainSlice = createSlice({
   name: 'main',
   initialState,
   reducers: {
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload
+    },
     setFlightlog: (state, action: PayloadAction<FlightLog>) => {
       state.flightlog = action.payload
     },
-    clearFlightlog: state => {
+    clearFlightlog: (state) => {
       state.flightlog = undefined
     },
     setView: (state, action: PayloadAction<MapView>) => {
@@ -61,6 +66,13 @@ export const mainSlice = createSlice({
   }
 })
 
-export const { setFlightlog, clearFlightlog, setView, showModal, showMapLayer } = mainSlice.actions
+export const {
+  setLoading,
+  setFlightlog,
+  clearFlightlog,
+  setView,
+  showModal,
+  showMapLayer
+} = mainSlice.actions
 
 export default mainSlice.reducer
