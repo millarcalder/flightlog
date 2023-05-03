@@ -33,17 +33,17 @@ class FlightLog:
 
 def parse_igc_bytes(igc: bytes) -> FlightLog:
     try:
-        igc_str = igc.decode('utf-8')
+        igc_str = igc.decode("utf-8")
     except Exception as exc:
-        raise InvalidIgcFile('Invalid encoding') from exc
+        raise InvalidIgcFile("Invalid encoding") from exc
     return parse_igc_str(igc_str)
 
 
 def parse_igc_str(igc: str) -> FlightLog:
-    position_lines = [line for line in igc.splitlines() if line.startswith('B')]
+    position_lines = [line for line in igc.splitlines() if line.startswith("B")]
 
     if len(position_lines) < 3:
-        raise InvalidIgcFile('An IGC file must have more than two position logs')
+        raise InvalidIgcFile("An IGC file must have more than two position logs")
 
     position_logs = []
     dist_travelled_meters = 0
@@ -56,23 +56,23 @@ def parse_igc_str(igc: str) -> FlightLog:
 
         if i > 0:
             dist_travelled_meters += haversine(
-                position_logs[i-1]['latitude'],
-                position_logs[i-1]['longitude'],
-                position['latitude'],
-                position['longitude']
+                position_logs[i - 1]["latitude"],
+                position_logs[i - 1]["longitude"],
+                position["latitude"],
+                position["longitude"],
             )
 
-        if max_altitude is None or position['altitude'] > max_altitude:
-            max_altitude = position['altitude']
+        if max_altitude is None or position["altitude"] > max_altitude:
+            max_altitude = position["altitude"]
 
-        if min_altitude is None or position['altitude'] < min_altitude:
-            min_altitude = position['altitude']
+        if min_altitude is None or position["altitude"] < min_altitude:
+            min_altitude = position["altitude"]
 
     return FlightLog(
         position_logs=position_logs,
-        dist_travelled_meters = dist_travelled_meters,
+        dist_travelled_meters=dist_travelled_meters,
         max_altitude=max_altitude,
-        min_altitude=min_altitude
+        min_altitude=min_altitude,
     )
 
 
@@ -83,19 +83,23 @@ def _parse_position_log(line: str) -> Position:
         lngpart = line[15:24]
         altpart = line[24:35]
 
-        dt = datetime.strptime(timepart, '%H%M%S')
-        latitude = round(float(latpart[0:2]) + (float(latpart[2:4] + '.' + latpart[4:7]) / 60), 7)
-        longitude = round(float(lngpart[0:3]) + (float(lngpart[3:5] + '.' + lngpart[5:8]) / 60), 7)
-        if latpart[-1] == 'S':
+        dt = datetime.strptime(timepart, "%H%M%S")
+        latitude = round(
+            float(latpart[0:2]) + (float(latpart[2:4] + "." + latpart[4:7]) / 60), 7
+        )
+        longitude = round(
+            float(lngpart[0:3]) + (float(lngpart[3:5] + "." + lngpart[5:8]) / 60), 7
+        )
+        if latpart[-1] == "S":
             latitude *= -1
-        if lngpart[-1] == 'W':
+        if lngpart[-1] == "W":
             longitude *= -1
-        
+
         return Position(
             log_time=dt.time(),
             latitude=latitude,
             longitude=longitude,
-            altitude=int(altpart[6:11])
+            altitude=int(altpart[6:11]),
         )
     except Exception as exc:
         raise InvalidTrackPointLine() from exc

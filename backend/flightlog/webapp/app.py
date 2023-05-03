@@ -33,23 +33,23 @@ app.add_middleware(
 
 def _s3_client():
     return boto3.resource(
-        's3',
+        "s3",
         endpoint_url=settings.s3_endpoint_url,
         aws_access_key_id=settings.aws_access_key_id,
-        aws_secret_access_key=settings.aws_secret_access_key
+        aws_secret_access_key=settings.aws_secret_access_key,
     )
 
 
-@app.post('/extract-flight-log/file')
+@app.post("/extract-flight-log/file")
 def extract_points_from_igc(igc: bytes = File()):
     return parse_igc_bytes(igc)
 
 
-@app.get('/extract-flight-log/s3/{key}')
-def extract_flight_log_s3(key: str, s3_client = Depends(_s3_client)):
-    return extract_flight_log_from_s3(s3_client, 'flightlog-igc-files', key)
+@app.get("/extract-flight-log/s3/{key}")
+def extract_flight_log_s3(key: str, s3_client=Depends(_s3_client)):
+    return extract_flight_log_from_s3(s3_client, "flightlog-igc-files", key)
 
 
-@app.post('/upload-igc/s3/{key}')
-def upload_igc_s3(key: str, igc: bytes = File(), s3_client = Depends(_s3_client)):
-    upload_igc_to_s3(s3_client, 'flightlog-igc-files', key, igc)
+@app.post("/upload-igc/s3/{key}")
+def upload_igc_s3(key: str, igc: bytes = File(), s3_client=Depends(_s3_client)):
+    upload_igc_to_s3(s3_client, "flightlog-igc-files", key, igc)
