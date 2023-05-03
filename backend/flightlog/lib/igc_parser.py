@@ -1,78 +1,101 @@
-from flightlog.lib.latlng import haversine
+from dataclasses import dataclass
 from datetime import datetime
+from datetime import time
 from typing import TypedDict
 
-
-class InvalidIgcFile(Exception):
-    ...
-
-
-class InvalidTrackPointLine(Exception):
-    ...
+from flightlog.lib.exceptions import InvalidIgcFile
+from flightlog.lib.exceptions import InvalidTrackPointLine
+from flightlog.lib.latlng import haversine
 
 
 class Position(TypedDict):
-    date_time: datetime
+    log_time: time
     latitude: float
     longitude: float
     altitude: int
 
 
+@dataclass
 class FlightLog:
     position_logs: list[Position]
-    start: Position
-    finish: Position
     dist_travelled_meters: float
     min_altitude: int
     max_altitude: int
 
-    def __init__(self, igc: str):
-        self.position_logs = []
-        self.start = None
-        self.stop = None
-        self.dist_travelled_meters = 0
-        self.min_altitude = None
-        self.max_altitude = None
+    @property
+    def start(self) -> Position:
+        return self.position_logs[0]
 
-        self._parse_igc(igc)
-        if len(self.position_logs) < 2:
-            raise InvalidIgcFile('An IGC file must have more than two position logs!')
+    @property
+    def finish(self) -> Position:
+        return self.position_logs
 
-    def _parse_igc(self, igc: str):
-        i = 0
-        for line in igc.splitlines():
-            # Position Log
-            if line.startswith('B'):
-                position = self._parse_position_log(line)
-                self.position_logs.append(position)
-                if i > 0: self.dist_travelled_meters += haversine(self.position_logs[i-1]['latitude'], self.position_logs[i-1]['longitude'], position['latitude'], position['longitude'])
-                i += 1
-                if self.max_altitude is None or position['altitude'] > self.max_altitude: self.max_altitude = position['altitude']
-                if self.min_altitude is None or position['altitude'] < self.min_altitude: self.min_altitude = position['altitude']
 
-        self.start = self.position_logs[0]
-        self.finish = self.position_logs[-1]
+def parse_igc_bytes(igc: bytes) -> FlightLog:
+    try:
+        igc_str = igc.decode('utf-8')
+    except Exception as exc:
+        raise InvalidIgcFile('Invalid encoding') from exc
+    return parse_igc_str(igc_str)
 
-    def _parse_position_log(self, line: str) -> Position:
-        try:
-            timepart = line[1:7]
-            latpart = line[7:15]
-            lngpart = line[15:24]
-            altpart = line[24:35]
 
-            dt = datetime.strptime(timepart, '%H%M%S')
-            latitude = round(float(latpart[0:2]) + (float(latpart[2:4] + '.' + latpart[4:7]) / 60), 7)
-            longitude = round(float(lngpart[0:3]) + (float(lngpart[3:5] + '.' + lngpart[5:8]) / 60), 7)
-            if latpart[-1] == 'S':
-                latitude *= -1
-            if lngpart[-1] == 'W':
-                longitude *= -1
-            
-            return Position(
-                date_time=dt,
-                latitude=latitude,
-                longitude=longitude,
-                altitude=int(altpart[6:11])
+def parse_igc_str(igc: str) -> FlightLog:
+    position_lines = [line for line in igc.splitlines() if line.startswith('B')]
+
+    if len(position_lines) < 3:
+        raise InvalidIgcFile('An IGC file must have more than two position logs')
+
+    position_logs = []
+    dist_travelled_meters = 0
+    max_altitude = None
+    min_altitude = None
+
+    for i, line in enumerate(position_lines):
+        position = _parse_position_log(line)
+        position_logs.append(position)
+
+        if i > 0:
+            dist_travelled_meters += haversine(
+                position_logs[i-1]['latitude'],
+                position_logs[i-1]['longitude'],
+                position['latitude'],
+                position['longitude']
             )
-        except Exception:
-            raise InvalidTrackPointLine()
+
+        if max_altitude is None or position['altitude'] > max_altitude:
+            max_altitude = position['altitude']
+
+        if min_altitude is None or position['altitude'] < min_altitude:
+            min_altitude = position['altitude']
+
+    return FlightLog(
+        position_logs=position_logs,
+        dist_travelled_meters = dist_travelled_meters,
+        max_altitude=max_altitude,
+        min_altitude=min_altitude
+    )
+
+
+def _parse_position_log(line: str) -> Position:
+    try:
+        timepart = line[1:7]
+        latpart = line[7:15]
+        lngpart = line[15:24]
+        altpart = line[24:35]
+
+        dt = datetime.strptime(timepart, '%H%M%S')
+        latitude = round(float(latpart[0:2]) + (float(latpart[2:4] + '.' + latpart[4:7]) / 60), 7)
+        longitude = round(float(lngpart[0:3]) + (float(lngpart[3:5] + '.' + lngpart[5:8]) / 60), 7)
+        if latpart[-1] == 'S':
+            latitude *= -1
+        if lngpart[-1] == 'W':
+            longitude *= -1
+        
+        return Position(
+            log_time=dt.time(),
+            latitude=latitude,
+            longitude=longitude,
+            altitude=int(altpart[6:11])
+        )
+    except Exception as exc:
+        raise InvalidTrackPointLine() from exc

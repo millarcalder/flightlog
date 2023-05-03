@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  s3:
+    image: "minio/minio:latest"
+    entrypoint: ["minio", "server", "/data", "--console-address", ":9001"]
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: "root"
+      MINIO_ROOT_PASSWORD: "1234qwer"
+
+  init_minio_data:
+    image: minio/mc
+    depends_on:
+      - s3
+    volumes:
+      - type: bind
+        source: ./backend/flightlog/tests/data
+        target: /data
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set flightlog_minio http://s3:9000 root 1234qwer;
+      /usr/bin/mc mb flightlog_minio/flightlog-igc-files;
+      /usr/bin/mc cp /data/220415234416.igc flightlog_minio/flightlog-igc-files/testing;
+      exit 0;
+      "

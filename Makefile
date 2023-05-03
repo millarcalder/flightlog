@@ -9,7 +9,8 @@ developer-setup-backend:
 	python3 -m venv .virtualenv; \
 	source .virtualenv/bin/activate; \
 	pip install -r requirements.txt; \
-	pip install -r requirements-dev.txt
+	pip install -r requirements-dev.txt; \
+	pip install -e .
 
 developer-setup-frontend:
 	@cd frontend; \
@@ -47,6 +48,9 @@ build-frontend-docker-image-rp4:
 
 run-webapp-backend:
 	@cd backend; \
+	export s3_endpoint_url="http://localhost:9000/"; \
+	export aws_access_key_id="root"; \
+	export aws_secret_access_key="1234qwer"; \
 	source .virtualenv/bin/activate; \
 	uvicorn flightlog.webapp.app:app --port 5000 --reload
 
