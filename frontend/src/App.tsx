@@ -219,7 +219,7 @@ const ComponentSelector = (props: PropsWithChildren<any>) => {
   )
 }
 
-const App = () => {
+const Modals = () => {
   const dispatch = useAppDispatch()
   const flightlog = useAppSelector((state) => state.main.flightlog)
   const showFlightlogInfoModal = useAppSelector(
@@ -233,37 +233,8 @@ const App = () => {
   )
   const showShareModal = useAppSelector((state) => state.main.modals.share)
 
-  const { s3Object } = useParams()
-
-  useEffect(() => {
-    if (s3Object !== undefined) {
-      dispatch(setLoading(true))
-      fetch(
-        `${process.env.REACT_APP_FLIGHTLOG_API_URL}extract-flight-log/s3/${s3Object}`
-      )
-        .then((resp) => resp.json())
-        .then((result) => {
-          dispatch(setFlightlog(result))
-          dispatch(clearFlightlogFormData())
-        })
-        .catch((err) => {
-          dispatch(clearFlightlog())
-          dispatch(clearFlightlogFormData())
-        })
-        .finally(() => {
-          dispatch(setLoading(false))
-        })
-    }
-  }, [s3Object])
-
   return (
-    <div className="App">
-      <div>
-        <ComponentSelector>
-          <AppOverlay />
-        </ComponentSelector>
-      </div>
-
+    <>
       {showFlightlogInfoModal && flightlog !== undefined ? (
         <FlightLogInfoModal
           show={true}
@@ -297,6 +268,43 @@ const App = () => {
           }}
         />
       ) : null}
+    </>
+  )
+}
+
+const App = () => {
+  const dispatch = useAppDispatch()
+  const { s3Object } = useParams()
+
+  useEffect(() => {
+    if (s3Object !== undefined) {
+      dispatch(setLoading(true))
+      fetch(
+        `${process.env.REACT_APP_FLIGHTLOG_API_URL}extract-flight-log/s3/${s3Object}`
+      )
+        .then((resp) => resp.json())
+        .then((result) => {
+          dispatch(setFlightlog(result))
+          dispatch(clearFlightlogFormData())
+        })
+        .catch((err) => {
+          dispatch(clearFlightlog())
+          dispatch(clearFlightlogFormData())
+        })
+        .finally(() => {
+          dispatch(setLoading(false))
+        })
+    }
+  }, [s3Object])
+
+  return (
+    <div className="App">
+      <div>
+        <ComponentSelector>
+          <AppOverlay />
+        </ComponentSelector>
+      </div>
+      <Modals />
     </div>
   )
 }
