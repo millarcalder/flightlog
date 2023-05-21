@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect, useMemo } from 'react'
+import React, { PropsWithChildren, useEffect, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Form from 'react-bootstrap/Form'
 import Spinner from 'react-bootstrap/Spinner'
@@ -6,16 +6,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCircleInfo,
   faRepeat,
-  faCog
+  faCog,
+  faUpload,
+  faShare
 } from '@fortawesome/free-solid-svg-icons'
 import AltitudeGraph from './components/graphs/AltitudeGraph'
 import FlightPath3DMap from './components/maps/FlightPath3DMap'
 import HeatMap from './components/maps/HeatMap'
 import FlightLogInfoModal from './modals/FlightLogInfoModal'
 import SettingsModal from './modals/SettingsModal'
+import UploadIgcFileModal, { ShareModal } from './modals/UploadIgcFileModal'
 import { useAppSelector, useAppDispatch } from './store/hooks'
 import {
   setLoading,
+  setFlightlogFormData,
+  clearFlightlogFormData,
   setFlightlog,
   clearFlightlog,
   setView,
@@ -48,12 +53,19 @@ const AppOverlay = () => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const flightlog = useAppSelector((state) => state.main.flightlog)
+  const flightlogFormData = useAppSelector(
+    (state) => state.main.flightlogFormData
+  )
   const view = useAppSelector((state) => state.main.view)
 
-  const handleSubmit = (e: any) => {
-    dispatch(setLoading(false))
+  const handleSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return
+    dispatch(setLoading(true))
+
+    let file = e.target.files[0]
     let formdata = new FormData()
-    formdata.append('igc', e.target.files[0])
+    formdata.append('igc', file)
+
     fetch(`${process.env.REACT_APP_FLIGHTLOG_API_URL}extract-flight-log/file`, {
       method: 'POST',
       body: formdata
@@ -61,10 +73,12 @@ const AppOverlay = () => {
       .then((resp) => resp.json())
       .then((result) => {
         dispatch(setFlightlog(result))
+        dispatch(setFlightlogFormData(formdata))
         navigate('/')
       })
       .catch((err) => {
         dispatch(clearFlightlog())
+        dispatch(clearFlightlogFormData())
         navigate('/')
       })
       .finally(() => {
@@ -99,6 +113,33 @@ const AppOverlay = () => {
             }}
           />
           <div>
+            {flightlogFormData ? (
+              <FontAwesomeIcon
+                icon={faUpload}
+                size="3x"
+                inverse
+                className="icon-button"
+                style={{
+                  margin: 10
+                }}
+                onClick={() => {
+                  dispatch(showModal({ modal: 'uploadIgcFile', show: true }))
+                }}
+              />
+            ) : flightlog ? (
+              <FontAwesomeIcon
+                icon={faShare}
+                size="3x"
+                inverse
+                className="icon-button"
+                style={{
+                  margin: 10
+                }}
+                onClick={() => {
+                  dispatch(showModal({ modal: 'share', show: true }))
+                }}
+              />
+            ) : null}
             <FontAwesomeIcon
               icon={faRepeat}
               size="3x"
@@ -187,6 +228,10 @@ const App = () => {
   const showSettingsModal = useAppSelector(
     (state) => state.main.modals.settings
   )
+  const showUploadIgcFileModal = useAppSelector(
+    (state) => state.main.modals.uploadIgcFile
+  )
+  const showShareModal = useAppSelector((state) => state.main.modals.share)
 
   const { s3Object } = useParams()
 
@@ -199,9 +244,11 @@ const App = () => {
         .then((resp) => resp.json())
         .then((result) => {
           dispatch(setFlightlog(result))
+          dispatch(clearFlightlogFormData())
         })
         .catch((err) => {
           dispatch(clearFlightlog())
+          dispatch(clearFlightlogFormData())
         })
         .finally(() => {
           dispatch(setLoading(false))
@@ -231,6 +278,22 @@ const App = () => {
           show={true}
           handleClose={() => {
             dispatch(showModal({ modal: 'settings', show: false }))
+          }}
+        />
+      ) : null}
+      {showUploadIgcFileModal ? (
+        <UploadIgcFileModal
+          show={true}
+          handleClose={() => {
+            dispatch(showModal({ modal: 'uploadIgcFile', show: false }))
+          }}
+        />
+      ) : null}
+      {showShareModal ? (
+        <ShareModal
+          show={true}
+          handleClose={() => {
+            dispatch(showModal({ modal: 'share', show: false }))
           }}
         />
       ) : null}

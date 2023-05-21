@@ -56,7 +56,7 @@ interface generatePathLayerProps {
 
 export const generatePathLayer = ({
   pathData,
-  width = 10,
+  width = 4,
   visible = true
 }: generatePathLayerProps): MultiColorPathLayer => {
   return new MultiColorPathLayer({

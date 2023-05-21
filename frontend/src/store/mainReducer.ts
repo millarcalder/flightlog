@@ -6,10 +6,15 @@ type MapView = 'terrain' | 'satallite'
 interface MainState {
   loading: boolean
   flightlog?: FlightLog
+
+  // TODO: redux doesn't like storing this, need to use something serializable
+  flightlogFormData?: FormData
   view: MapView
   modals: {
     flightlogInfo: boolean
     settings: boolean
+    uploadIgcFile: boolean
+    share: boolean
   }
   mapLayers: {
     pathLayer: boolean
@@ -19,11 +24,12 @@ interface MainState {
 
 const initialState: MainState = {
   loading: false,
-  flightlog: undefined,
   view: 'terrain',
   modals: {
     flightlogInfo: false,
-    settings: false
+    settings: false,
+    uploadIgcFile: false,
+    share: false
   },
   mapLayers: {
     pathLayer: true,
@@ -32,7 +38,7 @@ const initialState: MainState = {
 }
 
 interface ShowModalPayload {
-  modal: 'flightlogInfo' | 'settings'
+  modal: 'flightlogInfo' | 'settings' | 'uploadIgcFile' | 'share'
   show: boolean
 }
 
@@ -47,6 +53,12 @@ export const mainSlice = createSlice({
   reducers: {
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload
+    },
+    setFlightlogFormData: (state, action: PayloadAction<FormData>) => {
+      state.flightlogFormData = action.payload
+    },
+    clearFlightlogFormData: (state) => {
+      state.flightlogFormData = undefined
     },
     setFlightlog: (state, action: PayloadAction<FlightLog>) => {
       state.flightlog = action.payload
@@ -68,6 +80,8 @@ export const mainSlice = createSlice({
 
 export const {
   setLoading,
+  setFlightlogFormData,
+  clearFlightlogFormData,
   setFlightlog,
   clearFlightlog,
   setView,
