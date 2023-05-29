@@ -75,9 +75,7 @@ type FormValues = {
 
 const UploadIgcFileModal = (props: StandardModalProps) => {
   const navigate = useNavigate()
-  const flightlogFormData = useAppSelector(
-    (state) => state.main.flightlogFormData
-  )
+  const flightlogFile = useAppSelector((state) => state.main.flightlogFile)
   const validationSchema = yup.object({
     s3ObjectName: yup
       .string()
@@ -96,11 +94,15 @@ const UploadIgcFileModal = (props: StandardModalProps) => {
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     return new Promise((resolve) => {
+      const encoder = new TextEncoder()
+      const formdata = new FormData()
+      const blob = new Blob([encoder.encode(flightlogFile)])
+      formdata.append('igc', blob)
       fetch(
         `${process.env.REACT_APP_FLIGHTLOG_API_URL}upload-igc/s3/${data.s3ObjectName}`,
         {
           method: 'POST',
-          body: flightlogFormData
+          body: formdata
         }
       )
         .then((res) => {
@@ -134,7 +136,7 @@ const UploadIgcFileModal = (props: StandardModalProps) => {
         <FontAwesomeIcon icon={faSpinner} size="3x" spin />
       ) : isSubmitSuccessful ? (
         <CopyUrlWithSuccessSplash />
-      ) : flightlogFormData ? (
+      ) : flightlogFile ? (
         <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%' }}>
           <InputGroup style={{ padding: 10 }}>
             <Form.Control

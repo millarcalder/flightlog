@@ -2,20 +2,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { FlightLog } from '../types'
 
 type MapView = 'terrain' | 'satallite'
+type Modal = 'flightlogInfo' | 'settings' | 'uploadIgcFile' | 'share'
 
 interface MainState {
   loading: boolean
   flightlog?: FlightLog
-
-  // TODO: redux doesn't like storing this, need to use something serializable
-  flightlogFormData?: FormData
+  flightlogFile?: string
   view: MapView
-  modals: {
-    flightlogInfo: boolean
-    settings: boolean
-    uploadIgcFile: boolean
-    share: boolean
-  }
+  modal?: Modal
   mapLayers: {
     pathLayer: boolean
     heatMapLayer: boolean
@@ -25,26 +19,20 @@ interface MainState {
 const initialState: MainState = {
   loading: false,
   view: 'terrain',
-  modals: {
-    flightlogInfo: false,
-    settings: false,
-    uploadIgcFile: false,
-    share: false
-  },
   mapLayers: {
     pathLayer: true,
     heatMapLayer: true
   }
 }
 
-interface ShowModalPayload {
-  modal: 'flightlogInfo' | 'settings' | 'uploadIgcFile' | 'share'
-  show: boolean
-}
-
 interface ShowMapLayerPayload {
   layer: 'pathLayer' | 'heatMapLayer'
   show: boolean
+}
+
+interface SetFlightlogPayload {
+  flightlog: FlightLog
+  flightlogFile?: string
 }
 
 export const mainSlice = createSlice({
@@ -54,23 +42,22 @@ export const mainSlice = createSlice({
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload
     },
-    setFlightlogFormData: (state, action: PayloadAction<FormData>) => {
-      state.flightlogFormData = action.payload
-    },
-    clearFlightlogFormData: (state) => {
-      state.flightlogFormData = undefined
-    },
-    setFlightlog: (state, action: PayloadAction<FlightLog>) => {
-      state.flightlog = action.payload
+    setFlightlog: (state, action: PayloadAction<SetFlightlogPayload>) => {
+      state.flightlog = action.payload.flightlog
+      state.flightlogFile = action.payload.flightlogFile
     },
     clearFlightlog: (state) => {
       state.flightlog = undefined
+      state.flightlogFile = undefined
     },
     setView: (state, action: PayloadAction<MapView>) => {
       state.view = action.payload
     },
-    showModal: (state, action: PayloadAction<ShowModalPayload>) => {
-      state.modals[action.payload.modal] = action.payload.show
+    showModal: (state, action: PayloadAction<Modal>) => {
+      state.modal = action.payload
+    },
+    clearModal: (state) => {
+      state.modal = undefined
     },
     showMapLayer: (state, action: PayloadAction<ShowMapLayerPayload>) => {
       state.mapLayers[action.payload.layer] = action.payload.show
@@ -80,12 +67,11 @@ export const mainSlice = createSlice({
 
 export const {
   setLoading,
-  setFlightlogFormData,
-  clearFlightlogFormData,
   setFlightlog,
   clearFlightlog,
   setView,
   showModal,
+  clearModal,
   showMapLayer
 } = mainSlice.actions
 

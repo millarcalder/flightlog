@@ -19,12 +19,11 @@ import UploadIgcFileModal, { ShareModal } from './modals/UploadIgcFileModal'
 import { useAppSelector, useAppDispatch } from './store/hooks'
 import {
   setLoading,
-  setFlightlogFormData,
-  clearFlightlogFormData,
   setFlightlog,
   clearFlightlog,
   setView,
-  showModal
+  showModal,
+  clearModal
 } from './store/mainReducer'
 
 window.addEventListener('contextmenu', (e) => e.preventDefault())
@@ -53,9 +52,7 @@ const AppOverlay = () => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const flightlog = useAppSelector((state) => state.main.flightlog)
-  const flightlogFormData = useAppSelector(
-    (state) => state.main.flightlogFormData
-  )
+  const flightlogFile = useAppSelector((state) => state.main.flightlogFile)
   const view = useAppSelector((state) => state.main.view)
 
   const handleSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,13 +69,18 @@ const AppOverlay = () => {
     })
       .then((resp) => resp.json())
       .then((result) => {
-        dispatch(setFlightlog(result))
-        dispatch(setFlightlogFormData(formdata))
-        navigate('/')
+        file.text().then((str) => {
+          dispatch(
+            setFlightlog({
+              flightlog: result,
+              flightlogFile: str
+            })
+          )
+          navigate('/')
+        })
       })
       .catch((err) => {
         dispatch(clearFlightlog())
-        dispatch(clearFlightlogFormData())
         navigate('/')
       })
       .finally(() => {
@@ -113,7 +115,7 @@ const AppOverlay = () => {
             }}
           />
           <div>
-            {flightlogFormData ? (
+            {flightlogFile ? (
               <FontAwesomeIcon
                 icon={faUpload}
                 size="3x"
@@ -123,7 +125,7 @@ const AppOverlay = () => {
                   margin: 10
                 }}
                 onClick={() => {
-                  dispatch(showModal({ modal: 'uploadIgcFile', show: true }))
+                  dispatch(showModal('uploadIgcFile'))
                 }}
               />
             ) : flightlog ? (
@@ -136,7 +138,7 @@ const AppOverlay = () => {
                   margin: 10
                 }}
                 onClick={() => {
-                  dispatch(showModal({ modal: 'share', show: true }))
+                  dispatch(showModal('share'))
                 }}
               />
             ) : null}
@@ -161,7 +163,7 @@ const AppOverlay = () => {
                 margin: 10
               }}
               onClick={() => {
-                dispatch(showModal({ modal: 'settings', show: true }))
+                dispatch(showModal('settings'))
               }}
             />
             <FontAwesomeIcon
@@ -173,7 +175,7 @@ const AppOverlay = () => {
                 margin: 10
               }}
               onClick={() => {
-                dispatch(showModal({ modal: 'flightlogInfo', show: true }))
+                dispatch(showModal('flightlogInfo'))
               }}
             />
           </div>
@@ -222,52 +224,27 @@ const ComponentSelector = (props: PropsWithChildren<any>) => {
 const Modals = () => {
   const dispatch = useAppDispatch()
   const flightlog = useAppSelector((state) => state.main.flightlog)
-  const showFlightlogInfoModal = useAppSelector(
-    (state) => state.main.modals.flightlogInfo
-  )
-  const showSettingsModal = useAppSelector(
-    (state) => state.main.modals.settings
-  )
-  const showUploadIgcFileModal = useAppSelector(
-    (state) => state.main.modals.uploadIgcFile
-  )
-  const showShareModal = useAppSelector((state) => state.main.modals.share)
+  const modal = useAppSelector((state) => state.main.modal)
+
+  const handleClose = () => {
+    dispatch(clearModal())
+  }
 
   return (
     <>
-      {showFlightlogInfoModal && flightlog !== undefined ? (
+      {flightlog !== undefined ? (
         <FlightLogInfoModal
-          show={true}
-          handleClose={() => {
-            dispatch(showModal({ modal: 'flightlogInfo', show: false }))
-          }}
-          flightlog={flightlog!}
+          show={modal == 'flightlogInfo' && flightlog !== undefined}
+          handleClose={handleClose}
+          flightlog={flightlog}
         />
       ) : null}
-      {showSettingsModal ? (
-        <SettingsModal
-          show={true}
-          handleClose={() => {
-            dispatch(showModal({ modal: 'settings', show: false }))
-          }}
-        />
-      ) : null}
-      {showUploadIgcFileModal ? (
-        <UploadIgcFileModal
-          show={true}
-          handleClose={() => {
-            dispatch(showModal({ modal: 'uploadIgcFile', show: false }))
-          }}
-        />
-      ) : null}
-      {showShareModal ? (
-        <ShareModal
-          show={true}
-          handleClose={() => {
-            dispatch(showModal({ modal: 'share', show: false }))
-          }}
-        />
-      ) : null}
+      <SettingsModal show={modal == 'settings'} handleClose={handleClose} />
+      <UploadIgcFileModal
+        show={modal == 'uploadIgcFile'}
+        handleClose={handleClose}
+      />
+      <ShareModal show={modal == 'share'} handleClose={handleClose} />
     </>
   )
 }
@@ -277,6 +254,9 @@ const App = () => {
   const { s3Object } = useParams()
 
   useEffect(() => {
+    /**
+     * When the S3 object URL parameter changes reload the flightlog
+     */
     if (s3Object !== undefined) {
       dispatch(setLoading(true))
       fetch(
@@ -284,16 +264,21 @@ const App = () => {
       )
         .then((resp) => resp.json())
         .then((result) => {
-          dispatch(setFlightlog(result))
-          dispatch(clearFlightlogFormData())
+          dispatch(
+            setFlightlog({
+              flightlog: result
+            })
+          )
         })
         .catch((err) => {
           dispatch(clearFlightlog())
-          dispatch(clearFlightlogFormData())
         })
         .finally(() => {
           dispatch(setLoading(false))
         })
+    } else {
+      // If there is no S3 object then clear the flightlog
+      dispatch(clearFlightlog())
     }
   }, [s3Object])
 
