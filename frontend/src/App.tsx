@@ -193,11 +193,12 @@ const ComponentSelector = (props: PropsWithChildren<any>) => {
   const flightlog = useAppSelector((state) => state.main.flightlog)
   const view = useAppSelector((state) => state.main.view)
   const showPathLayer = useAppSelector(
-    (state) => state.main.mapLayers.pathLayer
+    (state) => state.main.settings.layers.path
   )
   const showHeatMapLayer = useAppSelector(
-    (state) => state.main.mapLayers.heatMapLayer
+    (state) => state.main.settings.layers.heatMap
   )
+  const pathWidth = useAppSelector((state) => state.main.settings.pathWidth)
 
   const positionLogs = useMemo(
     () => (flightlog ? flightlog.position_logs : []),
@@ -205,7 +206,7 @@ const ComponentSelector = (props: PropsWithChildren<any>) => {
   )
 
   return view === 'terrain' ? (
-    <FlightPath3DMap positionLogs={positionLogs} showPathLayer={showPathLayer}>
+    <FlightPath3DMap positionLogs={positionLogs} showPathLayer={showPathLayer} pathWidth={pathWidth}>
       {props.children}
     </FlightPath3DMap>
   ) : view === 'satallite' ? (

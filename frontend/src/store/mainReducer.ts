@@ -10,23 +10,29 @@ interface MainState {
   flightlogFile?: string
   view: MapView
   modal?: Modal
-  mapLayers: {
-    pathLayer: boolean
-    heatMapLayer: boolean
+  settings: {
+    layers: {
+      path: boolean
+      heatMap: boolean
+    }
+    pathWidth: number
   }
 }
 
 const initialState: MainState = {
   loading: false,
   view: 'terrain',
-  mapLayers: {
-    pathLayer: true,
-    heatMapLayer: true
+  settings: {
+    layers: {
+      path: true,
+      heatMap: true
+    },
+    pathWidth: 10
   }
 }
 
 interface ShowMapLayerPayload {
-  layer: 'pathLayer' | 'heatMapLayer'
+  layer: 'path' | 'heatMap'
   show: boolean
 }
 
@@ -60,7 +66,10 @@ export const mainSlice = createSlice({
       state.modal = undefined
     },
     showMapLayer: (state, action: PayloadAction<ShowMapLayerPayload>) => {
-      state.mapLayers[action.payload.layer] = action.payload.show
+      state.settings.layers[action.payload.layer] = action.payload.show
+    },
+    setPathWidth: (state, action: PayloadAction<number>) => {
+      state.settings.pathWidth = action.payload
     }
   }
 })
@@ -72,7 +81,8 @@ export const {
   setView,
   showModal,
   clearModal,
-  showMapLayer
+  showMapLayer,
+  setPathWidth
 } = mainSlice.actions
 
 export default mainSlice.reducer
