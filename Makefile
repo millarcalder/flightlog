@@ -20,6 +20,11 @@ format-frontend-code:
 	@cd frontend; \
 	npx prettier --write .
 
+format-backend-code:
+	@cd backend; \
+	python3 -m venv .virtualenv; \
+	black flightlog
+
 build-backend-dist:
 	@cd backend; \
 	source .virtualenv/bin/activate; \
@@ -48,11 +53,8 @@ build-frontend-docker-image-rp4:
 
 run-webapp-backend:
 	@cd backend; \
-	export s3_endpoint_url="http://localhost:9000/"; \
-	export aws_access_key_id="root"; \
-	export aws_secret_access_key="1234qwer"; \
 	source .virtualenv/bin/activate; \
-	uvicorn flightlog.webapp.app:app --port 5000 --reload
+	flightlog local run-webapp --reload
 
 run-webapp-frontend:
 	@cd frontend; \

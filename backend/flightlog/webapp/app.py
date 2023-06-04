@@ -1,18 +1,14 @@
 import boto3
+
 from fastapi import Depends
 from fastapi import FastAPI
 from fastapi import File
 from fastapi.middleware.cors import CORSMiddleware
+
+from flightlog.config import Settings
 from flightlog.lib.igc_parser import parse_igc_bytes
 from flightlog.lib.s3_helpers import extract_flight_log_from_s3
 from flightlog.lib.s3_helpers import upload_igc_to_s3
-from pydantic import BaseSettings
-
-
-class Settings(BaseSettings):
-    s3_endpoint_url: str = None
-    aws_access_key_id: str = None
-    aws_secret_access_key: str = None
 
 
 settings = Settings()
@@ -47,9 +43,9 @@ def extract_points_from_igc(igc: bytes = File()):
 
 @app.get("/extract-flight-log/s3/{key}")
 def extract_flight_log_s3(key: str, s3_client=Depends(_s3_client)):
-    return extract_flight_log_from_s3(s3_client, "flightlog-igc-files", key)
+    return extract_flight_log_from_s3(s3_client, key)
 
 
 @app.post("/upload-igc/s3/{key}")
 def upload_igc_s3(key: str, igc: bytes = File(), s3_client=Depends(_s3_client)):
-    upload_igc_to_s3(s3_client, "flightlog-igc-files", key, igc)
+    upload_igc_to_s3(s3_client, key, igc)
