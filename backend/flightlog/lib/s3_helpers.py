@@ -1,9 +1,18 @@
 import re
 from flightlog.lib.exceptions import InvalidFlightLogName
 from flightlog.lib.exceptions import IgcFileNotFound
+from flightlog.lib.exceptions import IgcFileTooLarge
 from flightlog.lib.exceptions import FlightLogNameAlreadyTaken
 from flightlog.lib.igc_parser import FlightLog
 from flightlog.lib.igc_parser import parse_igc_bytes
+
+
+def _valid_key(key: str) -> bool:
+    return re.fullmatch("^[a-zA-Z\_]{5,}$", key)
+
+
+def _valid_size_bytes(size_bytes: int, object_size_limit_bytes: int) -> bool:
+    return size_bytes <= object_size_limit_bytes
 
 
 def extract_flight_log_from_s3(
@@ -18,13 +27,21 @@ def extract_flight_log_from_s3(
 
 
 def upload_igc_to_s3(
-    s3_resource, key: str, igc: bytes, bucket: str = "flightlog-igc-files"
+    s3_resource,
+    key: str,
+    igc: bytes,
+    bucket: str = "flightlog-igc-files",
+    object_size_limit_bytes: int = 10000000,
 ):
     obj = s3_resource.Object(bucket, key)
 
     # Validate the key
-    if not re.fullmatch("^[a-zA-Z\_]{5,}$", key):
+    if not _valid_key(key):
         raise InvalidFlightLogName(key)
+
+    # Check the file isn't too large
+    if not _valid_size_bytes(len(igc), object_size_limit_bytes):
+        raise IgcFileTooLarge(len(igc))
 
     # Ensure the key doesn't already exist so people can't overwrite each others flights
     try:
@@ -45,9 +62,11 @@ def find_objects_to_delete(
     objects_to_keep = []
     objects_to_delete = []
 
-    # Find objects that are too large
+    # Check individual object constraints
     for obj in s3_resource.Bucket(bucket).objects.all():
-        if obj.size > object_size_limit_bytes:
+        if not _valid_key(obj.key) or not _valid_size_bytes(
+            obj.size, object_size_limit_bytes
+        ):
             objects_to_delete.append(obj)
         else:
             objects_to_keep.append(obj)
