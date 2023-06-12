@@ -9,7 +9,8 @@ developer-setup-backend:
 	python3 -m venv .virtualenv; \
 	source .virtualenv/bin/activate; \
 	pip install -r requirements.txt; \
-	pip install -r requirements-dev.txt
+	pip install -r requirements-dev.txt; \
+	pip install -e .
 
 developer-setup-frontend:
 	@cd frontend; \
@@ -18,6 +19,11 @@ developer-setup-frontend:
 format-frontend-code:
 	@cd frontend; \
 	npx prettier --write .
+
+format-backend-code:
+	@cd backend; \
+	python3 -m venv .virtualenv; \
+	black flightlog
 
 build-backend-dist:
 	@cd backend; \
@@ -48,7 +54,7 @@ build-frontend-docker-image-rp4:
 run-webapp-backend:
 	@cd backend; \
 	source .virtualenv/bin/activate; \
-	uvicorn flightlog.webapp.app:app --port 5000 --reload
+	flightlog local run-webapp --reload
 
 run-webapp-frontend:
 	@cd frontend; \

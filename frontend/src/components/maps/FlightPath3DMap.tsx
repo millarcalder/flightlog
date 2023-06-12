@@ -1,4 +1,4 @@
-import { PropsWithChildren, useMemo } from 'react'
+import { PropsWithChildren, useEffect, useMemo } from 'react'
 import DeckGL from '@deck.gl/react'
 import { TerrainLayer } from '@deck.gl/geo-layers'
 import { Position } from '../../types'
@@ -15,7 +15,8 @@ const ELEVATION_DECODER = {
 
 interface MapProps {
   positionLogs: Position[]
-  showPathLayer?: boolean
+  showPathLayer?: boolean,
+  pathWidth?: number
 }
 
 const FlightPath3DMap = (props: PropsWithChildren<MapProps>) => {
@@ -25,9 +26,18 @@ const FlightPath3DMap = (props: PropsWithChildren<MapProps>) => {
   )
 
   const pathLayer = useMemo(
-    () => generatePathLayer({ pathData, visible: props.showPathLayer }),
-    [pathData, props.showPathLayer]
+    () => generatePathLayer({ pathData, visible: props.showPathLayer, width: props.pathWidth }),
+    [pathData, props.showPathLayer, props.pathWidth]
   )
+
+  const initialViewState = useMemo(() => ({
+    latitude: props.positionLogs.length > 0 ? pathData[0][1] : -39.28154,
+    longitude: props.positionLogs.length > 0 ? pathData[0][0] : 175.564541,
+    zoom: 11.5,
+    bearing: 140,
+    pitch: 60,
+    maxPitch: 70
+  }), [pathData])
 
   const terrainLayer = new TerrainLayer({
     id: 'terrainlayer',
@@ -42,14 +52,7 @@ const FlightPath3DMap = (props: PropsWithChildren<MapProps>) => {
 
   return (
     <DeckGL
-      initialViewState={{
-        latitude: props.positionLogs.length > 0 ? pathData[0][1] : -39.28154,
-        longitude: props.positionLogs.length > 0 ? pathData[0][0] : 175.564541,
-        zoom: 11.5,
-        bearing: 140,
-        pitch: 60,
-        maxPitch: 70
-      }}
+      initialViewState={initialViewState}
       controller={true}
       layers={[terrainLayer, pathLayer]}
     >

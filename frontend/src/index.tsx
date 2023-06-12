@@ -2,15 +2,23 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 import { Provider } from 'react-redux'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import store from './store/store'
 import reportWebVitals from './reportWebVitals'
 import './index.scss'
+
+const router = createBrowserRouter([
+  {
+    path: '/:s3Object?',
+    element: <App />
+  }
+])
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <RouterProvider router={router} />
     </Provider>
   </React.StrictMode>
 )
