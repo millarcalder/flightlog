@@ -1,6 +1,8 @@
 import React, { PropsWithChildren, useEffect, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Form from 'react-bootstrap/Form'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Tooltip from 'react-bootstrap/Tooltip'
 import Spinner from 'react-bootstrap/Spinner'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -116,21 +118,48 @@ const AppOverlay = () => {
           />
           <div>
             {flightlogFile ? (
-              <FontAwesomeIcon
-                icon={faUpload}
-                size="3x"
-                inverse
-                className="icon-button"
-                style={{
-                  margin: 10
-                }}
-                onClick={() => {
-                  dispatch(showModal('uploadIgcFile'))
-                }}
-              />
+              <OverlayTrigger
+                overlay={<Tooltip>Upload</Tooltip>}
+                placement='bottom'
+              >
+                <FontAwesomeIcon
+                  icon={faUpload}
+                  size="3x"
+                  inverse
+                  className="icon-button"
+                  style={{
+                    margin: 10
+                  }}
+                  onClick={() => {
+                    dispatch(showModal('uploadIgcFile'))
+                  }}
+                />
+              </OverlayTrigger>
             ) : flightlog ? (
+              <OverlayTrigger
+                overlay={<Tooltip>Share</Tooltip>}
+                placement='bottom'
+              >
+                <FontAwesomeIcon
+                  icon={faShare}
+                  size="3x"
+                  inverse
+                  className="icon-button"
+                  style={{
+                    margin: 10
+                  }}
+                  onClick={() => {
+                    dispatch(showModal('share'))
+                  }}
+                />
+              </OverlayTrigger>
+            ) : null}
+            <OverlayTrigger
+              overlay={<Tooltip>Switch View</Tooltip>}
+              placement='bottom'
+            >
               <FontAwesomeIcon
-                icon={faShare}
+                icon={faRepeat}
                 size="3x"
                 inverse
                 className="icon-button"
@@ -138,46 +167,46 @@ const AppOverlay = () => {
                   margin: 10
                 }}
                 onClick={() => {
-                  dispatch(showModal('share'))
+                  dispatch(setView(view == 'terrain' ? 'satallite' : 'terrain'))
                 }}
               />
+            </OverlayTrigger>
+            <OverlayTrigger
+              overlay={<Tooltip>Settings</Tooltip>}
+              placement='bottom'
+            >
+              <FontAwesomeIcon
+                icon={faCog}
+                size="3x"
+                inverse
+                className="icon-button"
+                style={{
+                  margin: 10
+                }}
+                onClick={() => {
+                  dispatch(showModal('settings'))
+                }}
+              />
+            </OverlayTrigger>
+            {flightlog ? (
+              <OverlayTrigger
+                overlay={<Tooltip>Flight Info</Tooltip>}
+                placement='bottom'
+              >
+                <FontAwesomeIcon
+                  icon={faCircleInfo}
+                  size="3x"
+                  inverse
+                  className="icon-button"
+                  style={{
+                    margin: 10
+                  }}
+                  onClick={() => {
+                    dispatch(showModal('flightlogInfo'))
+                  }}
+                />
+              </OverlayTrigger>
             ) : null}
-            <FontAwesomeIcon
-              icon={faRepeat}
-              size="3x"
-              inverse
-              className="icon-button"
-              style={{
-                margin: 10
-              }}
-              onClick={() => {
-                dispatch(setView(view == 'terrain' ? 'satallite' : 'terrain'))
-              }}
-            />
-            <FontAwesomeIcon
-              icon={faCog}
-              size="3x"
-              inverse
-              className="icon-button"
-              style={{
-                margin: 10
-              }}
-              onClick={() => {
-                dispatch(showModal('settings'))
-              }}
-            />
-            <FontAwesomeIcon
-              icon={faCircleInfo}
-              size="3x"
-              inverse
-              className="icon-button"
-              style={{
-                margin: 10
-              }}
-              onClick={() => {
-                dispatch(showModal('flightlogInfo'))
-              }}
-            />
           </div>
         </div>
         <AltitudeGraph
@@ -258,29 +287,28 @@ const App = () => {
     /**
      * When the S3 object URL parameter changes reload the flightlog
      */
-    if (s3Object !== undefined) {
-      dispatch(setLoading(true))
-      fetch(
-        `${process.env.REACT_APP_FLIGHTLOG_API_URL}extract-flight-log/s3/${s3Object}`
-      )
-        .then((resp) => resp.json())
-        .then((result) => {
-          dispatch(
-            setFlightlog({
-              flightlog: result
-            })
-          )
-        })
-        .catch((err) => {
-          dispatch(clearFlightlog())
-        })
-        .finally(() => {
-          dispatch(setLoading(false))
-        })
-    } else {
-      // If there is no S3 object then clear the flightlog
-      dispatch(clearFlightlog())
-    }
+    dispatch(setLoading(true))
+
+    const url =
+      s3Object === undefined
+        ? `${process.env.REACT_APP_FLIGHTLOG_API_URL}extract-flight-log/example`
+        : `${process.env.REACT_APP_FLIGHTLOG_API_URL}extract-flight-log/s3/${s3Object}`
+
+    fetch(url)
+      .then((resp) => resp.json())
+      .then((result) => {
+        dispatch(
+          setFlightlog({
+            flightlog: result
+          })
+        )
+      })
+      .catch((err) => {
+        dispatch(clearFlightlog())
+      })
+      .finally(() => {
+        dispatch(setLoading(false))
+      })
   }, [s3Object])
 
   return (
