@@ -8,9 +8,7 @@ const PathSettings = () => {
   const showPathLayer = useAppSelector(
     (state) => state.main.settings.layers.path
   )
-  const pathWidth = useAppSelector(
-    (state) => state.main.settings.pathWidth
-  )
+  const pathWidth = useAppSelector((state) => state.main.settings.pathWidth)
 
   return (
     <>
@@ -61,9 +59,7 @@ const HeatMapSettings = () => {
         type="checkbox"
         label={'Show Heat Map'}
         onChange={() => {
-          dispatch(
-            showMapLayer({ layer: 'heatMap', show: !showHeatMapLayer })
-          )
+          dispatch(showMapLayer({ layer: 'heatMap', show: !showHeatMapLayer }))
         }}
         checked={showHeatMapLayer}
       />

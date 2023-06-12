@@ -120,7 +120,7 @@ const AppOverlay = () => {
             {flightlogFile ? (
               <OverlayTrigger
                 overlay={<Tooltip>Upload</Tooltip>}
-                placement='bottom'
+                placement="bottom"
               >
                 <FontAwesomeIcon
                   icon={faUpload}
@@ -138,7 +138,7 @@ const AppOverlay = () => {
             ) : flightlog ? (
               <OverlayTrigger
                 overlay={<Tooltip>Share</Tooltip>}
-                placement='bottom'
+                placement="bottom"
               >
                 <FontAwesomeIcon
                   icon={faShare}
@@ -156,7 +156,7 @@ const AppOverlay = () => {
             ) : null}
             <OverlayTrigger
               overlay={<Tooltip>Switch View</Tooltip>}
-              placement='bottom'
+              placement="bottom"
             >
               <FontAwesomeIcon
                 icon={faRepeat}
@@ -173,7 +173,7 @@ const AppOverlay = () => {
             </OverlayTrigger>
             <OverlayTrigger
               overlay={<Tooltip>Settings</Tooltip>}
-              placement='bottom'
+              placement="bottom"
             >
               <FontAwesomeIcon
                 icon={faCog}
@@ -191,7 +191,7 @@ const AppOverlay = () => {
             {flightlog ? (
               <OverlayTrigger
                 overlay={<Tooltip>Flight Info</Tooltip>}
-                placement='bottom'
+                placement="bottom"
               >
                 <FontAwesomeIcon
                   icon={faCircleInfo}
@@ -235,7 +235,11 @@ const ComponentSelector = (props: PropsWithChildren<any>) => {
   )
 
   return view === 'terrain' ? (
-    <FlightPath3DMap positionLogs={positionLogs} showPathLayer={showPathLayer} pathWidth={pathWidth}>
+    <FlightPath3DMap
+      positionLogs={positionLogs}
+      showPathLayer={showPathLayer}
+      pathWidth={pathWidth}
+    >
       {props.children}
     </FlightPath3DMap>
   ) : view === 'satallite' ? (

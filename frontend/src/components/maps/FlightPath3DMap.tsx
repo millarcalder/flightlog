@@ -15,7 +15,7 @@ const ELEVATION_DECODER = {
 
 interface MapProps {
   positionLogs: Position[]
-  showPathLayer?: boolean,
+  showPathLayer?: boolean
   pathWidth?: number
 }
 
@@ -26,18 +26,26 @@ const FlightPath3DMap = (props: PropsWithChildren<MapProps>) => {
   )
 
   const pathLayer = useMemo(
-    () => generatePathLayer({ pathData, visible: props.showPathLayer, width: props.pathWidth }),
+    () =>
+      generatePathLayer({
+        pathData,
+        visible: props.showPathLayer,
+        width: props.pathWidth
+      }),
     [pathData, props.showPathLayer, props.pathWidth]
   )
 
-  const initialViewState = useMemo(() => ({
-    latitude: props.positionLogs.length > 0 ? pathData[0][1] : -39.28154,
-    longitude: props.positionLogs.length > 0 ? pathData[0][0] : 175.564541,
-    zoom: 11.5,
-    bearing: 140,
-    pitch: 60,
-    maxPitch: 70
-  }), [pathData])
+  const initialViewState = useMemo(
+    () => ({
+      latitude: props.positionLogs.length > 0 ? pathData[0][1] : -39.28154,
+      longitude: props.positionLogs.length > 0 ? pathData[0][0] : 175.564541,
+      zoom: 11.5,
+      bearing: 140,
+      pitch: 60,
+      maxPitch: 70
+    }),
+    [pathData]
+  )
 
   const terrainLayer = new TerrainLayer({
     id: 'terrainlayer',
