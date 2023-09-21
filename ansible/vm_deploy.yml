@@ -1,0 +1,9 @@
+- name: Deploy to a Web Server
+  hosts: webservers
+  pre_tasks:
+    - name: Load secrets
+      include_vars:
+        file: vault.yml
+        name: secrets
+  roles:
+    - role: vm_deploy

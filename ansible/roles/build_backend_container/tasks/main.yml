@@ -1,17 +1,17 @@
-- name: Create a directory if it does not exist
+- name: Create temp directory for build files
   ansible.builtin.file:
-    path: /tmp/flightlog-docker
+    path: /tmp/flightlog-api-docker
     state: directory
 
-- name: Upload python wheel
+- name: Upload Python wheel
   ansible.builtin.copy:
     src: '{{ project_dir }}/backend/dist/{{ wheel_name }}'
-    dest: '/tmp/flightlog-docker/{{ wheel_name }}'
+    dest: '/tmp/flightlog-api-docker/{{ wheel_name }}'
 
-- name: Upload docker file
+- name: Upload Docker file
   ansible.builtin.copy:
-    src: '{{ project_dir }}/backend/docker/Dockerfile'
-    dest: /tmp/flightlog-docker/Dockerfile
+    src: '{{ project_dir }}/backend/Dockerfile'
+    dest: /tmp/flightlog-api-docker/Dockerfile
 
 - name: Docker login
   become: yes
@@ -20,15 +20,15 @@
     username: millarcalder
     password: '{{ secrets["docker_token"] }}'
 
-- name: Build docker image
+- name: Build Docker image
   become: yes
   community.docker.docker_image:
     build:
       args:
         wheel_name: '{{ wheel_name }}'
-      path: /tmp/flightlog-docker
+      path: /tmp/flightlog-api-docker
     name: ghcr.io/millarcalder/flightlog-api
-    tag: 'pi-{{ version }}'
+    tag: '{{ image_tag }}'
     push: yes
     source: build
     debug: yes
@@ -36,4 +36,9 @@
 - name: Docker logout
   become: yes
   community.docker.docker_login:
+    state: absent
+
+- name: Delete temp directory for build files
+  ansible.builtin.file:
+    path: /tmp/flightlog-api-docker
     state: absent

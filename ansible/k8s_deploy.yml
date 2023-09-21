@@ -1,4 +1,4 @@
-- name: Deploy the frontend to Kubernetes
+- name: Deploy to Kubernetes
   hosts: localhost
   pre_tasks:
     - name: Load secrets

@@ -1,4 +1,4 @@
-- name: Create a directory if it does not exist
+- name: Create temp directory for build files
   ansible.builtin.file:
     path: /tmp/flightlog-frontend-docker
     state: directory
@@ -10,8 +10,13 @@
 
 - name: Upload docker file
   ansible.builtin.copy:
-    src: '{{ project_dir }}/frontend/docker/Dockerfile'
+    src: '{{ project_dir }}/frontend/Dockerfile'
     dest: /tmp/flightlog-frontend-docker/Dockerfile
+
+- name: Upload nginx config
+  ansible.builtin.copy:
+    src: '{{ project_dir }}/frontend/nginx.conf'
+    dest: /tmp/flightlog-frontend-docker/nginx.conf
 
 - name: Docker login
   become: yes
@@ -26,7 +31,7 @@
     build:
       path: /tmp/flightlog-frontend-docker
     name: ghcr.io/millarcalder/flightlog-frontend
-    tag: 'pi-{{ version }}'
+    tag: '{{ image_tag }}'
     push: yes
     source: build
     debug: yes
@@ -34,4 +39,9 @@
 - name: Docker logout
   become: yes
   community.docker.docker_login:
+    state: absent
+
+- name: Delete temp directory for build files
+  ansible.builtin.file:
+    path: /tmp/flightlog-frontend-docker
     state: absent

@@ -13,20 +13,25 @@ from flightlog.lib.s3_helpers import extract_flight_log_from_s3
 from flightlog.lib.s3_helpers import upload_igc_to_s3
 
 
-settings = Settings()
+settings = None
 app = FastAPI()
 
-origins = [
-    "http://localhost:3000",
-]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+def init_app(env_file=None) -> FastAPI:
+    global settings
+    settings = Settings(_env_file=env_file)
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[
+            "*",
+        ],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    return app
 
 
 def _s3_client():

@@ -1,1 +1,2 @@
+image_tag: '{{ version }}-{{ target_architecture }}'
 wheel_name: 'flightlog-{{ version }}-py3-none-any.whl'

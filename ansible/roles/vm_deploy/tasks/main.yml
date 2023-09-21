@@ -1,0 +1,80 @@
+- name: Create a directory for config files
+  become: yes
+  ansible.builtin.file:
+    path: /opt/flightlog
+    state: directory
+
+- name: Template out the flightlog-api env file
+  become: yes
+  ansible.builtin.template:
+    src: '.env.j2'
+    dest: /opt/flightlog/.env
+
+- name: Template out the Nginx config
+  become: yes
+  ansible.builtin.template:
+    src: 'nginx.conf.j2'
+    dest: /opt/flightlog/nginx.conf
+
+- name: Docker login
+  become: yes
+  community.docker.docker_login:
+    registry_url: https://ghcr.io/
+    username: millarcalder
+    password: '{{ secrets["docker_token"] }}'
+    reauthorize: yes
+
+- name: Create the flightlog Docker network
+  become: yes
+  docker_network:
+    name: flightlog
+
+- name: Pull the API Docker Image
+  become: yes
+  community.docker.docker_image:
+    name: 'ghcr.io/millarcalder/flightlog-api:{{ version }}-{{ target_architecture }}'
+    source: pull
+
+- name: Pull the frontend Docker Image
+  become: yes
+  community.docker.docker_image:
+    name: 'ghcr.io/millarcalder/flightlog-frontend:{{ version }}-{{ target_architecture }}'
+    source: pull
+
+- name: Run the API Docker container
+  become: yes
+  community.docker.docker_container:
+    name: flightlog-api
+    networks:
+      - name: flightlog
+    state: started
+    image: 'ghcr.io/millarcalder/flightlog-api:{{ version }}-{{ target_architecture }}'
+    volumes:
+      - '/opt/flightlog/.env:/opt/flightlog/.env:ro'
+
+- name: Run the frontend Docker container
+  become: yes
+  community.docker.docker_container:
+    name: flightlog-frontend
+    networks:
+      - name: flightlog
+    state: started
+    image: 'ghcr.io/millarcalder/flightlog-frontend:{{ version }}-{{ target_architecture }}'
+
+- name: Run the Nginx Docker container
+  become: yes
+  community.docker.docker_container:
+    name: flightlog-nginx
+    networks:
+      - name: flightlog
+    state: started
+    image: nginx
+    volumes:
+      - '/opt/flightlog/nginx.conf:/etc/nginx/nginx.conf:ro'
+    ports:
+      - 80:80
+
+- name: Docker logout
+  become: yes
+  community.docker.docker_login:
+    state: absent

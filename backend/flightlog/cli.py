@@ -7,6 +7,7 @@ import uvicorn
 from flightlog.config import Settings
 from flightlog.lib.s3_helpers import find_objects_to_delete
 from flightlog.lib.s3_helpers import delete_objects
+from flightlog.webapp.app import init_app
 
 
 @click.group()
@@ -34,10 +35,12 @@ def cli(env: str):
 
 
 @cli.command()
+@click.option("--env-file")
 @click.option("--reload", is_flag=True)
-def run_webapp(reload: bool):
+def run_webapp(reload: bool, env_file: str | None = None):
+    app = init_app(env_file)
     uvicorn.run(
-        "flightlog.webapp.app:app",
+        app,
         host="0.0.0.0",
         port=5000,
         log_level=logging.INFO,

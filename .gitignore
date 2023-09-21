@@ -9,6 +9,7 @@ ansible/inventory/
 backend/.virtualenv/
 backend/dist/
 backend/docker/*.whl
+backend/.env
 
 frontend/.env
 frontend/build/

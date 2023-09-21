@@ -1,12 +1,12 @@
 - name: Build docker containers on a remote host
-  hosts: webservers
+  hosts: build_server
   pre_tasks:
     - name: Load secrets
       include_vars:
         file: vault.yml
         name: secrets
   roles:
-    - role: build_backend
+    - role: build_backend_container
       when: backend is defined and backend == "yes"
-    - role: build_frontend
+    - role: build_frontend_container
       when: frontend is defined and frontend == "yes"

@@ -8,55 +8,89 @@ You can upload a `.igc` flight log file, commonly used in gliders and paraglider
 
 ## Developer Guide
 
-This project is setup for debian based operating systems, trying to run this on anything else will cause some issues with automated scripts that install dependencies and deploy the apps.
+*Note: the ansible playbooks in this repo are setup for my environment, so they use my domain names, docker registry, encrypted secrets, etc...*
+
+I've been developing this project on both Debian based Linus and MacOS, potentially you might have some issues on Windows with some of the automated scripts.
+
+Requirements:
+  - [Ansible](https://www.ansible.com/)
+  - [kubectl](https://kubernetes.io/docs/reference/kubectl/kubectl/) (connected to your Kubernetes cluster)
+  - [npm](https://www.npmjs.com/)
+  - [Python](https://www.python.org/) `>=3.10`
+
+Example Ansible inventory file
+
+```
+[build_server]
+ansible_connection=ssh ansible_host=1.2.3.4 ansible_user=ubuntu
+
+[webservers]
+ansible_connection=ssh ansible_host=1.2.3.4 ansible_user=ubuntu
+```
 
 ### Running locally
 
 ```bash
 make developer-setup
-make run-webapp-backend
-make run-webapp-frontend  # remember to create a .env file! See .env.example for a template
+
+# Backend
+source ./backend/.virtualenv/bin/activate
+flightlog local run-webapp --reload
+
+# Frontend
+cd frontend
+npm start  # remember to create a .env file! See .env.example for a template
+```
+
+### Build Docker Images
+
+You need to build the Docker Images on the target architecture which you are deploying to. For example Raspberry Pi's use an arm64 architecture, if you develop on an x86 Intel computer then you will need to run the build script remotely on the target architecture.
+
+You configure which machine that the ansible `build_containers.yml` script is run on via the `build_server` group in the inventory file.
+
+```bash
+./backend/.virtualenv/bin/python -m build  # Build the python wheel
+(cd ./frontend; npm run build)  # Build the frontend bundle
+
+ansible-playbook ./ansible/build_containers.yml \
+  -i ./ansible/inventory/foo.ini \
+  --ask-vault-password \
+  --ask-become-pass \
+  --extra-vars "version=${VERSION} target_architecture=arm64 backend=yes frontend=yes"
 ```
 
 ### Deployment
 
-*Note: the ansible playbooks in this repo are setup for my environment, so they use my domain names, docker registry, encrypted secrets, etc...*
+There are two deployment options:
+  - VM - Standard Linux server (E.g. AWS EC2 Instances)
+  - K8S - Kubernetes Cluster
 
-Requirements:
-  - install [kubectl](https://kubernetes.io/docs/reference/kubectl/kubectl/) and connect to your Kubernetes cluster
-  - install [npm](https://www.npmjs.com/)
+#### Web Server
 
-#### Raspberry Pi k8s cluster
-
-##### Backend
-
-The Raspberry Pi 4 has arm64 cpu architecture, so you'll most likely need to build the docker image on a remote Pi since your PC will have a different cpu architecture.
-
-You'll need to create the ansible inventory files `build.ini` and `deploy.ini` in `ansible/inventory/` to run the ansible playbooks on a remote Pi, e.g.
-
-```
-[webservers]
-ansible_connection=ssh ansible_host=192.168.1.190 ansible_user=ubuntu
-```
-
-Build the Raspberry Pi image (this simply just runs it on the remote Pi and tags it differently) `make build-backend-docker-image-rp4`.
-
-Deploy to kubernetes using the Raspberry Pi image `make deploy-backend-production-rp4`.
-
-##### Frontend
+First you must run the provision script which installs required dependencies.
 
 ```bash
-deploy-frontend-production
+ansible-playbook ./ansible/vm_provision.yml \
+  -i ./ansible/inventory/foo.ini \
+  --ask-vault-password \
+  --ask-become-pass \
+  --extra-vars "version=${VERSION} target_architecture=arm64"
+
+ansible-playbook ./ansible/vm_deploy.yml \
+  -i ./ansible/inventory/foo.ini \
+  --ask-vault-password \
+  --ask-become-pass \
+  --extra-vars "version=${VERSION} target_architecture=arm64"
 ```
 
-#### Other clusters
-
-If you want to deploy to a local minikube cluster for example.
+#### Kubernetes
 
 ```bash
-make build-backend-docker-image
-make deploy-backend-production
-make deploy-frontend-production
+ansible-playbook ./ansible/k8s_deploy.yml \
+  -i ./ansible/inventory/foo.ini \
+  --ask-vault-password \
+  --ask-become-pass \
+  --extra-vars "version=${VERSION} target_architecture=arm64 backend=yes frontend=yes"
 ```
 
 ### Helpful links
