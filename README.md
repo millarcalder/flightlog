@@ -49,7 +49,7 @@ You need to build the Docker Images on the target architecture which you are dep
 You configure which machine that the ansible `build_containers.yml` script is run on via the `build_server` group in the inventory file.
 
 ```bash
-./backend/.virtualenv/bin/python -m build  # Build the python wheel
+(cd ./backend; .virtualenv/bin/python -m build)  # Build the python wheel
 (cd ./frontend; npm run build)  # Build the frontend bundle
 
 ansible-playbook ./ansible/build_containers.yml \
