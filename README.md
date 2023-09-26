@@ -56,7 +56,7 @@ ansible-playbook ./ansible/build_containers.yml \
   -i ./ansible/inventory/foo.ini \
   --ask-vault-password \
   --ask-become-pass \
-  --extra-vars "version=${VERSION} target_architecture=arm64 backend=yes frontend=yes"
+  --extra-vars "target_architecture=arm64 backend=yes frontend=yes"
 ```
 
 ### Deployment
@@ -74,13 +74,13 @@ ansible-playbook ./ansible/vm_provision.yml \
   -i ./ansible/inventory/foo.ini \
   --ask-vault-password \
   --ask-become-pass \
-  --extra-vars "version=${VERSION} target_architecture=arm64"
+  --extra-vars "target_architecture=arm64"
 
 ansible-playbook ./ansible/vm_deploy.yml \
   -i ./ansible/inventory/foo.ini \
   --ask-vault-password \
   --ask-become-pass \
-  --extra-vars "version=${VERSION} target_architecture=arm64"
+  --extra-vars "target_architecture=arm64"
 ```
 
 #### Kubernetes
@@ -90,9 +90,15 @@ ansible-playbook ./ansible/k8s_deploy.yml \
   -i ./ansible/inventory/foo.ini \
   --ask-vault-password \
   --ask-become-pass \
-  --extra-vars "version=${VERSION} target_architecture=arm64 backend=yes frontend=yes"
+  --extra-vars "target_architecture=arm64 backend=yes frontend=yes"
 ```
 
-### Helpful links
+### Versioning
+
+This repository contains two closely related projects, the Python web API and the ReactJS application. They could be versioned seperately, but I have opted for versioning them together because I don't see a use case for deploying them seperately. Versions are managed using Git tags.
+
+The Ansible scripts automatically detect the version using `setuptools_git_versioning`, this way even the Ansible is tied to the version. To be honest I'm not sure whether this is a great idea yet, but the idea is that sometimes new vesions require a different deployment process. Over time the Ansible might drift enough that it can no longer deploy old versions of the application, so you would need to checkout an old git commit anyway.
+
+## Helpful links
 
 https://xp-soaring.github.io/igc_file_format/index.html

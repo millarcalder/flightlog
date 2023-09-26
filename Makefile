@@ -1,7 +1,5 @@
 SHELL := /bin/bash
 
-VERSION=0.0.2
-
 developer-setup: developer-setup-backend developer-setup-frontend
 
 developer-setup-backend:

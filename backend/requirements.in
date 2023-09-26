@@ -1,6 +1,13 @@
+black
 boto3
+build
 click
 fastapi
+pip-tools
 pydantic-settings
+pytest
 python-multipart
+requests
+setuptools
+setuptools-git-versioning
 uvicorn[standard]
