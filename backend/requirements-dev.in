@@ -1,6 +1,0 @@
-black
-build
-pip-tools
-pytest
-requests
-setuptools

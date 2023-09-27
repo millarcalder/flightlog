@@ -1,0 +1,9 @@
+- name: Which Version
+  ansible.builtin.shell: python -m setuptools_git_versioning
+  args:
+    chdir: '{{ project_dir }}/backend'
+  register: setuptools_git_versioning_output
+
+- name: Setup version variable
+  ansible.builtin.set_fact:
+    version: '{{ setuptools_git_versioning_output.stdout }}'
