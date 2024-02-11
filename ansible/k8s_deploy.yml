@@ -9,9 +9,9 @@
         file: vault.yml
         name: secrets
   roles:
-    - role: setup_namespace
-    - role: deploy_frontend
+    - role: k8s_setup_namespace
+    - role: k8s_deploy_frontend
       when: frontend is defined and frontend == "yes"
-    - role: deploy_backend
+    - role: k8s_deploy_backend
       when: backend is defined and backend == "yes"
-    - role: setup_ingress
+    - role: k8s_setup_ingress

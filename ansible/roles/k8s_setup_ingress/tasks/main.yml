@@ -3,13 +3,13 @@
     state: present
     namespace: '{{ namespace }}'
     kubeconfig: ~/.kube/config
-    name: flightlog
+    name: flightlog-webapp
     resource_definition:
       apiVersion: networking.k8s.io/v1
       kind: Ingress
       spec:
         rules:
-          - host: flightlog.kube.millarcalder.com
+          - host: '{{ webapp_domain }}'
             http:
               paths:
                 - path: /
@@ -19,7 +19,22 @@
                       name: flightlog-frontend
                       port:
                         number: 80
-                - path: /parse-igc
+
+- name: Setup flightlog API ingress
+  kubernetes.core.k8s:
+    state: present
+    namespace: '{{ namespace }}'
+    kubeconfig: ~/.kube/config
+    name: flightlog-api
+    resource_definition:
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      spec:
+        rules:
+          - host: '{{ api_domain }}'
+            http:
+              paths:
+                - path: /
                   pathType: Prefix
                   backend:
                     service:

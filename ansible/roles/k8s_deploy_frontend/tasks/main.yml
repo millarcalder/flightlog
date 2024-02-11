@@ -25,7 +25,7 @@
               - name: flightlog-docker-registry-secret
             containers:
               - name: flightlog-frontend
-                image: 'ghcr.io/millarcalder/flightlog-frontend:{{ version }}'
+                image: 'ghcr.io/millarcalder/flightlog-frontend:{{ version }}-{{ target_architecture }}'
                 imagePullPolicy: Always
                 ports:
                   - containerPort: 80

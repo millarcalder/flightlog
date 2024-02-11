@@ -23,15 +23,20 @@
           spec:
             imagePullSecrets:
               - name: flightlog-docker-registry-secret
+            volumes:
+              - name: env
+                secret:
+                  secretName: flightlog-api-secrets
             containers:
               - name: flightlog-api
-                image: 'ghcr.io/millarcalder/flightlog-api:{{ version }}'
+                image: 'ghcr.io/millarcalder/flightlog-api:{{ version }}-{{ target_architecture }}'
                 imagePullPolicy: Always
                 ports:
                   - containerPort: 5000
-                args:
-                  - production
-                  - run-webapp
+                volumeMounts:
+                  - name: env
+                    mountPath: "/opt/flightlog/.env"
+                    readOnly: true
                 resources:
                   limits:
                     cpu: '500m'

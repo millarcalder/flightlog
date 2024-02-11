@@ -1,2 +1,5 @@
 namespace: 'flightlog-{{ env_name }}'
 project_dir: '{{ playbook_dir }}/../'
+
+webapp_domain: flightlog.home
+api_domain: api.flightlog.home

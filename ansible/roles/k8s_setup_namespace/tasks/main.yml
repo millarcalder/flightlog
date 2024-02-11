@@ -24,3 +24,14 @@
       type: kubernetes.io/dockerconfigjson
       data:
         .dockerconfigjson: '{{ docker_registry_config | to_json | b64encode }}'
+
+- name: Backend API environment vars
+  kubernetes.core.k8s:
+    namespace: '{{ namespace }}'
+    name: flightlog-api-secrets
+    resource_definition:
+      apiVersion: v1
+      kind: Secret
+      stringData: |
+        aws_access_key_id: {{ secrets["aws_access_key_id"] }}
+        aws_secret_access_key: {{ secrets["aws_secret_access_key"] }}
