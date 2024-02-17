@@ -1,11 +1,11 @@
 import pytest
 from datetime import time
-from viewerlib.s3_helpers import extract_flight_log_from_s3
-from viewerlib.s3_helpers import find_objects_to_delete
-from viewerlib.s3_helpers import upload_igc_to_s3
-from viewerlib.exceptions import FlightLogNameAlreadyTaken
-from viewerlib.exceptions import IgcFileNotFound
-from viewertests import TEST_FILES_DIR
+from viewer.lib.s3_helpers import extract_flight_log_from_s3
+from viewer.lib.s3_helpers import find_objects_to_delete
+from viewer.lib.s3_helpers import upload_igc_to_s3
+from viewer.lib.exceptions import FlightLogNameAlreadyTaken
+from viewer.lib.exceptions import IgcFileNotFound
+from viewer.tests import TEST_FILES_DIR
 
 
 @pytest.mark.parametrize(

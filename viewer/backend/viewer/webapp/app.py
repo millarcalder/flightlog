@@ -6,11 +6,11 @@ from fastapi import Depends
 from fastapi import FastAPI
 from fastapi import File
 from fastapi.middleware.cors import CORSMiddleware
+from igc_parser import parse_igc_bytes
 
-from viewerconfig import Settings
-from viewerlib.igc_parser import parse_igc_bytes
-from viewerlib.s3_helpers import extract_flight_log_from_s3
-from viewerlib.s3_helpers import upload_igc_to_s3
+from viewer.config import Settings
+from viewer.lib.s3_helpers import extract_flight_log_from_s3
+from viewer.lib.s3_helpers import upload_igc_to_s3
 
 
 settings = None
@@ -24,7 +24,7 @@ def init_app(env_file=None) -> FastAPI:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[
-            "*",
+            "*"
         ],
         allow_credentials=True,
         allow_methods=["*"],

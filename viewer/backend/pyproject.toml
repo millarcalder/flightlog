@@ -1,15 +1,14 @@
 [build-system]
-requires = ["setuptools", "setuptools-scm", "setuptools-git-versioning<2"]
+requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "flightlog"
+name = "viewer"
+version = "0.0.1"
 requires-python = ">=3.11"
-dynamic = ["version"]
 
 [tool.setuptools.dynamic]
 dependencies = {"file"=["requirements.txt"]}
-version = {attr = "VERSION"}
 
 [project.scripts]
-flightlog = "flightlog.cli:cli"
+viewer = "viewer.cli:cli"

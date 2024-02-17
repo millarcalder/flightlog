@@ -1,14 +1,14 @@
 import boto3
 import pytest
-from viewertests import TEST_FILES_DIR
-from viewertests import TEST_S3_BUCKET
+from viewer.tests import TEST_FILES_DIR
+from viewer.tests import TEST_S3_BUCKET
 
 
 @pytest.fixture(scope="session")
 def s3_resource():
     yield boto3.resource(
         "s3",
-        endpoint_url="http://localhost:9000/",
+        endpoint_url="http://flightlog-s3:9000/",
         aws_access_key_id="root",
         aws_secret_access_key="1234qwer",
     )
@@ -18,7 +18,7 @@ def s3_resource():
 def s3_client():
     yield boto3.client(
         "s3",
-        endpoint_url="http://localhost:9000/",
+        endpoint_url="http://flightlog-s3:9000/",
         aws_access_key_id="root",
         aws_secret_access_key="1234qwer",
     )

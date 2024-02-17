@@ -9,5 +9,6 @@
 dist/
 build/
 node_modules/
+*.log
 
 ansible/inventory/

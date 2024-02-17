@@ -4,10 +4,10 @@ import logging
 import os
 import uvicorn
 
-from viewerconfig import Settings
-from viewerlib.s3_helpers import find_objects_to_delete
-from viewerlib.s3_helpers import delete_objects
-from viewerwebapp.app import init_app
+from viewer.config import Settings
+from viewer.lib.s3_helpers import find_objects_to_delete
+from viewer.lib.s3_helpers import delete_objects
+from viewer.webapp.app import init_app
 
 
 @click.group()

@@ -2,6 +2,7 @@ version: "3.9"
 services:
   s3:
     image: "minio/minio:latest"
+    container_name: flightlog-s3
     entrypoint: ["minio", "server", "/data", "--console-address", ":9001"]
     ports:
       - "9000:9000"
@@ -26,6 +27,10 @@ services:
   dev:
     build:
       dockerfile: Dockerfile.dev
+    container_name: flightlog-dev
+    ports:
+      - "5000:5000"
+      - "3000:3000"
     volumes:
       - .:/workspace:cached
     command: /bin/sh -c "while sleep 1000; do :; done"
