@@ -7,10 +7,10 @@ from fastapi import FastAPI
 from fastapi import File
 from fastapi.middleware.cors import CORSMiddleware
 
-from flightlog.config import Settings
-from flightlog.lib.igc_parser import parse_igc_bytes
-from flightlog.lib.s3_helpers import extract_flight_log_from_s3
-from flightlog.lib.s3_helpers import upload_igc_to_s3
+from viewerconfig import Settings
+from viewerlib.igc_parser import parse_igc_bytes
+from viewerlib.s3_helpers import extract_flight_log_from_s3
+from viewerlib.s3_helpers import upload_igc_to_s3
 
 
 settings = None

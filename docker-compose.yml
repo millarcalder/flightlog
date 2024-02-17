@@ -15,12 +15,17 @@ services:
     depends_on:
       - s3
     volumes:
-      - type: bind
-        source: ./backend/flightlog/tests/data
-        target: /data
+      - ./backend/flightlog/tests/data:/data:ro
     entrypoint: >
       /bin/sh -c "
       /usr/bin/mc alias set flightlog_minio http://s3:9000 root 1234qwer;
       /usr/bin/mc mb flightlog_minio/flightlog-igc-files;
       exit 0;
       "
+
+  dev:
+    build:
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/workspace:cached
+    command: /bin/sh -c "while sleep 1000; do :; done"

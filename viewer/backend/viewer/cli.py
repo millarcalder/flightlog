@@ -4,10 +4,10 @@ import logging
 import os
 import uvicorn
 
-from flightlog.config import Settings
-from flightlog.lib.s3_helpers import find_objects_to_delete
-from flightlog.lib.s3_helpers import delete_objects
-from flightlog.webapp.app import init_app
+from viewerconfig import Settings
+from viewerlib.s3_helpers import find_objects_to_delete
+from viewerlib.s3_helpers import delete_objects
+from viewerwebapp.app import init_app
 
 
 @click.group()

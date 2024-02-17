@@ -1,7 +1,7 @@
 import boto3
 import pytest
-from flightlog.tests import TEST_FILES_DIR
-from flightlog.tests import TEST_S3_BUCKET
+from viewertests import TEST_FILES_DIR
+from viewertests import TEST_S3_BUCKET
 
 
 @pytest.fixture(scope="session")

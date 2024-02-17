@@ -1,10 +1,10 @@
 import re
-from flightlog.lib.exceptions import InvalidFlightLogName
-from flightlog.lib.exceptions import IgcFileNotFound
-from flightlog.lib.exceptions import IgcFileTooLarge
-from flightlog.lib.exceptions import FlightLogNameAlreadyTaken
-from flightlog.lib.igc_parser import FlightLog
-from flightlog.lib.igc_parser import parse_igc_bytes
+from viewerlib.exceptions import InvalidFlightLogName
+from viewerlib.exceptions import IgcFileNotFound
+from viewerlib.exceptions import IgcFileTooLarge
+from viewerlib.exceptions import FlightLogNameAlreadyTaken
+from viewerlib.igc_parser import FlightLog
+from viewerlib.igc_parser import parse_igc_bytes
 
 
 def _valid_key(key: str) -> bool:

@@ -3,15 +3,11 @@
 *.pytest_cache*
 *.egg-info*
 .DS_Store
+.virtualenv
+.env
+*.whl
+dist/
+build/
+node_modules/
 
 ansible/inventory/
-
-backend/.virtualenv/
-backend/dist/
-backend/docker/*.whl
-backend/.env
-
-frontend/.env
-frontend/build/
-frontend/docker/build/
-frontend/node_modules/
