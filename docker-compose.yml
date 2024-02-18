@@ -10,6 +10,8 @@ services:
     environment:
       MINIO_ROOT_USER: "root"
       MINIO_ROOT_PASSWORD: "1234qwer"
+    networks:
+      - flightlog
 
   init_minio_data:
     image: minio/mc
@@ -23,6 +25,8 @@ services:
       /usr/bin/mc mb flightlog_minio/flightlog-igc-files;
       exit 0;
       "
+    networks:
+      - flightlog
 
   dev:
     build:
@@ -34,3 +38,9 @@ services:
     volumes:
       - .:/workspace:cached
     command: /bin/sh -c "while sleep 1000; do :; done"
+    networks:
+      - flightlog
+
+networks:
+  flightlog:
+    name: flightlog
