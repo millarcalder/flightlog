@@ -10,10 +10,15 @@ on:
       - synchronize
       - reopened
 jobs:
-  check-bats-version:
+  tests:
     runs-on: ubuntu-latest
     steps:
-      - run: docker compose up -d s3 init_minio_data
-      - run: docker compose run dev /bin/sh -c "cd /workspace/viewer/backend && make developer-setup && make test"
-      - run: docker compose run dev /bin/sh -c "cd /workspace/igc_parser && make developer-setup && make test"
-      - run: docker compose down
+      - uses: actions/checkout@v2
+      - name: spin up docker compose dependencies
+        run: docker compose up -d s3 init_minio_data
+      - name: run viewer backend tests
+        run: docker compose run dev /bin/sh -c "cd /workspace/viewer/backend && make developer-setup && make test"
+      - name: run igc-parser tests
+        run: docker compose run dev /bin/sh -c "cd /workspace/igc_parser && make developer-setup && make test"
+      - name: tear down docker compose dependencies
+        run: docker compose down
