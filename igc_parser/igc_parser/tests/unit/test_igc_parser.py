@@ -8,9 +8,7 @@ from igc_parser import parse_igc_bytes
 from igc_parser import parse_igc_str
 
 
-test_file_path = (
-    f"{Path(os.path.dirname(os.path.realpath(__file__))).parents[3]}/data/220415234416.igc"
-)
+test_file_path = f"{Path(os.path.dirname(os.path.realpath(__file__))).parents[3]}/data/220415234416.igc"
 
 
 def test_parse_igc_str__valid():
