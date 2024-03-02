@@ -1,9 +1,10 @@
-FROM python:3.11
+FROM python:3.12
 
-ARG wheel_name
+# Build and install the python package
+COPY . /code
+RUN cd /code && make build
+RUN pip install /code/dist/viewer-$(cat /code/VERSION)-py3-none-any.whl
+RUN rm -r /code
 
-COPY $wheel_name /tmp/$wheel_name
-RUN pip install /tmp/$wheel_name
-
-ENTRYPOINT [ "flightlog", "production", "run-webapp", "--env-file", "/opt/flightlog/.env" ]
+ENTRYPOINT [ "viewer", "production", "run-webapp", "--env-file", "/opt/flightlog/viewer/.env" ]
 EXPOSE 5000
