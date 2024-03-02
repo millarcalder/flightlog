@@ -1,0 +1,3 @@
+- name: find cpu architecture
+  ansible.builtin.command: 'uname -m'
+  register: cpu_architecture

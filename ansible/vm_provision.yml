@@ -2,9 +2,6 @@
   hosts: webservers
   become: yes
   pre_tasks:
-    - name: Version
-      ansible.builtin.include_role:
-        name: version
     - name: Load secrets
       include_vars:
         file: vault.yml

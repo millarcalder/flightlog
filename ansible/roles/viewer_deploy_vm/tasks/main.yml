@@ -1,20 +1,20 @@
 - name: Create a directory for config files
   become: yes
   ansible.builtin.file:
-    path: /opt/flightlog
+    path: /opt/flightlog/viewer
     state: directory
 
-- name: Template out the flightlog-api env file
+- name: Template out the viewer backend env file
   become: yes
   ansible.builtin.template:
     src: '.env.j2'
-    dest: /opt/flightlog/.env
+    dest: /opt/flightlog/viewer/.env
 
 - name: Template out the Nginx config
   become: yes
   ansible.builtin.template:
     src: 'nginx.conf.j2'
-    dest: /opt/flightlog/nginx.conf
+    dest: /opt/flightlog/viewer/nginx.conf
 
 - name: Docker login
   become: yes
@@ -29,48 +29,48 @@
   docker_network:
     name: flightlog
 
-- name: Pull the API Docker Image
+- name: Pull the viewer backend Docker Image
   become: yes
   community.docker.docker_image:
-    name: 'ghcr.io/millarcalder/flightlog-api:{{ version }}-{{ target_architecture }}'
+    name: 'ghcr.io/millarcalder/{{ backend_image_name }}:{{ backend_image_tag }}'
     source: pull
 
 - name: Pull the frontend Docker Image
   become: yes
   community.docker.docker_image:
-    name: 'ghcr.io/millarcalder/flightlog-frontend:{{ version }}-{{ target_architecture }}'
+    name: 'ghcr.io/millarcalder/{{ frontend_image_name }}:{{ frontend_image_tag }}'
     source: pull
 
 - name: Run the API Docker container
   become: yes
   community.docker.docker_container:
-    name: flightlog-api
+    name: '{{ backend_image_name }}'
     networks:
       - name: flightlog
     state: started
-    image: 'ghcr.io/millarcalder/flightlog-api:{{ version }}-{{ target_architecture }}'
+    image: 'ghcr.io/millarcalder/{{ backend_image_name }}:{{ backend_image_tag }}'
     volumes:
       - '/opt/flightlog/.env:/opt/flightlog/.env:ro'
 
 - name: Run the frontend Docker container
   become: yes
   community.docker.docker_container:
-    name: flightlog-frontend
+    name: '{{ frontend_image_name }}'
     networks:
       - name: flightlog
     state: started
-    image: 'ghcr.io/millarcalder/flightlog-frontend:{{ version }}-{{ target_architecture }}'
+    image: 'ghcr.io/millarcalder/{{ frontend_image_name }}:{{ frontend_image_tag }}'
 
 - name: Run the Nginx Docker container
   become: yes
   community.docker.docker_container:
-    name: flightlog-nginx
+    name: flightlog-viewer-nginx
     networks:
       - name: flightlog
     state: started
     image: nginx
     volumes:
-      - '/opt/flightlog/nginx.conf:/etc/nginx/nginx.conf:ro'
+      - '/opt/flightlog/viewer/nginx.conf:/etc/nginx/nginx.conf:ro'
     ports:
       - 80:80
 

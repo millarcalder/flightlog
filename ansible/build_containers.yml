@@ -1,15 +1,42 @@
-- name: Build docker containers on a remote host
+- name: Build both backend & frontend docker containers for the viewer & logbook projects
   hosts: build_server
+
   pre_tasks:
-    - name: Version
-      ansible.builtin.include_role:
-        name: version
     - name: Load secrets
       include_vars:
         file: vault.yml
         name: secrets
-  roles:
-    - role: build_backend_container
-      when: backend is defined and backend == "yes"
-    - role: build_frontend_container
-      when: frontend is defined and frontend == "yes"
+    - name: What is the CPU architecture of this machine?
+      include_role:
+        name: cpu_architecture
+
+  tasks:
+    - name: Building docker images for the Python backends (FastAPI applications)
+      include_role:
+        name: build_docker_container
+      vars:
+        image_name: 'flightlog-{{ project }}-backend'
+        version: '{{ lookup("file", project_dir+"/{{ project }}/backend/VERSION") }}'
+        required_files:
+          - '{{ project_dir }}/{{ project }}/backend/Dockerfile'
+          - '{{ project_dir }}/{{ project }}/backend/dist/{{ project }}-{{ version }}-py3-none-any.whl'
+      loop:
+        - viewer
+        - logbook
+      loop_control:
+        loop_var: project
+
+    - name: Building docker images for the TypeScript frontends (React applications)
+      include_role:
+        name: build_docker_container
+      vars:
+        image_name: 'flightlog-{{ project }}-frontend'
+        version: '{{ lookup("file", project_dir+"/{{ project }}/frontend/VERSION") }}'
+        required_files:
+          - '{{ project_dir }}/{{ project }}/frontend/Dockerfile'
+          - '{{ project_dir }}/{{ project }}/frontend/build/'
+      loop:
+        - viewer
+        - logbook
+      loop_control:
+        loop_var: project

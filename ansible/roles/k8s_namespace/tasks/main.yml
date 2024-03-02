@@ -1,13 +1,13 @@
-- name: Docker auth token
-  set_fact:
-    docker_auth_token: '{{ secrets["docker_username"] }}:{{ secrets["docker_token"] }}'
-
 - name: Ensure namespace exists
   kubernetes.core.k8s:
     api_version: v1
     kind: Namespace
     name: '{{ namespace }}'
     state: present
+
+- name: Docker auth token
+  set_fact:
+    docker_auth_token: '{{ secrets["docker_username"] }}:{{ secrets["docker_token"] }}'
 
 - name: Docker registry secret
   vars:
@@ -24,14 +24,3 @@
       type: kubernetes.io/dockerconfigjson
       data:
         .dockerconfigjson: '{{ docker_registry_config | to_json | b64encode }}'
-
-- name: Backend API environment vars
-  kubernetes.core.k8s:
-    namespace: '{{ namespace }}'
-    name: flightlog-api-secrets
-    resource_definition:
-      apiVersion: v1
-      kind: Secret
-      stringData: |
-        aws_access_key_id: {{ secrets["aws_access_key_id"] }}
-        aws_secret_access_key: {{ secrets["aws_secret_access_key"] }}
