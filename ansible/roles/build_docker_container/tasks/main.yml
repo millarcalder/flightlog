@@ -1,5 +1,16 @@
-# This exists to build docker images on the target CPU architecture, so it is potentially a remote machine which is why
-# we are copying files to the /tmp directory to buiild from
+# This role exists to build docker images on the target CPU architecture, because I develop on macos but deploy to both
+# arm and x86 machines.
+#
+# Uploading the files was very slow using the built in copy method because of how many files there are, I think it
+# might do a check of the hash for each file, so I hand rolled the commands. I didn't want to upload unecessary files,
+# hence hunting for the files we need and clearing the pycache.
+#
+# Alternate approaches would be
+#  - cloning the git repo on the remote machine
+#  - building the wheel locally and only uploading that. I think I'm using pure python wheels so this is probably the
+#    better approach. But I'm developing in devcontainers, so I would then have to build the wheel in a dev container,
+#    then run the ansible from my localhost because building docker images from within a docker container isn't
+#    straight forward.
 
 - name: Ensure the temp directory for build files is wiped before starting
   ansible.builtin.file:
@@ -11,13 +22,17 @@
     path: '{{ build_dir }}'
     state: directory
 
+- name: Run pyclean to speed up copying backend projects to remote machine
+  ansible.builtin.command: 'pyclean {{ project_dir }}{{ project }}/backend/'
+
 - name: Upload required files
-  ansible.builtin.copy:
-    src: '{{ file }}'
-    dest: '{{ build_dir }}/...'
-  loop: '{{ required_files }}'
+  ansible.builtin.shell: 'ls -dp {{ project_dir }}{{ project }}backend/* | grep -v ".*/$" | xargs -I % cp % {{ build_dir }}'
+
+- name: Upload required dirs
+  ansible.builtin.shell: 'cp -r {{ dir }} {{ build_dir }}'
+  loop: '{{ required_dirs }}'
   loop_control:
-    loop_var: file
+    loop_var: dir
 
 - name: Docker login
   become: yes
@@ -33,7 +48,7 @@
       path: '{{ build_dir }}'
     name: 'ghcr.io/millarcalder/{{ image_name }}'
     tag: '{{ image_tag }}'
-    push: yes
+    # push: yes
     source: build
 
 - name: Docker logout

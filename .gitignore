@@ -12,3 +12,4 @@ node_modules/
 *.log
 
 ansible/inventory/
+ansible/ansible.cfg

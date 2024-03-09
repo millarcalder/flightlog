@@ -1,0 +1,7 @@
+- name: find cpu architecture
+  ansible.builtin.command: 'uname -m'
+  register: output
+
+- name: extract stdout from output
+  set_fact:
+    cpu_architecture: '{{ output.stdout }}'

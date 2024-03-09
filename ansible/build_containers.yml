@@ -8,35 +8,44 @@
         name: secrets
     - name: What is the CPU architecture of this machine?
       include_role:
-        name: cpu_architecture
+        name: what_is_my_cpu_architecture
 
   tasks:
+    - name: Run pyclean to speed up copying backend projects to remote machine
+      ansible.builtin.command: 'pyclean {{ project_dir }}{{ project }}/backend/'
+      loop:
+        - viewer
+        - logbook
+      loop_control:
+        loop_var: project
+
     - name: Building docker images for the Python backends (FastAPI applications)
       include_role:
         name: build_docker_container
       vars:
+        project: '{{ project }}'
         image_name: 'flightlog-{{ project }}-backend'
         version: '{{ lookup("file", project_dir+"/{{ project }}/backend/VERSION") }}'
-        required_files:
-          - '{{ project_dir }}/{{ project }}/backend/Dockerfile'
-          - '{{ project_dir }}/{{ project }}/backend/dist/{{ project }}-{{ version }}-py3-none-any.whl'
+        required_dirs:
+          - '{{ project_dir }}{{ project }}/backend/{{ project }}'
       loop:
         - viewer
         - logbook
       loop_control:
         loop_var: project
 
-    - name: Building docker images for the TypeScript frontends (React applications)
-      include_role:
-        name: build_docker_container
-      vars:
-        image_name: 'flightlog-{{ project }}-frontend'
-        version: '{{ lookup("file", project_dir+"/{{ project }}/frontend/VERSION") }}'
-        required_files:
-          - '{{ project_dir }}/{{ project }}/frontend/Dockerfile'
-          - '{{ project_dir }}/{{ project }}/frontend/build/'
-      loop:
-        - viewer
-        - logbook
-      loop_control:
-        loop_var: project
+    # TODO: haven't sorted out how this will work yet
+    # - name: Building docker images for the TypeScript frontends (React applications)
+    #   include_role:
+    #     name: build_docker_container
+    #   vars:
+    #     image_name: 'flightlog-{{ project }}-frontend'
+    #     version: '{{ lookup("file", project_dir+"/{{ project }}/frontend/VERSION") }}'
+    #     required_files:
+    #       - '{{ project_dir }}/{{ project }}/frontend/Dockerfile'
+    #       - '{{ project_dir }}/{{ project }}/frontend/build/'
+    #   loop:
+    #     - viewer
+    #     - logbook
+    #   loop_control:
+    #     loop_var: project
