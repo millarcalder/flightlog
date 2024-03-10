@@ -1,5 +1,42 @@
-- name: Build both backend & frontend docker containers for the viewer & logbook projects
-  hosts: build_server
+- name: Build the applications
+  hosts: dev_machine
+
+  tasks:
+    - name: build python wheels
+      ansible.builtin.command: make build
+      args:
+        chdir: '{{ project_dir }}{{ project }}/backend'
+      loop:
+        - viewer
+        - logbook
+      loop_control:
+        loop_var: project
+
+    - name: install frontend dependencies
+      ansible.builtin.shell: npm install
+      args:
+        chdir: '{{ project_dir }}{{ project }}/frontend'
+        executable: /bin/bash
+      loop:
+        - viewer
+        - logbook
+      loop_control:
+        loop_var: project
+
+    # TODO: template out the .env file
+    - name: build the frontend bundles
+      ansible.builtin.shell: npm run build
+      args:
+        chdir: '{{ project_dir }}{{ project }}/frontend'
+        executable: /bin/bash
+      loop:
+        - viewer
+        - logbook
+      loop_control:
+        loop_var: project
+
+- name: Build the docker images
+  hosts: build_machine
 
   pre_tasks:
     - name: Load secrets
@@ -11,41 +48,38 @@
         name: what_is_my_cpu_architecture
 
   tasks:
-    - name: Run pyclean to speed up copying backend projects to remote machine
-      ansible.builtin.command: 'pyclean {{ project_dir }}{{ project }}/backend/'
-      loop:
-        - viewer
-        - logbook
-      loop_control:
-        loop_var: project
-
     - name: Building docker images for the Python backends (FastAPI applications)
       include_role:
         name: build_docker_container
       vars:
         project: '{{ project }}'
+        project_type: backend
         image_name: 'flightlog-{{ project }}-backend'
         version: '{{ lookup("file", project_dir+"/{{ project }}/backend/VERSION") }}'
-        required_dirs:
-          - '{{ project_dir }}{{ project }}/backend/{{ project }}'
+        required_files:
+          - '{{ project_dir }}{{ project }}/backend/dist'
+          - '{{ project_dir }}{{ project }}/backend/VERSION'
+          - '{{ project_dir }}{{ project }}/backend/Dockerfile'
       loop:
         - viewer
         - logbook
       loop_control:
         loop_var: project
 
-    # TODO: haven't sorted out how this will work yet
-    # - name: Building docker images for the TypeScript frontends (React applications)
-    #   include_role:
-    #     name: build_docker_container
-    #   vars:
-    #     image_name: 'flightlog-{{ project }}-frontend'
-    #     version: '{{ lookup("file", project_dir+"/{{ project }}/frontend/VERSION") }}'
-    #     required_files:
-    #       - '{{ project_dir }}/{{ project }}/frontend/Dockerfile'
-    #       - '{{ project_dir }}/{{ project }}/frontend/build/'
-    #   loop:
-    #     - viewer
-    #     - logbook
-    #   loop_control:
-    #     loop_var: project
+    - name: Building docker images for the TypeScript frontends (React applications)
+      include_role:
+        name: build_docker_container
+      vars:
+        project: '{{ project }}'
+        project_type: frontend
+        image_name: 'flightlog-{{ project }}-frontend'
+        version: '{{ lookup("file", project_dir+"/{{ project }}/frontend/VERSION") }}'
+        required_files:
+          - '{{ project_dir }}/{{ project }}/frontend/build'
+          - '{{ project_dir }}/{{ project }}/frontend/nginx.conf'
+          - '{{ project_dir }}/{{ project }}/frontend/Dockerfile'
+      loop:
+        - viewer
+        - logbook
+      loop_control:
+        loop_var: project
