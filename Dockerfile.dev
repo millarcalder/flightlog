@@ -1,6 +1,5 @@
 FROM python:3.12
 
-
 # install npm
 ENV NODE_VERSION=v21.7.1
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
@@ -8,5 +7,5 @@ RUN echo "source ~/.bashrc && nvm install ${NODE_VERSION}" | bash
 ENV PATH="${PATH}:/root/.nvm/versions/node/${NODE_VERSION}/bin"
 
 # install ansible
-# COPY requirements.ansible.txt /tmp/requirements.ansible.txt
-# RUN pip install -r /tmp/requirements.ansible.txt
+COPY requirements.ansible.txt /tmp/requirements.ansible.txt
+RUN pip install -r /tmp/requirements.ansible.txt

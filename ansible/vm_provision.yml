@@ -1,5 +1,5 @@
 - name: Provision a Web Server
-  hosts: webservers
+  hosts: webserver
   become: yes
   pre_tasks:
     - name: Load secrets
@@ -7,4 +7,4 @@
         file: vault.yml
         name: secrets
   roles:
-    - role: vm_provision
+    - role: viewer_provision_vm

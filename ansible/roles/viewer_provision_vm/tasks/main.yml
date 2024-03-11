@@ -18,7 +18,7 @@
 
 - name: Add docker apt repository
   ansible.builtin.apt_repository:
-    repo: 'deb [arch=arm64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu impish stable'
+    repo: 'deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu jammy stable'
     state: present
     filename: docker
 
