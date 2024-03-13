@@ -1,11 +1,27 @@
 - name: Build the applications
   hosts: dev_machine
 
+  pre_tasks:
+    - name: Load secrets
+      include_vars:
+        file: vault.yml
+        name: secrets
+
   tasks:
     - name: build python wheels
       ansible.builtin.command: make build
       args:
         chdir: '{{ project_dir }}{{ project }}/backend'
+      loop:
+        - viewer
+        - logbook
+      loop_control:
+        loop_var: project
+
+    - name: template out the frontend .env.production files
+      ansible.builtin.template:
+        src: '{{ project }}.frontend.env.j2'
+        dest: '{{ project_dir }}{{ project }}/frontend/.env.production'
       loop:
         - viewer
         - logbook
@@ -23,7 +39,6 @@
       loop_control:
         loop_var: project
 
-    # TODO: template out the .env file
     - name: build the frontend bundles
       ansible.builtin.shell: npm run build
       args:
@@ -43,6 +58,7 @@
       include_vars:
         file: vault.yml
         name: secrets
+
     - name: What is the CPU architecture of this machine?
       include_role:
         name: what_is_my_cpu_architecture

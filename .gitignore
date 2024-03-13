@@ -5,6 +5,8 @@
 .DS_Store
 .virtualenv
 .env
+.env.development
+.env.production
 *.whl
 dist/
 build/

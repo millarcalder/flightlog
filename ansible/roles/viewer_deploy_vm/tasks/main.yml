@@ -1,14 +1,14 @@
 - name: Create a directory for config files
   become: yes
   ansible.builtin.file:
-    path: /opt/flightlog/viewer
+    path: /opt/flightlog/viewer/backend
     state: directory
 
-- name: Template out the viewer backend env file
+- name: Template out the backend .env file
   become: yes
   ansible.builtin.template:
-    src: '.env.j2'
-    dest: /opt/flightlog/viewer/.env
+    src: 'backend.env.j2'
+    dest: '/opt/flightlog/viewer/backend/.env'
 
 - name: Template out the Nginx config
   become: yes
@@ -50,7 +50,7 @@
     state: started
     image: 'ghcr.io/millarcalder/{{ backend_image_name }}:{{ backend_image_tag }}'
     volumes:
-      - '/opt/flightlog/.env:/opt/flightlog/.env:ro'
+      - '/opt/flightlog/viewer/backend/.env:/opt/flightlog/.env:ro'
 
 - name: Run the frontend Docker container
   become: yes
