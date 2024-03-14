@@ -1,15 +1,101 @@
-- name: Build docker containers on a remote host
-  hosts: build_server
+- name: Build the applications
+  hosts: dev_machine
+
   pre_tasks:
-    - name: Version
-      ansible.builtin.include_role:
-        name: version
     - name: Load secrets
       include_vars:
         file: vault.yml
         name: secrets
-  roles:
-    - role: build_backend_container
-      when: backend is defined and backend == "yes"
-    - role: build_frontend_container
-      when: frontend is defined and frontend == "yes"
+
+  tasks:
+    - name: build python wheels
+      ansible.builtin.command: make build
+      args:
+        chdir: '{{ project_dir }}{{ project }}/backend'
+      loop:
+        - viewer
+        - logbook
+      loop_control:
+        loop_var: project
+
+    - name: template out the frontend .env.production files
+      ansible.builtin.template:
+        src: '{{ project }}.frontend.env.j2'
+        dest: '{{ project_dir }}{{ project }}/frontend/.env.production'
+      loop:
+        - viewer
+        - logbook
+      loop_control:
+        loop_var: project
+
+    - name: install frontend dependencies
+      ansible.builtin.shell: npm install
+      args:
+        chdir: '{{ project_dir }}{{ project }}/frontend'
+        executable: /bin/bash
+      loop:
+        - viewer
+        - logbook
+      loop_control:
+        loop_var: project
+
+    - name: build the frontend bundles
+      ansible.builtin.shell: npm run build
+      args:
+        chdir: '{{ project_dir }}{{ project }}/frontend'
+        executable: /bin/bash
+      loop:
+        - viewer
+        - logbook
+      loop_control:
+        loop_var: project
+
+- name: Build the docker images
+  hosts: build_machine
+
+  pre_tasks:
+    - name: Load secrets
+      include_vars:
+        file: vault.yml
+        name: secrets
+
+    - name: What is the CPU architecture of this machine?
+      include_role:
+        name: what_is_my_cpu_architecture
+
+  tasks:
+    - name: Building docker images for the Python backends (FastAPI applications)
+      include_role:
+        name: build_docker_container
+      vars:
+        project: '{{ project }}'
+        project_type: backend
+        image_name: 'flightlog-{{ project }}-backend'
+        version: '{{ lookup("file", project_dir+"/{{ project }}/backend/VERSION") }}'
+        required_files:
+          - '{{ project_dir }}{{ project }}/backend/dist'
+          - '{{ project_dir }}{{ project }}/backend/VERSION'
+          - '{{ project_dir }}{{ project }}/backend/Dockerfile'
+      loop:
+        - viewer
+        - logbook
+      loop_control:
+        loop_var: project
+
+    - name: Building docker images for the TypeScript frontends (React applications)
+      include_role:
+        name: build_docker_container
+      vars:
+        project: '{{ project }}'
+        project_type: frontend
+        image_name: 'flightlog-{{ project }}-frontend'
+        version: '{{ lookup("file", project_dir+"/{{ project }}/frontend/VERSION") }}'
+        required_files:
+          - '{{ project_dir }}/{{ project }}/frontend/build'
+          - '{{ project_dir }}/{{ project }}/frontend/nginx.conf'
+          - '{{ project_dir }}/{{ project }}/frontend/Dockerfile'
+      loop:
+        - viewer
+        - logbook
+      loop_control:
+        loop_var: project

@@ -1,0 +1,7 @@
+backend_image_name: 'flightlog-viewer-backend'
+backend_version: '{{ lookup("file", project_dir+"/viewer/backend/VERSION") }}'
+backend_image_tag: '{{ backend_version }}-{{ cpu_architecture }}'
+
+frontend_image_name: 'flightlog-viewer-frontend'
+frontend_version: '{{ lookup("file", project_dir+"/viewer/frontend/VERSION") }}'
+frontend_image_tag: '{{ frontend_version }}-{{ cpu_architecture }}'

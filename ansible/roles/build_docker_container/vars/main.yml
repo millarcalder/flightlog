@@ -1,0 +1,2 @@
+build_dir: '/tmp/flightlog-build-docker-containers/{{ project }}/{{ project_type }}'
+image_tag: '{{ version }}-{{ cpu_architecture }}'

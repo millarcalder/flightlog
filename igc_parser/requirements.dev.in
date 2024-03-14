@@ -1,0 +1,5 @@
+black
+pytest
+pip-tools
+setuptools
+twine

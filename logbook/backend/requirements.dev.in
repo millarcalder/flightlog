@@ -1,0 +1,6 @@
+black
+build
+httpx
+pip-tools
+pytest
+setuptools

@@ -1,0 +1,50 @@
+- name: Install basic dependencies
+  notify: Reboot
+  ansible.builtin.apt:
+    pkg:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+      - python3-pip
+      - snapd
+    update_cache: yes
+
+### Install Docker ###
+- name: Add Apt signing key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+    keyring: /usr/share/keyrings/docker-archive-keyring.gpg
+
+- name: Add docker apt repository
+  ansible.builtin.apt_repository:
+    repo: 'deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu jammy stable'
+    state: present
+    filename: docker
+
+- name: Install docker
+  notify: Reboot
+  ansible.builtin.apt:
+    pkg:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    update_cache: yes
+
+- name: Install docker pip package
+  pip:
+    name: docker
+
+### Install certbot ###
+- name: certbot
+  community.general.snap:
+    name: certbot
+    classic: true
+
+- name: symlink certbot executable
+  ansible.builtin.file:
+    src: /snap/bin/certbot
+    dest: /usr/bin/certbot
+    state: link

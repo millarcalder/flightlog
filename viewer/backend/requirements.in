@@ -1,0 +1,8 @@
+boto3
+click
+fastapi
+pydantic-settings
+python-multipart
+requests
+uvicorn[standard]
+igc-parser

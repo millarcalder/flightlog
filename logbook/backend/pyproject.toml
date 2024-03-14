@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "logbook"
+requires-python = "~=3.12"
+dynamic = ["version", "dependencies"]
+
+[tool.setuptools.dynamic]
+version = {"file"="VERSION"}
+dependencies = {file = "requirements.txt"}
+
+[project.scripts]
+logbook = "logbook.cli:cli"
