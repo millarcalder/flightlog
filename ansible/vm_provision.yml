@@ -1,5 +1,5 @@
 - name: Provision a Web Server
-  hosts: webserver
+  hosts: viewer_webserver
   become: yes
   pre_tasks:
     - name: Load secrets

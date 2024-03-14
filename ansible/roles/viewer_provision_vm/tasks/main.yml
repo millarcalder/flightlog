@@ -8,8 +8,10 @@
       - gnupg
       - lsb-release
       - python3-pip
+      - snapd
     update_cache: yes
 
+### Install Docker ###
 - name: Add Apt signing key
   ansible.builtin.apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
@@ -34,3 +36,15 @@
 - name: Install docker pip package
   pip:
     name: docker
+
+### Install certbot ###
+- name: certbot
+  community.general.snap:
+    name: certbot
+    classic: true
+
+- name: symlink certbot executable
+  ansible.builtin.file:
+    src: /snap/bin/certbot
+    dest: /usr/bin/certbot
+    state: link
