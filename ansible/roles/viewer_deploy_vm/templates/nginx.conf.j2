@@ -1,8 +1,11 @@
 events {}
 http {
     server {
-        listen 80;
-        proxy_set_header Host $host;
+        listen                     443 ssl;
+        server_name                flightlog.millarcalder.com;
+        ssl_certificate            /opt/flightlog/ssl/fullchain.pem;
+        ssl_certificate_key        /opt/flightlog/ssl/privkey.pem;
+        proxy_set_header Host      $host;
         proxy_set_header X-Real-IP $remote_addr;
 
         location / {
