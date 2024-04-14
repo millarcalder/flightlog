@@ -28,6 +28,21 @@ services:
     networks:
       - flightlog
 
+  db:
+    image: postgres
+    container_name: flightlog-db
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - ./logbook/backend/logbook/tests/data/init.sql:/docker-entrypoint-initdb.d/logbook_init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - flightlog
+
   dev:
     build:
       dockerfile: Dockerfile.dev
