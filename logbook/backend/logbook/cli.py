@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from logbook.webapp.app import init_app
 from logbook.tests.data.data import insert_testing_data
-from logbook.backend.logbook.lib.data_models import Base
+from logbook.lib.data_models import Base
 
 
 @click.group()

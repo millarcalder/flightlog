@@ -8,14 +8,14 @@ from datetime import datetime
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from logbook.backend.logbook.lib.data_models import User as DBUser
-from logbook.backend.logbook.lib.data_models import Site as DBSite
-from logbook.backend.logbook.lib.data_models import Glider as DBGlider
-from logbook.backend.logbook.lib.data_models import Flight as DBFlight
-from logbook.backend.logbook.lib.domain_models import User as UserModel
-from logbook.backend.logbook.lib.domain_models import Site as SiteModel
-from logbook.backend.logbook.lib.domain_models import Glider as GliderModel
-from logbook.backend.logbook.lib.domain_models import Flight as FlightModel
+from logbook.lib.data_models import User as DBUser
+from logbook.lib.data_models import Site as DBSite
+from logbook.lib.data_models import Glider as DBGlider
+from logbook.lib.data_models import Flight as DBFlight
+from logbook.lib.domain_models import User as UserModel
+from logbook.lib.domain_models import Site as SiteModel
+from logbook.lib.domain_models import Glider as GliderModel
+from logbook.lib.domain_models import Flight as FlightModel
 
 
 def get_user_for_flight(root: "Flight"):

@@ -3,10 +3,10 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 
-from logbook.backend.logbook.lib.data_models import Site
-from logbook.backend.logbook.lib.data_models import User
-from logbook.backend.logbook.lib.data_models import Glider
-from logbook.backend.logbook.lib.data_models import Flight
+from logbook.lib.data_models import Site
+from logbook.lib.data_models import User
+from logbook.lib.data_models import Glider
+from logbook.lib.data_models import Flight
 
 
 def insert_testing_data(sess: Session):
