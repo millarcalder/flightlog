@@ -1,0 +1,42 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table users {
+  id number [PK]
+  first_name string
+  last_name string
+}
+
+Table gliders {
+  id number [PK]
+  user_id number [Ref: > users.id]
+  model string
+  manufacturer string
+  rating string
+}
+
+Table sites {
+  id number [PK]
+  name string
+  description string
+  latitude number
+  longitude number
+  altitude number  // meters
+  country string
+}
+
+Table flights {
+  id number [PK]
+  date_of_flight date
+  user_id number [Ref: > users.id]
+  site_id number [Ref: > sites.id]
+  glider_id number [Ref: > gliders.id]
+  start_time datetime
+  stop_time datetime
+  max_altitude number [null]  // meters
+  wind_speed number [null]    // kmph
+  wind_dir number [null]      // degrees celsius
+  comments string
+  igc_s3 string [null]
+  flightlog_viewer_link string [null]
+}
