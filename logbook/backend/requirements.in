@@ -1,5 +1,9 @@
 click
 fastapi
+psycopg
+pydantic
 pydantic-settings
 python-multipart
+strawberry-graphql[fastapi]
+sqlalchemy
 uvicorn[standard]

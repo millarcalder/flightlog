@@ -1,10 +1,13 @@
 import click
 import logging
-import os
 import uvicorn
 
-from logbook.config import Settings
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
+
 from logbook.webapp.app import init_app
+from logbook.tests.data.data import insert_testing_data
+from logbook.backend.logbook.lib.data_models import Base
 
 
 @click.group()
@@ -24,6 +27,23 @@ def cli(env: str):
         file_handler.setLevel(logging.WARNING)
         file_handler.setFormatter(formatter)
         root_logger.addHandler(file_handler)
+
+
+@cli.command()
+def test_db_up():
+    engine = create_engine("postgresql+psycopg://root:secret@flightlog-db:5432/logbook", echo=True)
+    Base.metadata.create_all(engine)
+    with Session(engine) as sess:
+        insert_testing_data(sess)
+        sess.commit()
+    engine.dispose()
+
+
+@cli.command()
+def test_db_down():
+    engine = create_engine("postgresql+psycopg://root:secret@flightlog-db:5432/logbook", echo=True)
+    Base.metadata.drop_all(engine)
+    engine.dispose()
 
 
 @cli.command()
