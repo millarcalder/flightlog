@@ -1,0 +1,6 @@
+class LogbookException(Exception):
+    ...
+
+
+class NotFoundException(LogbookException):
+    ...

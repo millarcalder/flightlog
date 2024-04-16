@@ -1,3 +1,5 @@
+import contextlib
+
 import strawberry
 import logbook.webapp.app_globals as app_globals
 import logbook.webapp.app_globals as app_globals
@@ -5,101 +7,77 @@ import logbook.webapp.app_globals as app_globals
 from datetime import date
 from datetime import datetime
 
+from strawberry.fastapi import BaseContext
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from logbook.lib.data_models import User as DBUser
 from logbook.lib.data_models import Site as DBSite
 from logbook.lib.data_models import Glider as DBGlider
 from logbook.lib.data_models import Flight as DBFlight
-from logbook.lib.domain_models import User as UserModel
 from logbook.lib.domain_models import Site as SiteModel
 from logbook.lib.domain_models import Glider as GliderModel
 from logbook.lib.domain_models import Flight as FlightModel
 
 
-def get_user_for_flight(root: "Flight"):
-    stmt = select(DBUser).where(DBUser.id == root.user_id)
-    with Session(app_globals.db_engine) as sess:
-        res = sess.execute(stmt).first()
-    return User(**UserModel.model_validate(res[0]).model_dump())
+class CustomContext(BaseContext):
+    def __init__(self, user_id: int):
+        self.user_id = user_id
+
+    @classmethod
+    @contextlib.contextmanager
+    def db_sess(cls):
+        sess = Session(app_globals.db_engine)
+        yield sess
+        sess.close()
 
 
-def get_site_for_flight(root: "Flight"):
+def get_site_for_flight(info: strawberry.Info, root: "Flight"):
     stmt = select(DBSite).where(DBSite.id == root.site_id)
-    with Session(app_globals.db_engine) as sess:
+    with info.context.db_sess() as sess:
         res = sess.execute(stmt).first()
     return Site(**SiteModel.model_validate(res[0]).model_dump())
 
 
-def get_glider_for_flight(root: "Flight"):
-    stmt = select(DBGlider).where(DBGlider.id == root.glider_id)
-    with Session(app_globals.db_engine) as sess:
+def get_glider_for_flight(info: strawberry.Info, root: "Flight"):
+    stmt = select(DBGlider).where(DBGlider.id == root.glider_id).where(DBGlider.user_id == info.context.user_id)
+    with info.context.db_sess() as sess:
         res = sess.execute(stmt).first()
     return Glider(**GliderModel.model_validate(res[0]).model_dump())
 
 
-def get_flights_for_site(root: "Site"):
-    stmt = select(DBFlight).where(DBFlight.site_id == root.id)
-    with Session(app_globals.db_engine) as sess:
+def get_flights_for_site(info: strawberry.Info, root: "Site"):
+    stmt = select(DBFlight).where(DBFlight.site_id == root.id).where(DBFlight.user_id == info.context.user_id)
+    with info.context.db_sess() as sess:
         res = sess.execute(stmt).all()
     return [Flight(**FlightModel.model_validate(s[0]).model_dump()) for s in res]
 
 
-def get_gliders_for_user(root: "User"):
-    stmt = select(DBGlider).where(DBGlider.user_id == root.id)
-    with Session(app_globals.db_engine) as sess:
-        res = sess.execute(stmt).all()
-    return [Glider(**GliderModel.model_validate(s[0]).model_dump()) for s in res]
-
-
-def get_flights_for_user(root: "User"):
-    stmt = select(DBFlight).where(DBFlight.user_id == root.id)
-    with Session(app_globals.db_engine) as sess:
+def get_flights_for_glider(info: strawberry.Info, root: "Glider"):
+    stmt = select(DBFlight).where(DBFlight.glider_id == root.id).where(DBFlight.user_id == info.context.user_id)
+    with info.context.db_sess() as sess:
         res = sess.execute(stmt).all()
     return [Flight(**FlightModel.model_validate(s[0]).model_dump()) for s in res]
 
 
-def get_user_for_glider(root: "Glider"):
-    stmt = select(DBUser).where(DBUser.id == root.user_id)
-    with Session(app_globals.db_engine) as sess:
-        res = sess.execute(stmt).first()
-    return User(**UserModel.model_validate(res[0]).model_dump())
-
-
-def get_flights_for_glider(root: "Glider"):
-    stmt = select(DBFlight).where(DBFlight.glider_id == root.id)
-    with Session(app_globals.db_engine) as sess:
-        res = sess.execute(stmt).all()
-    return [Flight(**FlightModel.model_validate(s[0]).model_dump()) for s in res]
-
-
-def get_sites(country: str|None = None):
+def get_sites(info: strawberry.Info, country: str|None = None):
     stmt = select(DBSite)
     if country:
         stmt = stmt.where(DBSite.country == country)
-    with Session(app_globals.db_engine) as sess:
+    with info.context.db_sess() as sess:
         res = sess.execute(stmt).all()
     return [Site(**SiteModel.model_validate(s[0]).model_dump()) for s in res]
 
 
-def get_users():
-    stmt = select(DBUser)
-    with Session(app_globals.db_engine) as sess:
-        res = sess.execute(stmt).all()
-    return [User(**UserModel.model_validate(s[0]).model_dump()) for s in res]
-
-
-def get_gliders():
-    stmt = select(DBGlider)
-    with Session(app_globals.db_engine) as sess:
+def get_gliders(info: strawberry.Info):
+    stmt = select(DBGlider).where(DBGlider.user_id == info.context.user_id)
+    with info.context.db_sess() as sess:
         res = sess.execute(stmt).all()
     return [Glider(**GliderModel.model_validate(s[0]).model_dump()) for s in res]
 
 
-def get_flights():
-    stmt = select(DBFlight)
-    with Session(app_globals.db_engine) as sess:
+def get_flights(info: strawberry.Info):
+    stmt = select(DBFlight).where(DBFlight.user_id == info.context.user_id)
+    with info.context.db_sess() as sess:
         res = sess.execute(stmt).all()
     return [Flight(**FlightModel.model_validate(s[0]).model_dump()) for s in res]
 
@@ -118,16 +96,6 @@ class Site:
 
 
 @strawberry.type
-class User:
-    id: int
-    first_name: str
-    last_name: str
-
-    gliders: list["Glider"] = strawberry.field(resolver=get_gliders_for_user)
-    flights: list["Flight"] = strawberry.field(resolver=get_flights_for_user)
-
-
-@strawberry.type
 class Glider:
     id: int
     user_id: int
@@ -135,7 +103,6 @@ class Glider:
     manufacturer: str
     rating: str
 
-    user: User = strawberry.field(resolver=get_user_for_glider)
     flights: list["Flight"] = strawberry.field(resolver=get_flights_for_glider)
 
 
@@ -155,7 +122,6 @@ class Flight:
     igc_s3: str|None
     flightlog_viewer_link: str|None
 
-    user: User = strawberry.field(resolver=get_user_for_flight)
     glider: Glider = strawberry.field(resolver=get_glider_for_flight)
     site: Site = strawberry.field(resolver=get_site_for_flight)
 
@@ -163,7 +129,6 @@ class Flight:
 @strawberry.type
 class Query:
     sites: list[Site] = strawberry.field(resolver=get_sites)
-    users: list[User] = strawberry.field(resolver=get_users)
     gliders: list[Glider] = strawberry.field(resolver=get_gliders)
     flights: list[Flight] = strawberry.field(resolver=get_flights)
 
