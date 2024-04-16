@@ -39,8 +39,10 @@ class User(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    email_address: str
     first_name: str
     last_name: str
+    hashed_password: str
 
 
 class Glider(BaseModel):

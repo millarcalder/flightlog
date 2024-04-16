@@ -34,8 +34,10 @@ class User(Base):
     __tablename__ = 'users'
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    email_address: Mapped[str] = mapped_column(String())
     first_name: Mapped[str] = mapped_column(String())
     last_name: Mapped[str] = mapped_column(String())
+    hashed_password: Mapped[str] = mapped_column(String())
 
     gliders: Mapped[list["Glider"]] = relationship("Glider", back_populates="user")
     flights: Mapped[list["Flight"]] = relationship("Flight", back_populates="user")

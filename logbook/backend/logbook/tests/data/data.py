@@ -37,12 +37,16 @@ def insert_testing_data(sess: Session):
     sess.add_all([stubai, pukerua_bay])
 
     millar_calder = User(
+        email_address='millar9819@gmail.com',
         first_name='Millar',
-        last_name='Calder'
+        last_name='Calder',
+        hashed_password='$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW'
     )
     luke_skywalker = User(
+        email_address='lukeskywalker@gmail.com',
         first_name='Luke',
-        last_name='Skywalker'
+        last_name='Skywalker',
+        hashed_password='...'
     )
     sess.add_all([millar_calder, luke_skywalker])
     sess.flush()  # send inserts to the DB so we can access generated IDs

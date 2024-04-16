@@ -7,3 +7,5 @@ python-multipart
 strawberry-graphql[fastapi]
 sqlalchemy
 uvicorn[standard]
+passlib[bcrypt]
+python-jose[cryptography]
