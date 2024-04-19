@@ -24,7 +24,7 @@ def test_sites(country, site_names):
         assert {'name': site_name} in result.data['sites']
 
 
-def test_site_relations():
+def test_sites__relations():
     query = """
         {
             sites {
@@ -52,3 +52,49 @@ def test_gliders():
     result = schema.execute_sync(query, context_value=CustomContext(1))
     assert 'gliders' in result.data
     assert result.data['gliders'] == [{'manufacturer': 'GIN', 'model': 'Bolero 6'}]
+
+
+def test_gliders__relations():
+    query = """
+    {
+        gliders {
+            manufacturer
+            model
+            flights {
+                dateOfFlight
+            }
+        }
+    }
+    """
+    result = schema.execute_sync(query, context_value=CustomContext(1))
+    assert 'gliders' in result.data
+    assert result.data['gliders'] == [{'manufacturer': 'GIN', 'model': 'Bolero 6', 'flights': [{'dateOfFlight': '2023-01-01'}]}]
+
+
+def test_flights__relations():
+    query = """
+    {
+        flights {
+            dateOfFlight
+            glider {
+                manufacturer
+                model
+            }
+            site {
+                name
+            }
+        }
+    }
+    """
+    result = schema.execute_sync(query, context_value=CustomContext(1))
+    assert 'flights' in result.data
+    assert result.data['flights'] == [{
+        'dateOfFlight': '2023-01-01',
+        'glider': {
+            'manufacturer': 'GIN',
+            'model': 'Bolero 6'
+        },
+        'site': {
+            'name': 'Stubai - Elfer'
+        }
+    }]
