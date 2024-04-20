@@ -31,7 +31,9 @@ def cli(env: str):
 
 @cli.command()
 def test_db_up():
-    engine = create_engine("postgresql+psycopg://root:secret@flightlog-db:5432/logbook", echo=True)
+    engine = create_engine(
+        "postgresql+psycopg://root:secret@flightlog-db:5432/logbook", echo=True
+    )
     Base.metadata.create_all(engine)
     with Session(engine) as sess:
         insert_testing_data(sess)
@@ -41,7 +43,9 @@ def test_db_up():
 
 @cli.command()
 def test_db_down():
-    engine = create_engine("postgresql+psycopg://root:secret@flightlog-db:5432/logbook", echo=True)
+    engine = create_engine(
+        "postgresql+psycopg://root:secret@flightlog-db:5432/logbook", echo=True
+    )
     Base.metadata.drop_all(engine)
     engine.dispose()
 

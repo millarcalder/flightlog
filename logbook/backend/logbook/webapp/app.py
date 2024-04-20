@@ -21,7 +21,7 @@ async def _lifespan(app: FastAPI):
     app_globals.db_engine.dispose()
 
 
-async def _graphql_context(current_user = Depends(get_current_user)):
+async def _graphql_context(current_user=Depends(get_current_user)):
     """
     sets up the GraphQL context
     """
@@ -29,7 +29,9 @@ async def _graphql_context(current_user = Depends(get_current_user)):
 
 
 app = FastAPI(lifespan=_lifespan)
-app.include_router(GraphQLRouter(schema, context_getter=_graphql_context), prefix='/graphql')
+app.include_router(
+    GraphQLRouter(schema, context_getter=_graphql_context), prefix="/graphql"
+)
 app.include_router(auth_router)
 
 
@@ -39,9 +41,7 @@ def init_app(env_file=None) -> FastAPI:
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[
-            "*"
-        ],
+        allow_origins=["*"],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

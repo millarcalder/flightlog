@@ -12,12 +12,11 @@ from sqlalchemy import Date
 from sqlalchemy import DateTime
 
 
-class Base(DeclarativeBase):
-    ...
+class Base(DeclarativeBase): ...
 
 
 class Site(Base):
-    __tablename__ = 'sites'
+    __tablename__ = "sites"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String())
@@ -31,7 +30,7 @@ class Site(Base):
 
 
 class User(Base):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     email_address: Mapped[str] = mapped_column(String())
@@ -44,7 +43,7 @@ class User(Base):
 
 
 class Glider(Base):
-    __tablename__ = 'gliders'
+    __tablename__ = "gliders"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id = mapped_column(ForeignKey("users.id"))
@@ -57,7 +56,7 @@ class Glider(Base):
 
 
 class Flight(Base):
-    __tablename__ = 'flights'
+    __tablename__ = "flights"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     date_of_flight: Mapped[date] = mapped_column(Date())
@@ -66,12 +65,12 @@ class Flight(Base):
     glider_id: Mapped[int] = mapped_column(ForeignKey("gliders.id"))
     start_time: Mapped[datetime] = mapped_column(DateTime())
     stop_time: Mapped[datetime] = mapped_column(DateTime())
-    max_altitude: Mapped[int|None] = mapped_column(Integer())
-    wind_speed: Mapped[float|None] = mapped_column(Float())
-    wind_dir: Mapped[float|None] = mapped_column(Float())
+    max_altitude: Mapped[int | None] = mapped_column(Integer())
+    wind_speed: Mapped[float | None] = mapped_column(Float())
+    wind_dir: Mapped[float | None] = mapped_column(Float())
     comments: Mapped[str] = mapped_column(String())
-    igc_s3: Mapped[str|None] = mapped_column(String())
-    flightlog_viewer_link: Mapped[str|None] = mapped_column(String())
+    igc_s3: Mapped[str | None] = mapped_column(String())
+    flightlog_viewer_link: Mapped[str | None] = mapped_column(String())
 
     user: Mapped["User"] = relationship("User", back_populates="flights")
     glider: Mapped[list["Glider"]] = relationship("Glider", back_populates="flights")

@@ -39,27 +39,39 @@ def get_site_for_flight(info: strawberry.Info, root: "Flight"):
 
 
 def get_glider_for_flight(info: strawberry.Info, root: "Flight"):
-    stmt = select(DBGlider).where(DBGlider.id == root.glider_id).where(DBGlider.user_id == info.context.user_id)
+    stmt = (
+        select(DBGlider)
+        .where(DBGlider.id == root.glider_id)
+        .where(DBGlider.user_id == info.context.user_id)
+    )
     with info.context.db_sess() as sess:
         res = sess.execute(stmt).first()
     return Glider(**GliderModel.model_validate(res[0]).model_dump())
 
 
 def get_flights_for_site(info: strawberry.Info, root: "Site"):
-    stmt = select(DBFlight).where(DBFlight.site_id == root.id).where(DBFlight.user_id == info.context.user_id)
+    stmt = (
+        select(DBFlight)
+        .where(DBFlight.site_id == root.id)
+        .where(DBFlight.user_id == info.context.user_id)
+    )
     with info.context.db_sess() as sess:
         res = sess.execute(stmt).all()
     return [Flight(**FlightModel.model_validate(s[0]).model_dump()) for s in res]
 
 
 def get_flights_for_glider(info: strawberry.Info, root: "Glider"):
-    stmt = select(DBFlight).where(DBFlight.glider_id == root.id).where(DBFlight.user_id == info.context.user_id)
+    stmt = (
+        select(DBFlight)
+        .where(DBFlight.glider_id == root.id)
+        .where(DBFlight.user_id == info.context.user_id)
+    )
     with info.context.db_sess() as sess:
         res = sess.execute(stmt).all()
     return [Flight(**FlightModel.model_validate(s[0]).model_dump()) for s in res]
 
 
-def get_sites(info: strawberry.Info, country: str|None = None):
+def get_sites(info: strawberry.Info, country: str | None = None):
     stmt = select(DBSite)
     if country:
         stmt = stmt.where(DBSite.country == country)
@@ -81,7 +93,7 @@ def get_flights(info: strawberry.Info):
         res = sess.execute(stmt).all()
     return [Flight(**FlightModel.model_validate(s[0]).model_dump()) for s in res]
 
- 
+
 @strawberry.type
 class Site:
     id: int
@@ -115,12 +127,12 @@ class Flight:
     glider_id: int
     start_time: datetime
     stop_time: datetime
-    max_altitude: int|None
-    wind_speed: float|None
-    wind_dir: float|None
+    max_altitude: int | None
+    wind_speed: float | None
+    wind_dir: float | None
     comments: str
-    igc_s3: str|None
-    flightlog_viewer_link: str|None
+    igc_s3: str | None
+    flightlog_viewer_link: str | None
 
     glider: Glider = strawberry.field(resolver=get_glider_for_flight)
     site: Site = strawberry.field(resolver=get_site_for_flight)
