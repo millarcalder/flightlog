@@ -1,15 +1,24 @@
-import React from 'react';
+import React, {createContext} from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import Store from './store';
+
+import './index.scss';
+import 'mapbox-gl/dist/mapbox-gl.css';
+
+
+const store = new Store();
+export const StoreContext = createContext<Store>(store);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <StoreContext.Provider value={store}>
+      <App />
+    </StoreContext.Provider>
   </React.StrictMode>
 );
 
