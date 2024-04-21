@@ -41,7 +41,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 
     try:
         token_data = TokenData(**payload)
-    except:
+    except Exception:
         raise HTTPUnauthenticatedException
 
     try:
