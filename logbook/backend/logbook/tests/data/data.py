@@ -1,12 +1,8 @@
-from datetime import date
-from datetime import datetime
+from datetime import date, datetime
 
 from sqlalchemy.orm import Session
 
-from logbook.lib.data_models import Site
-from logbook.lib.data_models import User
-from logbook.lib.data_models import Glider
-from logbook.lib.data_models import Flight
+from logbook.lib.data_models import Flight, Glider, Site, User
 
 
 def insert_testing_data(sess: Session):

@@ -1,9 +1,12 @@
 import pytest
 from pydantic import ValidationError
-from logbook.lib.domain_models import validate_latitude
-from logbook.lib.domain_models import validate_longitude
-from logbook.lib.domain_models import validate_altitude
-from logbook.lib.domain_models import Site
+
+from logbook.lib.domain_models import (
+    Site,
+    validate_altitude,
+    validate_latitude,
+    validate_longitude,
+)
 
 
 @pytest.mark.parametrize(

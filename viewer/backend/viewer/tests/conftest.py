@@ -1,7 +1,7 @@
 import boto3
 import pytest
-from viewer.tests import TEST_FILES_DIR
-from viewer.tests import TEST_S3_BUCKET
+
+from viewer.tests import TEST_FILES_DIR, TEST_S3_BUCKET
 
 
 @pytest.fixture(scope="session")

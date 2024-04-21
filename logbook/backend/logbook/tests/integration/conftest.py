@@ -1,11 +1,10 @@
 import pytest
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from logbook.tests.integration import DATABASE_URI
 from logbook.lib.data_models import Base
 from logbook.tests.data.data import insert_testing_data
+from logbook.tests.integration import DATABASE_URI
 
 
 @pytest.fixture(autouse=True)

@@ -1,10 +1,8 @@
 from dataclasses import dataclass
-from datetime import datetime
-from datetime import time
+from datetime import datetime, time
 from typing import TypedDict
 
-from igc_parser.exceptions import InvalidIgcFile
-from igc_parser.exceptions import InvalidTrackPointLine
+from igc_parser.exceptions import InvalidIgcFile, InvalidTrackPointLine
 from igc_parser.latlng import haversine
 
 

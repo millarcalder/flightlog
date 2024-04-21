@@ -1,14 +1,16 @@
 import os
-import pytest
 from datetime import time
 from pathlib import Path
-from igc_parser.exceptions import InvalidIgcFile
-from igc_parser.exceptions import InvalidTrackPointLine
-from igc_parser import parse_igc_bytes
-from igc_parser import parse_igc_str
 
+import pytest
 
-test_file_path = f"{Path(os.path.dirname(os.path.realpath(__file__))).parents[3]}/data/220415234416.igc"
+from igc_parser import parse_igc_bytes, parse_igc_str
+from igc_parser.exceptions import InvalidIgcFile, InvalidTrackPointLine
+
+test_file_path = (
+    f"{Path(os.path.dirname(os.path.realpath(__file__))).parents[3]}"
+    "/data/220415234416.igc"
+)
 
 
 def test_parse_igc_str__valid():
@@ -54,17 +56,24 @@ def test_parse_igc_bytes__valid():
 def test_parse_igc_str__too_short():
     with pytest.raises(InvalidIgcFile):
         parse_igc_str(
-            "B2344163749222S17554358EA0067900752\nB2344173749221S17554353EA0067800752\nA2344173749221S17554353EA0067800752\nA2344173749221S17554353EA0067800752"
+            "B2344163749222S17554358EA0067900752\n"
+            "B2344173749221S17554353EA0067800752\n"
+            "A2344173749221S17554353EA0067800752\n"
+            "A2344173749221S17554353EA0067800752"
         )
 
 
 def test_parse_igc_str__invalid_line():
     with pytest.raises(InvalidTrackPointLine):
         parse_igc_str(
-            "B234416374helloworld9222S17554358EA0067900752\nB2344173749221S17554353EA0067800752\nB2344183749221S17554353EA0067800752"
+            "B234416374helloworld9222S17554358EA0067900752\n"
+            "B2344173749221S17554353EA0067800752\n"
+            "B2344183749221S17554353EA0067800752"
         )
 
     with pytest.raises(InvalidTrackPointLine):
         parse_igc_str(
-            "B234416374\nB2344173749221S17554353EA0067800752\nB2344183749221S17554353EA0067800752"
+            "B234416374\n"
+            "B2344173749221S17554353EA0067800752\n"
+            "B2344183749221S17554353EA0067800752"
         )

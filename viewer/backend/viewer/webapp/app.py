@@ -1,17 +1,13 @@
-import boto3
 import os
 from pathlib import Path
 
-from fastapi import Depends
-from fastapi import FastAPI
-from fastapi import File
+import boto3
+from fastapi import Depends, FastAPI, File
 from fastapi.middleware.cors import CORSMiddleware
 from igc_parser import parse_igc_bytes
 
 from viewer.config import Settings
-from viewer.lib.s3_helpers import extract_flight_log_from_s3
-from viewer.lib.s3_helpers import upload_igc_to_s3
-
+from viewer.lib.s3_helpers import extract_flight_log_from_s3, upload_igc_to_s3
 
 settings = None
 app = FastAPI()
@@ -23,9 +19,7 @@ def init_app(env_file=None) -> FastAPI:
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[
-            "*"
-        ],
+        allow_origins=["*"],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

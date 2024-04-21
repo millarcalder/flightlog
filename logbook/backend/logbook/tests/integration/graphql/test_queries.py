@@ -1,6 +1,6 @@
 import pytest
-from logbook.lib.graphql_schema import schema
-from logbook.lib.graphql_schema import CustomContext
+
+from logbook.lib.graphql_schema import CustomContext, schema
 
 
 @pytest.mark.parametrize(

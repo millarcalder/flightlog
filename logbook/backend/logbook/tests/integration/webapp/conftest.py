@@ -1,9 +1,10 @@
-import pytest
-import logbook.webapp.app_globals as app_globals
 from datetime import timedelta
+
+import pytest
 from fastapi.testclient import TestClient
-from logbook.lib.auth import generate_access_token
-from logbook.lib.auth import TokenData
+
+import logbook.webapp.app_globals as app_globals
+from logbook.lib.auth import TokenData, generate_access_token
 from logbook.webapp.app import init_app
 
 

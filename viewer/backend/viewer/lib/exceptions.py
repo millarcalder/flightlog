@@ -1,5 +1,4 @@
-class ViewerException(Exception):
-    ...
+class ViewerException(Exception): ...
 
 
 class InvalidFlightLogName(ViewerException):

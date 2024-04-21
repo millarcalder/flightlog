@@ -1,15 +1,7 @@
-from datetime import date
-from datetime import datetime
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.orm import Mapped
-from sqlalchemy import ForeignKey
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import relationship
-from sqlalchemy import String
-from sqlalchemy import Float
-from sqlalchemy import Integer
-from sqlalchemy import Date
-from sqlalchemy import DateTime
+from datetime import date, datetime
+
+from sqlalchemy import Date, DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
 class Base(DeclarativeBase): ...

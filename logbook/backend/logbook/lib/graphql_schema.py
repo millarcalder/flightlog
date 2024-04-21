@@ -1,22 +1,18 @@
 import contextlib
+from datetime import date, datetime
 
 import strawberry
-import logbook.webapp.app_globals as app_globals
-import logbook.webapp.app_globals as app_globals
-
-from datetime import date
-from datetime import datetime
-
-from strawberry.fastapi import BaseContext
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+from strawberry.fastapi import BaseContext
 
-from logbook.lib.data_models import Site as DBSite
-from logbook.lib.data_models import Glider as DBGlider
+import logbook.webapp.app_globals as app_globals
 from logbook.lib.data_models import Flight as DBFlight
-from logbook.lib.domain_models import Site as SiteModel
-from logbook.lib.domain_models import Glider as GliderModel
+from logbook.lib.data_models import Glider as DBGlider
+from logbook.lib.data_models import Site as DBSite
 from logbook.lib.domain_models import Flight as FlightModel
+from logbook.lib.domain_models import Glider as GliderModel
+from logbook.lib.domain_models import Site as SiteModel
 
 
 class CustomContext(BaseContext):

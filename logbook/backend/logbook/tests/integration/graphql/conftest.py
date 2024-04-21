@@ -1,4 +1,5 @@
 import pytest
+
 import logbook.webapp.app_globals as app_globals
 
 

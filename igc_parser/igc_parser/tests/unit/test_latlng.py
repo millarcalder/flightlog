@@ -1,4 +1,5 @@
 import pytest
+
 from igc_parser.exceptions import InvalidLatLng
 from igc_parser.latlng import haversine
 
@@ -14,8 +15,8 @@ from igc_parser.latlng import haversine
     ],
 )
 def test_haversine_valid(lat1, lng1, lat2, lng2, expected_dist):
-    # There are probably some rounding errors in the function which are fine for the purposes of this application so
-    # let's just assert approx here
+    # There are probably some rounding errors in the function which are fine for the
+    # purposes of this application so let's just assert approx here
     assert haversine(lat1, lng1, lat2, lng2) == pytest.approx(expected_dist)
 
 

@@ -1,5 +1,7 @@
 black
 build
+flake8
+isort
 pip-tools
 pytest
 setuptools

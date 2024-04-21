@@ -1,20 +1,18 @@
-import logbook.webapp.app_globals as app_globals
-
 from datetime import timedelta
 
-from fastapi import Depends
-from fastapi import APIRouter
-from fastapi import HTTPException
-from fastapi import status
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
-from logbook.lib.auth import authenticate_user
-from logbook.lib.auth import generate_access_token
-from logbook.lib.auth import fetch_user
-from logbook.lib.auth import TokenData
-from logbook.lib.auth import Token
+import logbook.webapp.app_globals as app_globals
+from logbook.lib.auth import (
+    Token,
+    TokenData,
+    authenticate_user,
+    fetch_user,
+    generate_access_token,
+)
 from logbook.lib.exceptions import AuthenticationException
 
 

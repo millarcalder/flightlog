@@ -1,7 +1,10 @@
 black
 build
 faker
+flake8
 httpx
+isort
+mypy
 pip-tools
 pytest
 setuptools

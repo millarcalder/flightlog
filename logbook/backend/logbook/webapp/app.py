@@ -1,18 +1,15 @@
-import logbook.webapp.app_globals as app_globals
-
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
-from fastapi import Depends
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from strawberry.fastapi import GraphQLRouter
 from sqlalchemy import create_engine
+from strawberry.fastapi import GraphQLRouter
 
+import logbook.webapp.app_globals as app_globals
 from logbook.config import Settings
-from logbook.webapp.auth import router as auth_router
+from logbook.lib.graphql_schema import CustomContext, schema
 from logbook.webapp.auth import get_current_user
-from logbook.lib.graphql_schema import schema
-from logbook.lib.graphql_schema import CustomContext
+from logbook.webapp.auth import router as auth_router
 
 
 @asynccontextmanager
@@ -41,7 +38,7 @@ def init_app(env_file=None) -> FastAPI:
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
+        allow_origins=["http://localhost:3000"],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

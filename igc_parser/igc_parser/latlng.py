@@ -1,4 +1,5 @@
 import math
+
 from igc_parser.exceptions import InvalidLatLng
 
 

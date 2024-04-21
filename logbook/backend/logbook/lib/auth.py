@@ -1,17 +1,14 @@
-from datetime import datetime
-from datetime import timedelta
-from datetime import timezone
+from datetime import datetime, timedelta, timezone
 
 from jose import jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel
-from sqlalchemy.orm import Session
 from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 from logbook.lib.data_models import User as DBUser
 from logbook.lib.domain_models import User
 from logbook.lib.exceptions import AuthenticationException
-
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

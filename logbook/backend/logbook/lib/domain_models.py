@@ -1,9 +1,8 @@
-from datetime import date
-from datetime import datetime
-from typing_extensions import Annotated
-from pydantic import BaseModel
-from pydantic import ConfigDict
+from datetime import date, datetime
+
+from pydantic import BaseModel, ConfigDict
 from pydantic.functional_validators import AfterValidator
+from typing_extensions import Annotated
 
 
 def validate_latitude(val: float) -> float:
