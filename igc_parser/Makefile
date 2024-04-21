@@ -17,7 +17,8 @@ linting:
 	source .virtualenv/bin/activate; \
 	python -m black igc_parser --check; \
 	python -m isort igc_parser --check-only; \
-	python -m flake8 igc_parser
+	python -m flake8 igc_parser; \
+	python -m mypy igc_parser
 
 release-test: build
 	source .virtualenv/bin/activate; \

@@ -19,4 +19,5 @@ linting:
 	source .virtualenv/bin/activate; \
 	python -m black viewer --check; \
 	python -m isort viewer --check-only; \
-	python -m flake8 viewer
+	python -m flake8 viewer; \
+	python -m mypy viewer

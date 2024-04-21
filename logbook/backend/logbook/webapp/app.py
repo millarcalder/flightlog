@@ -33,7 +33,9 @@ app.include_router(auth_router)
 
 
 def init_app(env_file=None) -> FastAPI:
-    app_globals.settings = Settings(_env_file=env_file)
+    # _env_file kwarg causes issue with mypy
+    # more details here https://github.com/pydantic/pydantic/issues/3072
+    app_globals.settings = Settings(_env_file=env_file)  # type: ignore
     app_globals.db_engine = create_engine(app_globals.settings.database_uri, echo=True)
 
     app.add_middleware(

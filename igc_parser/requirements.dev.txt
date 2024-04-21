@@ -48,8 +48,12 @@ mdurl==0.1.2
     # via markdown-it-py
 more-itertools==10.2.0
     # via jaraco-classes
+mypy==1.9.0
+    # via -r requirements.dev.in
 mypy-extensions==1.0.0
-    # via black
+    # via
+    #   black
+    #   mypy
 nh3==0.2.15
     # via readme-renderer
 packaging==23.2
@@ -97,6 +101,8 @@ secretstorage==3.3.3
     # via keyring
 twine==5.0.0
     # via -r requirements.dev.in
+typing-extensions==4.11.0
+    # via mypy
 urllib3==2.2.0
     # via
     #   requests

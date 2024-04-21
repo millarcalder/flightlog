@@ -11,7 +11,7 @@ from viewer.lib.exceptions import (
 
 
 def _valid_key(key: str) -> bool:
-    return re.fullmatch(r"^[a-zA-Z\_]{5,}$", key)
+    return bool(re.fullmatch(r"^[a-zA-Z\_]{5,}$", key))
 
 
 def _valid_size_bytes(size_bytes: int, object_size_limit_bytes: int) -> bool:

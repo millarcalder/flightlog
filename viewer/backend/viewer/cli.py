@@ -1,5 +1,6 @@
 import logging
 import os
+from typing import Any
 
 import boto3
 import click
@@ -71,7 +72,7 @@ def clean_bucket(
         aws_secret_access_key=settings.aws_secret_access_key,
     )
 
-    kwargs = {}
+    kwargs: dict[str, Any] = {}
     if object_size_limit_bytes is not None:
         kwargs["object_size_limit_bytes"] = object_size_limit_bytes
     if object_count_limit is not None:

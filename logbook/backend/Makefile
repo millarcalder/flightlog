@@ -19,4 +19,5 @@ linting:
 	source .virtualenv/bin/activate; \
 	python -m black logbook --check; \
 	python -m isort logbook --check-only; \
-	python -m flake8 logbook
+	python -m flake8 logbook; \
+	python -m mypy logbook
