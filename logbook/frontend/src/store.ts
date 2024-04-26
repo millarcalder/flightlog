@@ -1,8 +1,9 @@
 import { makeAutoObservable, observable, action } from 'mobx';
-import { Site, Glider, Flight} from './lib/types'
+import { Site} from './lib/types'
 
 class Store {
     accessToken: string|null = null
+    sites: Site[] = []
 
     constructor() {
         makeAutoObservable(this, {
@@ -13,6 +14,10 @@ class Store {
 
     setAccessToken(newAccessToken: string) {
         this.accessToken = newAccessToken
+    }
+
+    setSites(newSites: Site[]) {
+        this.sites = newSites
     }
 }
 

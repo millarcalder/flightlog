@@ -19,13 +19,14 @@ const sitesQuery = `
 `
 
 export interface IQueries {
-    fetchSites(): Promise<Site[]>
+    fetchSites(accessToken: string): Promise<Site[]>
 }
 
 
 class MockedQueries implements IQueries {
-    fetchSites(): Promise<Site[]> {
+    fetchSites(accessToken: string): Promise<Site[]> {
         return new Promise((resolve) => {
+            console.log('Mocked sites request!')
             const site1 = {
                 'id': 1,
                 'name': 'Kariotahi (low side)',
@@ -60,13 +61,19 @@ class MockedQueries implements IQueries {
                 "stop_time": new Date("01-01-2024T12:30:00"),
                 "comments": "..."
             }
-            resolve([{
-                ...site1,
-                'flights': [flight1]
-            }, {
-                ...site2,
-                flights: [flight2]
-            }])
+            setTimeout(() => {
+                if (accessToken === 'imatoken') {
+                    resolve([{
+                        ...site1,
+                        'flights': [flight1]
+                    }, {
+                        ...site2,
+                        flights: [flight2]
+                    }])
+                } else {
+                    resolve([])
+                }
+            }, 1000)
         })
     }
 }

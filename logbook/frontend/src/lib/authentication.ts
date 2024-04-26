@@ -19,7 +19,7 @@ class Authentication implements IAuthentication {
         const formdata = new FormData();
         formdata.append('username', email);
         formdata.append('password', password);
-        return fetch('http://localhost:5000/token', {
+        return fetch(process.env.REACT_APP_AUTH_URL!, {
             method: 'POST',
             body: formdata
         }).then((res: any) => {
@@ -30,5 +30,5 @@ class Authentication implements IAuthentication {
     }
 }
 
-const authentication = new MockedAuthentication()
+const authentication = process.env.REACT_APP_AUTH_URL ? new Authentication() : new MockedAuthentication()
 export default authentication
