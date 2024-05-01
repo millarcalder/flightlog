@@ -6,14 +6,14 @@ from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
 import logbook.webapp.app_globals as app_globals
-from logbook.lib.auth import (
+from logbook.auth import (
     Token,
     TokenData,
     authenticate_user,
     fetch_user,
     generate_access_token,
 )
-from logbook.lib.exceptions import AuthenticationException
+from logbook.exceptions import AuthenticationException
 
 
 class HTTPUnauthenticatedException(HTTPException):

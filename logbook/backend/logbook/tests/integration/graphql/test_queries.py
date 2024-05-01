@@ -1,6 +1,6 @@
 import pytest
 
-from logbook.lib.graphql_schema import CustomContext, schema
+from logbook.graphql.schema import schema
 
 
 @pytest.mark.parametrize(
@@ -10,7 +10,7 @@ from logbook.lib.graphql_schema import CustomContext, schema
         ("Austria", ["Stubai - Elfer"]),
     ),
 )
-def test_sites(country, site_names):
+def test_sites(context, country, site_names):
     query = """
         query TestQuery($country: String) {
             sites(country: $country) {
@@ -19,14 +19,14 @@ def test_sites(country, site_names):
         }
     """
     result = schema.execute_sync(
-        query, variable_values={"country": country}, context_value=CustomContext(1)
+        query, variable_values={"country": country}, context_value=context
     )
     assert "sites" in result.data
     for site_name in site_names:
         assert {"name": site_name} in result.data["sites"]
 
 
-def test_sites__relations():
+def test_sites__relations(context):
     query = """
         {
             sites {
@@ -37,12 +37,12 @@ def test_sites__relations():
             }
         }
     """
-    result = schema.execute_sync(query, context_value=CustomContext(1))
+    result = schema.execute_sync(query, context_value=context)
     assert "sites" in result.data
     assert {"name": "Stubai - Elfer", "flights": [{"dateOfFlight": "2023-01-01"}]}
 
 
-def test_gliders():
+def test_gliders(context):
     query = """
     {
         gliders {
@@ -51,12 +51,12 @@ def test_gliders():
         }
     }
     """
-    result = schema.execute_sync(query, context_value=CustomContext(1))
+    result = schema.execute_sync(query, context_value=context)
     assert "gliders" in result.data
     assert result.data["gliders"] == [{"manufacturer": "GIN", "model": "Bolero 6"}]
 
 
-def test_gliders__relations():
+def test_gliders__relations(context):
     query = """
     {
         gliders {
@@ -68,7 +68,7 @@ def test_gliders__relations():
         }
     }
     """
-    result = schema.execute_sync(query, context_value=CustomContext(1))
+    result = schema.execute_sync(query, context_value=context)
     assert "gliders" in result.data
     assert result.data["gliders"] == [
         {
@@ -79,7 +79,7 @@ def test_gliders__relations():
     ]
 
 
-def test_flights__relations():
+def test_flights__relations(context):
     query = """
     {
         flights {
@@ -94,12 +94,12 @@ def test_flights__relations():
         }
     }
     """
-    result = schema.execute_sync(query, context_value=CustomContext(1))
+    result = schema.execute_sync(query, context_value=context)
     assert "flights" in result.data
     assert result.data["flights"] == [
         {
             "dateOfFlight": "2023-01-01",
             "glider": {"manufacturer": "GIN", "model": "Bolero 6"},
-            "site": {"name": "Stubai - Elfer"},
+            "site": {"name": "Pukerua Bay"},
         }
     ]

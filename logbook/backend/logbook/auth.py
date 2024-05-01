@@ -6,9 +6,9 @@ from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from logbook.lib.data_models import User as DBUser
-from logbook.lib.domain_models import User
-from logbook.lib.exceptions import AuthenticationException
+from logbook.db.models import User as DBUser
+from logbook.exceptions import AuthenticationException
+from logbook.models import User
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

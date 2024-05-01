@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from logbook.lib.domain_models import (
+from logbook.models import (
     Site,
     validate_altitude,
     validate_latitude,

@@ -3,13 +3,22 @@ from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
 from strawberry.fastapi import GraphQLRouter
 
 import logbook.webapp.app_globals as app_globals
 from logbook.config import Settings
-from logbook.lib.graphql_schema import CustomContext, schema
+from logbook.graphql.schema import CustomContext, schema
 from logbook.webapp.auth import get_current_user
 from logbook.webapp.auth import router as auth_router
+
+
+def get_db_sess():
+    sess = Session(app_globals.db_engine)
+    try:
+        yield sess
+    finally:
+        sess.close()
 
 
 @asynccontextmanager
@@ -18,11 +27,13 @@ async def _lifespan(app: FastAPI):
     app_globals.db_engine.dispose()
 
 
-async def _graphql_context(current_user=Depends(get_current_user)):
+async def _graphql_context(
+    current_user=Depends(get_current_user), db_sess=Depends(get_db_sess)
+):
     """
     sets up the GraphQL context
     """
-    return CustomContext(current_user.id)
+    return CustomContext(current_user.id, db_sess)
 
 
 app = FastAPI(lifespan=_lifespan)

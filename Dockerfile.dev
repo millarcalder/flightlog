@@ -10,10 +10,13 @@ ENV PATH="${PATH}:/root/.nvm/versions/node/${NODE_VERSION}/bin"
 COPY requirements.ansible.txt /tmp/requirements.ansible.txt
 RUN pip install -r /tmp/requirements.ansible.txt
 
-# install psql
+# install psql (postgresql client)
 # https://www.postgresql.org/download/linux/debian/
 RUN apt update && apt install -y lsb-release
 RUN sh -c 'echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 RUN apt update
 RUN apt -y install postgresql
+
+# install D2 (digramming tool)
+RUN curl -fsSL https://d2lang.com/install.sh | sh -s --

@@ -1,6 +1,6 @@
 from faker import Faker
 
-from logbook.lib.auth import _generate_password_hash, _verify_password
+from logbook.auth import _generate_password_hash, _verify_password
 
 fake = Faker()
 

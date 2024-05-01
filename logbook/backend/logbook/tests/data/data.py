@@ -2,11 +2,11 @@ from datetime import date, datetime
 
 from sqlalchemy.orm import Session
 
-from logbook.lib.data_models import Flight, Glider, Site, User
+from logbook.db.models import Flight, Glider, Site, User
 
 
 def insert_testing_data(sess: Session):
-    stubai = Site(
+    pukerua_bay = Site(
         name="Pukerua Bay",
         description="...",
         latitude=-41.030500,
@@ -14,7 +14,7 @@ def insert_testing_data(sess: Session):
         altitude=103,
         country="New Zealand",
     )
-    pukerua_bay = Site(
+    stubai = Site(
         name="Stubai - Elfer",
         description="...",
         latitude=47.098611,

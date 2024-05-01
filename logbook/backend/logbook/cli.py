@@ -5,7 +5,7 @@ import uvicorn
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from logbook.lib.data_models import Base
+from logbook.db.models import Base
 from logbook.tests.data.data import insert_testing_data
 from logbook.webapp.app import init_app
 

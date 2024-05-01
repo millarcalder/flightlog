@@ -1,12 +1,8 @@
 import pytest
 
-import logbook.webapp.app_globals as app_globals
+from logbook.graphql.schema import CustomContext
 
 
-@pytest.fixture(autouse=True)
-def setup_globals(db_engine):
-    """
-    Configures the global variables required by graphql which are usually
-    initialized by the webapp.
-    """
-    app_globals.db_engine = db_engine
+@pytest.fixture
+def context(db_sess):
+    yield CustomContext(1, db_sess)

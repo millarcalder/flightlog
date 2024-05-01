@@ -2,7 +2,7 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from logbook.lib.data_models import Base
+from logbook.db.models import Base
 from logbook.tests.data.data import insert_testing_data
 from logbook.tests.integration import DATABASE_URI
 
@@ -18,3 +18,9 @@ def db_engine():
     yield engine
     Base.metadata.drop_all(engine)
     engine.dispose()
+
+
+@pytest.fixture(scope="function")
+def db_sess(db_engine):
+    with Session(db_engine) as sess:
+        yield sess

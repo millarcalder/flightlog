@@ -4,7 +4,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 import logbook.webapp.app_globals as app_globals
-from logbook.lib.auth import TokenData, generate_access_token
+from logbook.auth import TokenData, generate_access_token
 from logbook.webapp.app import init_app
 
 
