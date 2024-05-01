@@ -36,6 +36,10 @@ This repository contains three different projects
 - [Mapbox](https://visgl.github.io/react-map-gl/) - Mapping Framework
 - [S3](https://docs.aws.amazon.com/s3/) - Object Storage
 
+## Architecture
+
+![architecture](architecture.svg)
+
 ## Developer Environment
 
 Requirements:

@@ -1,0 +1,71 @@
+user: User {
+  shape: person
+}
+
+aws: Amazon Web Services {
+  viewer_igc_bucket: Viewer IGC Bucket {
+    shape: cylinder
+
+    description: |md
+      Not for long term storage, old files are deleted regularly.
+    |
+  }
+
+  logbook_igc_bucket: Logbook IGC Bucket {
+    shape: cylinder
+
+    description: |md
+      Long term storage for the logbook system.
+    |
+  }
+}
+
+pypi: PyPi Registry {
+  igc_parser: IGC Parser {
+    shape: package
+  }
+}
+
+vpn: VPN {
+  nomad_cluster: Home Nomad Cluster (Raspberry Pi's) {
+    # style
+    style.multiple: true
+
+    # shapes
+    logbook_api: Logbook API {
+      shape: oval
+    }
+    logbook_website: Logbook Website {
+      shape: oval
+    }
+    s3_cleanup_worker: S3 Cleanup Worker {
+      shape: hexagon
+    }
+    psql: PostgreSQL {
+      shape: cylinder
+    }
+
+    logbook_website -> logbook_api
+    logbook_api -> psql
+  }
+}
+
+public_cloud_server: Hetzner Server {
+  # shapes
+  viewer_api: Viewer API {
+    shape: oval
+  }
+  viewer_website: Viewer Website {
+    shape: oval
+  }
+}
+
+user -> vpn.nomad_cluster.logbook_website: Connected Via VPN
+user -> public_cloud_server.viewer_website: Public
+
+vpn.nomad_cluster.logbook_api -> aws.logbook_igc_bucket
+vpn.nomad_cluster.s3_cleanup_worker -> aws.viewer_igc_bucket
+public_cloud_server.viewer_api -> aws.viewer_igc_bucket
+
+vpn.nomad_cluster.logbook_api -> pypi.igc_parser
+public_cloud_server.viewer_api -> pypi.igc_parser
