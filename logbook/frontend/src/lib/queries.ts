@@ -43,6 +43,18 @@ class MockedQueries implements IQueries {
                 'longitude': 11.324250,
                 'altitude': 1788
             }
+            const glider1 = {
+                'id': 1,
+                'model': 'GIN',
+                'manufacturer': 'Bolero',
+                'rating': 'EN-A',
+            }
+            const glider2 = {
+                'id': 2,
+                'model': 'GIN',
+                'manufacturer': 'Evora',
+                'rating': 'EN-B',
+            }
             const flight1 = {
                 'id': 1,
                 'date': new Date("01-01-2024"),
@@ -50,7 +62,8 @@ class MockedQueries implements IQueries {
                 "glider_id": 1, // GIN Bolero
                 "start_time": new Date("01-01-2024T12:00:00"),
                 "stop_time": new Date("01-01-2024T12:30:00"),
-                "comments": "..."
+                "comments": "...",
+                "glider": glider1
             }
             const flight2 = {
                 'id': 2,
@@ -59,7 +72,28 @@ class MockedQueries implements IQueries {
                 "glider_id": 1, // GIN Bolero
                 "start_time": new Date("01-01-2024T12:00:00"),
                 "stop_time": new Date("01-01-2024T12:30:00"),
-                "comments": "..."
+                "comments": "...",
+                "glider": glider1
+            }
+            const flight3 = {
+                'id': 3,
+                'date': new Date("01-01-2023"),
+                "site_id": 2, // Stubai
+                "glider_id": 1, // GIN Bolero
+                "start_time": new Date("01-01-2024T13:00:00"),
+                "stop_time": new Date("01-01-2024T13:30:00"),
+                "comments": "...",
+                "glider": glider1
+            }
+            const flight4 = {
+                'id': 4,
+                'date': new Date("02-01-2023"),
+                "site_id": 2, // Stubai
+                "glider_id": 1, // GIN Bolero
+                "start_time": new Date("02-01-2024T13:00:00"),
+                "stop_time": new Date("02-01-2024T13:30:00"),
+                "comments": "...",
+                "glider": glider1
             }
             setTimeout(() => {
                 if (accessToken === 'imatoken') {
@@ -68,7 +102,7 @@ class MockedQueries implements IQueries {
                         'flights': [flight1]
                     }, {
                         ...site2,
-                        flights: [flight2]
+                        flights: [flight2, flight3, flight4]
                     }])
                 } else {
                     resolve([])

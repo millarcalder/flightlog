@@ -3,6 +3,7 @@ import { Site} from './lib/types'
 
 class Store {
     accessToken: string|null = null
+    loading: boolean = false
     sites: Site[] = []
 
     constructor() {
@@ -12,12 +13,20 @@ class Store {
         })
     }
 
+    setLoading(isLoading: boolean) {
+        this.loading = isLoading
+    }
+
     setAccessToken(newAccessToken: string) {
         this.accessToken = newAccessToken
     }
 
     setSites(newSites: Site[]) {
         this.sites = newSites
+    }
+
+    getSite(id: number) {
+        return this.sites.find(site => site.id == id)
     }
 }
 

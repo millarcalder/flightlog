@@ -13,16 +13,11 @@ const Home = observer(() => {
     return (
         <Container>
             <Row>
-                <Col>
-                    <h1>Home</h1>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <SitesMap sites={store.sites} selectedSite={selectedSite} />
+                <Col lg className='m-0 p-0'>
+                    <SitesMap sites={store.sites} selectedSite={selectedSite} width='100%' height={600} />
                 </Col>
                 <Col>
-                    <SitesList setSelectedSite={setSelectedSite} />
+                    <SitesList onClick={setSelectedSite} />
                 </Col>
             </Row>
         </Container>
