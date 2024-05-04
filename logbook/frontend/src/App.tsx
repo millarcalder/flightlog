@@ -1,9 +1,12 @@
 import './App.css';
-import { Spinner } from 'react-bootstrap'
+import { Spinner, Modal } from 'react-bootstrap'
 import { useContext, PropsWithChildren, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { StoreContext } from './index';
+import FlightForm from './components/forms/FlightForm';
+import GliderForm from './components/forms/GliderForm';
+import SiteForm from './components/forms/SiteForm';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Site from './pages/Site';
@@ -36,6 +39,22 @@ const Layout = observer((props: PropsWithChildren) => {
     <header>
       <NavBar />
     </header>
+    {store.addEntityModal ? <Modal show={!store.loading} onHide={() => {
+      store.clearAddEntityModal()
+    }}>
+      <Modal.Header closeButton>
+        <Modal.Title>Add {store.addEntityModal}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {store.addEntityModal == 'Flight'
+          ? <FlightForm sites={store.sites} gliders={store.gliders} />
+          : store.addEntityModal == 'Glider'
+          ? <GliderForm />
+          : store.addEntityModal == 'Site'
+          ? <SiteForm />
+          : null}
+      </Modal.Body>
+    </Modal> : null}
     {props.children}
   </>
 })
@@ -65,8 +84,14 @@ const App = observer(() => {
   useEffect(() => {
     if (store.accessToken) {
       store.setLoading(true)
-      queries.fetchSites(store.accessToken).then((newSites) => {
-        store.setSites(newSites)
+      Promise.all([
+        queries.fetchSites(store.accessToken).then((newSites) => {
+          store.setSites(newSites)
+        }),
+        queries.fetchGliders(store.accessToken).then((newGliders) => {
+          store.setGliders(newGliders)
+        })
+      ]).then(() => {
         store.setLoading(false)
       })
     }

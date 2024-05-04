@@ -1,6 +1,6 @@
 import { useContext, FC } from 'react'
 import { observer } from 'mobx-react-lite'
-import { Button, ListGroup, ListGroupItem } from 'react-bootstrap'
+import { ListGroup, ListGroupItem } from 'react-bootstrap'
 import { StoreContext } from '../index'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
