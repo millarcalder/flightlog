@@ -1,7 +1,8 @@
-import { Alert, Button, Form } from 'react-bootstrap'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { Button, Form } from 'react-bootstrap'
+import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { Glider, Site } from '../../lib/types'
 import { FC } from 'react'
+import WindInput from '../WindInput'
 
 interface IProps {
     sites: Site[]
@@ -22,7 +23,7 @@ type Inputs = {
 }
 
 const FlightForm: FC<IProps> = ({ sites, gliders }) => {
-    const { register, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<Inputs>();
+    const { control, register, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm<Inputs>();
 
     const onSubmit: SubmitHandler<Inputs> = (data) => {
         console.log(data)
@@ -75,9 +76,12 @@ const FlightForm: FC<IProps> = ({ sites, gliders }) => {
 
         <Form.Group className='m-3'>
             <Form.Label>Wind Direction</Form.Label>
-            <Form.Control {...register('wind_dir', { required: true })} type='number' isInvalid={!!errors.wind_dir} />
+            <WindInput onChange={(e) => {
+                setValue('wind_dir', parseInt(e.target.value))
+            }} />
             <Form.Control.Feedback type='invalid'>{errors.wind_dir?.message}</Form.Control.Feedback>
         </Form.Group>
+
 
         <Form.Group className='m-3'>
             <Form.Label>Comments</Form.Label>
