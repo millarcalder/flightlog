@@ -3,11 +3,10 @@ import Container from 'react-bootstrap/Container';
 import { Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import logo from '../logo1.svg';
+import logo from './logo1.svg';
 import { observer } from 'mobx-react-lite';
-import { StoreContext } from '../index';
+import { StoreContext } from './index';
 import { useContext } from 'react';
-import Store from '../store';
 
 const NavBar = observer(() => {
   const store = useContext(StoreContext)

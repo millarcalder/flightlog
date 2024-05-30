@@ -1,4 +1,4 @@
-import { error } from 'console'
+import { FC } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import { useForm, SubmitHandler } from 'react-hook-form'
 
@@ -8,14 +8,14 @@ type Inputs = {
     rating: string
 }
 
-const FlightForm = () => {
-    const { register, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<Inputs>();
+interface IProps {
+    onSubmit: SubmitHandler<Inputs>
+}
 
-    const onSubmit: SubmitHandler<Inputs> = (data) => {
-        console.log(data)
-    };
+const FlightForm: FC<IProps> = (props) => {
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<Inputs>();
 
-    return <Form onSubmit={handleSubmit(onSubmit)}>
+    return <Form onSubmit={handleSubmit(props.onSubmit)}>
         <Form.Group className='m-3'>
             <Form.Label>Manufacturer</Form.Label>
             <Form.Control {...register('manufacturer', { required: true })} type='text' isInvalid={!!errors.manufacturer} />

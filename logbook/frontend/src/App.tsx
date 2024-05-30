@@ -10,7 +10,7 @@ import SiteForm from './components/forms/SiteForm';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Site from './pages/Site';
-import NavBar from './components/NavBar';
+import NavBar from './NavBar';
 import queries from './lib/queries';
 
 
@@ -47,11 +47,11 @@ const Layout = observer((props: PropsWithChildren) => {
       </Modal.Header>
       <Modal.Body>
         {store.addEntityModal == 'Flight'
-          ? <FlightForm sites={store.sites} gliders={store.gliders} />
+          ? <FlightForm sites={store.sites} gliders={store.gliders} onSubmit={(data) => console.log(data)} />
           : store.addEntityModal == 'Glider'
-          ? <GliderForm />
+          ? <GliderForm onSubmit={(data) => console.log(data)} />
           : store.addEntityModal == 'Site'
-          ? <SiteForm />
+          ? <SiteForm onSubmit={(data) => console.log(data)} />
           : null}
       </Modal.Body>
     </Modal> : null}

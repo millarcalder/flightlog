@@ -34,5 +34,4 @@ export interface Flight {
 
     site?: Site
     glider?: Glider
-  }
-  
+}

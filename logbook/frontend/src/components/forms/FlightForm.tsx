@@ -1,13 +1,9 @@
 import { Button, Form } from 'react-bootstrap'
-import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import { Glider, Site } from '../../lib/types'
 import { FC } from 'react'
 import WindInput from '../WindInput'
 
-interface IProps {
-    sites: Site[]
-    gliders: Glider[]
-}
 
 type Inputs = {
     date: Date
@@ -22,12 +18,14 @@ type Inputs = {
     igc_file?: File
 }
 
-const FlightForm: FC<IProps> = ({ sites, gliders }) => {
-    const { control, register, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm<Inputs>();
+interface IProps {
+    sites: Site[]
+    gliders: Glider[]
+    onSubmit: SubmitHandler<Inputs>
+}
 
-    const onSubmit: SubmitHandler<Inputs> = (data) => {
-        console.log(data)
-    };
+const FlightForm: FC<IProps> = ({ sites, gliders, onSubmit }) => {
+    const { register, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm<Inputs>();
 
     return <Form onSubmit={handleSubmit(onSubmit)}>
         <Form.Group className='m-3'>
