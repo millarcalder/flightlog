@@ -1,12 +1,12 @@
-import strawberry
-
 from datetime import date, datetime
+
+import strawberry
 
 from logbook.db.models import Flight as FlightOrm
 from logbook.graphql import sqlalchemy_to_graphql_model
 from logbook.graphql.queries import Flight
-from logbook.models import FlightInput as FlightInput
 from logbook.models import Flight as FlightModel
+from logbook.models import FlightInput as FlightInput
 
 
 @strawberry.type

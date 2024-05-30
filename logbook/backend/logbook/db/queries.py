@@ -1,11 +1,10 @@
-from typing import Type, TypeVar, Tuple, Sequence
+from typing import Sequence, Tuple, Type, TypeVar
 
 from sqlalchemy import Select, select
 from sqlalchemy.orm import Session
 
 from logbook.db.models import Base, Flight, Glider, Site
 from logbook.exceptions import LogbookException
-
 
 Model = TypeVar("Model", bound=Base)
 Filters = dict[str, str | int]

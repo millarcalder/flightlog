@@ -2,7 +2,6 @@ import logging
 
 import click
 import uvicorn
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
@@ -21,6 +20,7 @@ def _setup_auto_auth():
     patches the fastapi dependency which decodes the oauth JWT token.
     """
     import pytest
+
     import logbook.webapp.auth
 
     engine = _create_testing_db_engine()

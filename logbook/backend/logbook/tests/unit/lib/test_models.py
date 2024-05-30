@@ -1,6 +1,7 @@
+from datetime import date, datetime
+
 import pytest
 from pydantic import ValidationError
-from datetime import date, datetime
 
 from logbook.models import (
     Flight,
