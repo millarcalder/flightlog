@@ -1,7 +1,10 @@
 import pytest
 from pydantic import ValidationError
+from datetime import date, datetime
 
 from logbook.models import (
+    Flight,
+    FlightInput,
     Site,
     validate_altitude,
     validate_latitude,
@@ -59,7 +62,30 @@ def test_validation_functions__invalid(func, val):
                 "altitude": 12,
                 "country": "New Zealand",
             },
-        )
+        ),
+        (
+            FlightInput,
+            {
+                "date_of_flight": date(2024, 1, 1),
+                "user_id": 1,
+                "site_id": 1,
+                "glider_id": 1,
+                "start_time": datetime(2024, 1, 1, 12, 0),
+                "stop_time": datetime(2024, 1, 1, 13, 0),
+            },
+        ),
+        (
+            Flight,
+            {
+                "id": 1,
+                "date_of_flight": date(2024, 1, 1),
+                "user_id": 1,
+                "site_id": 1,
+                "glider_id": 1,
+                "start_time": datetime(2024, 1, 1, 12, 0),
+                "stop_time": datetime(2024, 1, 1, 13, 0),
+            },
+        ),
     ],
 )
 def test_models__valid(model, kwargs):

@@ -14,16 +14,20 @@ from logbook.db.queries import (
     fetch_site,
     fetch_sites,
 )
+from logbook.db.models import Flight as FlightOrm
+from logbook.models import FlightInput as FlightInput
 from logbook.models import Flight as FlightModel
 from logbook.models import Glider as GliderModel
 from logbook.models import Site as SiteModel
 
 
-Model = TypeVar('Model', bound=BaseModel)
+Model = TypeVar("Model", bound=BaseModel)
 
 
-def _sqlalchemy_to_pydantic_model(obj: Base, model: Type[Model]) -> Model:
-    return model.model_validate(obj).model_dump()
+def _sqlalchemy_to_graphql_model(
+    obj: Base, pydantic_model: Type[Model], graphql_model: strawberry.type
+) -> Model:
+    return graphql_model(**pydantic_model.model_validate(obj).model_dump())
 
 
 class CustomContext(BaseContext):
@@ -34,7 +38,7 @@ class CustomContext(BaseContext):
 
 def get_site_for_flight(info: strawberry.Info, root: "Flight") -> "Site":
     site = fetch_site(info.context.db_sess, root.site_id)
-    return Site(**_sqlalchemy_to_pydantic_model(site, SiteModel))
+    return _sqlalchemy_to_graphql_model(site, SiteModel, Site)
 
 
 def get_glider_for_flight(info: strawberry.Info, root: "Flight") -> "Glider":
@@ -42,14 +46,15 @@ def get_glider_for_flight(info: strawberry.Info, root: "Flight") -> "Glider":
         info.context.db_sess,
         filters={"id": root.glider_id, "user_id": info.context.user_id},
     )
-    return Glider(**_sqlalchemy_to_pydantic_model(glider, GliderModel))
+    return _sqlalchemy_to_graphql_model(glider, GliderModel, Glider)
 
 
 def get_flights_for_site(info: strawberry.Info, root: "Site") -> list["Flight"]:
     flights = fetch_flights(
-        info.context.db_sess, filters={"site_id": root.id, "user_id": info.context.user_id}
+        info.context.db_sess,
+        filters={"site_id": root.id, "user_id": info.context.user_id},
     )
-    return [Flight(**_sqlalchemy_to_pydantic_model(f, FlightModel)) for f in flights]
+    return [_sqlalchemy_to_graphql_model(f, FlightModel, Flight) for f in flights]
 
 
 def get_flights_for_glider(info: strawberry.Info, root: "Glider") -> list["Flight"]:
@@ -57,7 +62,7 @@ def get_flights_for_glider(info: strawberry.Info, root: "Glider") -> list["Fligh
         info.context.db_sess,
         filters={"glider_id": root.id, "user_id": info.context.user_id},
     )
-    return [Flight(**_sqlalchemy_to_pydantic_model(f, FlightModel)) for f in flights]
+    return [_sqlalchemy_to_graphql_model(f, FlightModel, Flight) for f in flights]
 
 
 def get_sites(info: strawberry.Info, country: str | None = None) -> list["Site"]:
@@ -65,21 +70,21 @@ def get_sites(info: strawberry.Info, country: str | None = None) -> list["Site"]
     if country:
         filters["country"] = country
     sites = fetch_sites(info.context.db_sess, filters)
-    return [Site(**_sqlalchemy_to_pydantic_model(s, SiteModel)) for s in sites]
+    return [_sqlalchemy_to_graphql_model(s, SiteModel, Site) for s in sites]
 
 
 def get_gliders(info: strawberry.Info) -> list["Glider"]:
     gliders = fetch_gliders(
         info.context.db_sess, filters={"user_id": info.context.user_id}
     )
-    return [Glider(**_sqlalchemy_to_pydantic_model(g, GliderModel)) for g in gliders]
+    return [_sqlalchemy_to_graphql_model(g, GliderModel, Glider) for g in gliders]
 
 
 def get_flights(info: strawberry.Info) -> list["Flight"]:
     flights = fetch_flights(
         info.context.db_sess, filters={"user_id": info.context.user_id}
     )
-    return [Flight(**_sqlalchemy_to_pydantic_model(f, FlightModel)) for f in flights]
+    return [_sqlalchemy_to_graphql_model(f, FlightModel, Flight) for f in flights]
 
 
 @strawberry.type
@@ -127,10 +132,61 @@ class Flight:
 
 
 @strawberry.type
+class FlightMutations:
+    @strawberry.mutation
+    def add(
+        self,
+        info: strawberry.Info,
+        date_of_flight: date,
+        user_id: int,
+        site_id: int,
+        glider_id: int,
+        start_time: datetime,
+        stop_time: datetime,
+        max_altitude: int | None = None,
+        wind_speed: float | None = None,
+        wind_dir: float | None = None,
+        comments: str = "",
+        igc_s3: str | None = None,
+        flightlog_viewer_link: str | None = None,
+    ) -> Flight:
+        # Validate by instantiating pydantic model
+        flight_input = FlightInput(
+            date_of_flight=date_of_flight,
+            user_id=user_id,
+            site_id=site_id,
+            glider_id=glider_id,
+            start_time=start_time,
+            stop_time=stop_time,
+            max_altitude=max_altitude,
+            wind_speed=wind_speed,
+            wind_dir=wind_dir,
+            comments=comments,
+            igc_s3=igc_s3,
+            flightlog_viewer_link=flightlog_viewer_link,
+        )
+
+        # Insert into the database
+        flight = FlightOrm(**flight_input.model_dump())
+        info.context.db_sess.add(flight)
+        info.context.db_sess.commit()
+
+        # Convert to graphQL model
+        return _sqlalchemy_to_graphql_model(flight, FlightModel, Flight)
+
+
+@strawberry.type
 class Query:
     sites: list[Site] = strawberry.field(resolver=get_sites)
     gliders: list[Glider] = strawberry.field(resolver=get_gliders)
     flights: list[Flight] = strawberry.field(resolver=get_flights)
 
 
-schema = strawberry.Schema(query=Query)
+@strawberry.type
+class Mutation:
+    @strawberry.field
+    def flight(self) -> FlightMutations:
+        return FlightMutations()
+
+
+schema = strawberry.Schema(query=Query, mutation=Mutation)
