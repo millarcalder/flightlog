@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from pydantic.functional_validators import AfterValidator
 from typing_extensions import Annotated
 
@@ -25,16 +25,19 @@ Longitude = Annotated[float, AfterValidator(validate_longitude)]
 Altitude = Annotated[int, AfterValidator(validate_altitude)]
 
 
-class Site(BaseModel):
+class SiteInput(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    id: int
     name: str
     description: str
     latitude: Latitude
     longitude: Longitude
     altitude: Altitude
     country: str
+
+
+class Site(SiteInput):
+    id: int
 
 
 class User(BaseModel):
@@ -47,29 +50,35 @@ class User(BaseModel):
     hashed_password: str
 
 
-class Glider(BaseModel):
+class GliderInput(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    id: int
     user_id: int
     model: str
     manufacturer: str
     rating: str
 
 
-class Flight(BaseModel):
+class Glider(GliderInput):
+    id: int
+
+
+class FlightInput(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    id: int
     date_of_flight: date
     user_id: int
     site_id: int
     glider_id: int
     start_time: datetime
     stop_time: datetime
-    max_altitude: Altitude | None
-    wind_speed: float | None
-    wind_dir: float | None
-    comments: str
-    igc_s3: str | None
-    flightlog_viewer_link: str | None
+    max_altitude: Altitude | None = Field(default=None)
+    wind_speed: float | None = Field(default=None)
+    wind_dir: float | None = Field(default=None)
+    comments: str = Field(default="")
+    igc_s3: str | None = Field(default=None)
+    flightlog_viewer_link: str | None = Field(default=None)
+
+
+class Flight(FlightInput):
+    id: int
