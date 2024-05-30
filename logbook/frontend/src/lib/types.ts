@@ -14,6 +14,7 @@ export interface Site {
   latitude: number
   longitude: number
   altitude: number
+  country: string
 
   flights?: Flight[]
 }
