@@ -5,5 +5,5 @@ exclude =
     __pycache__,
     dist,
     logbook.egg-info
-max-line-length = 88
+max-line-length = 89
 extend-ignore = E203,E701
