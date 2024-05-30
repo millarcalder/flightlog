@@ -11,7 +11,9 @@ from logbook.tests.data.data import insert_testing_data
 
 
 def _create_testing_db_engine():
-    return create_engine("postgresql+psycopg://root:secret@flightlog-db:5432/logbook", echo=True)
+    return create_engine(
+        "postgresql+psycopg://root:secret@flightlog-db:5432/logbook", echo=True
+    )
 
 
 def _setup_auto_auth():
@@ -25,9 +27,11 @@ def _setup_auto_auth():
 
     def _get_current_user():
         with Session(engine) as sess:
-            return logbook.webapp.auth.fetch_user('millar9819@gmail.com', sess)
+            return logbook.webapp.auth.fetch_user("millar9819@gmail.com", sess)
 
-    pytest.MonkeyPatch().setattr(logbook.webapp.auth, 'get_current_user', _get_current_user)
+    pytest.MonkeyPatch().setattr(
+        logbook.webapp.auth, "get_current_user", _get_current_user
+    )
 
 
 @click.group()
@@ -68,15 +72,24 @@ def test_db_down():
 
 @cli.command(help="Run the web application")
 @click.option("--env-file", help="Specify the file to load environment variables from")
-@click.option("--auto-auth", is_flag=True, help="Useful for development - automatically login as the user millar9819@gmail.com")
-@click.option("--reload", is_flag=True, help="Useful for development - reloads the webapp when source code is changed")
+@click.option(
+    "--auto-auth",
+    is_flag=True,
+    help="Useful for development - automatically login as the user millar9819@gmail.com",
+)
+@click.option(
+    "--reload",
+    is_flag=True,
+    help="Useful for development - reloads the webapp when source code is changed",
+)
 def run_webapp(reload: bool, auto_auth: bool, env_file: str | None = None):
     if auto_auth:
         _logger = logging.getLogger()
-        _logger.warning('Running the webapp in auto-auth mode')
+        _logger.warning("Running the webapp in auto-auth mode")
         _setup_auto_auth()
 
     from logbook.webapp.app import init_app
+
     app = init_app(env_file)
     uvicorn.run(
         app,

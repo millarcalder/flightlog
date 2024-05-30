@@ -7,8 +7,8 @@ from logbook.db.models import Base, Flight, Glider, Site
 from logbook.exceptions import LogbookException
 
 
-Model = TypeVar('Model', bound=Base)
-Filters = dict[str, str|int]
+Model = TypeVar("Model", bound=Base)
+Filters = dict[str, str | int]
 
 
 class InvalidFilter(LogbookException):

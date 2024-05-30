@@ -28,7 +28,7 @@ def test_sites(context, country, site_names):
 
 def test_sites__relations(context):
     query = """
-        {
+        query {
             sites {
                 name
                 flights {
@@ -44,7 +44,7 @@ def test_sites__relations(context):
 
 def test_gliders(context):
     query = """
-    {
+    query {
         gliders {
             manufacturer
             model
@@ -58,7 +58,7 @@ def test_gliders(context):
 
 def test_gliders__relations(context):
     query = """
-    {
+    query {
         gliders {
             manufacturer
             model
@@ -81,7 +81,7 @@ def test_gliders__relations(context):
 
 def test_flights__relations(context):
     query = """
-    {
+    query {
         flights {
             dateOfFlight
             glider {
