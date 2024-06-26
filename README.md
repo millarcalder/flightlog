@@ -46,7 +46,6 @@ Requirements:
 
  - [Devcontainers compliant code editor](https://containers.dev/)
  - [Ansible](https://www.ansible.com/)
- - [kubectl](https://kubernetes.io/docs/reference/kubectl/kubectl/) (connected to your Kubernetes cluster)
  - [Docker](https://www.docker.com/)
 
 First you need to open the repository using devcontainers.
