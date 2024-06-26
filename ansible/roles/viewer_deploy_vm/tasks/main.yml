@@ -75,6 +75,7 @@
       - '/etc/letsencrypt/live/flightlog.millarcalder.com/privkey.pem:/opt/flightlog/ssl/privkey.pem:ro'
     ports:
       - 443:443
+      - 80:80
 
 - name: Docker logout
   become: yes
