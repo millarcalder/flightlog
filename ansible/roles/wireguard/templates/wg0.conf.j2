@@ -1,0 +1,14 @@
+[Interface]
+PrivateKey = {{ secrets['wireguard_server__private_key'] }}
+Address = 10.8.8.1/32
+ListenPort = 51820
+SaveConfig = true
+PostUp = ufw route allow in on wg0 out on eth0
+PostUp = iptables -t nat -I POSTROUTING -o eth0 -j MASQUERADE
+PreDown = ufw route delete allow in on wg0 out on eth0
+PreDown = iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+
+[Peer]
+PublicKey = {{ secrets['wireguard_client__public_key'] }}
+AllowedIPs = 10.8.8.2/32
+Endpoint = 0.0.0.0:0

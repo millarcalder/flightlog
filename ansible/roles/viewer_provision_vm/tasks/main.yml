@@ -33,10 +33,6 @@
       - containerd.io
     update_cache: yes
 
-- name: Install docker pip package
-  pip:
-    name: docker
-
 ### Install certbot ###
 - name: certbot
   community.general.snap:
