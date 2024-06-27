@@ -6,7 +6,7 @@ class MockedAuthentication implements IAuthentication {
   authenticate(email: string, password: string) {
     return new Promise<string>((resolve, reject) => {
       setTimeout(() => {
-        console.log('Mocked authentication request!')
+        console.log('Mocked method: IAuthentication.authenticate')
         if (password === 'enter') resolve('imatoken')
         reject('You shall not pass!')
       }, 1000)
