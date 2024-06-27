@@ -15,10 +15,25 @@ interface IProps {
 
 const yupSchema = yup.object({
   date: yup.date().required(),
-  site_id: yup.number().required().positive(),
-  glider_id: yup.number().required().positive(),
-  start_time: yup.date().required(),
-  stop_time: yup.date().required(),
+  site_id: yup.number().required(),
+  glider_id: yup.number().required(),
+
+  /*
+    The start_time and stop_time are really hacky, unfortunately I could not find a cleaner
+    implementation. The time input field provides a string in the format of "14:56", this is
+    combined with the value from the date field.
+  */
+  start_time: yup.date().when(['date'], (date, schema) => {
+    return schema.transform((_, val) => {
+      return new Date(Date.parse(`${date[0].toDateString()} ${val}`))
+    })
+  }).required(),
+  stop_time: yup.date().when(['date'], (date, schema) => {
+    return schema.transform((_, val) => {
+      return new Date(Date.parse(`${date[0].toDateString()} ${val}`))
+    })
+  }).required(),
+
   max_altitude: yup.number().positive(),
   wind_speed: yup.number().positive(),
   wind_dir: yup.number().min(0).max(360),
@@ -60,7 +75,7 @@ const FlightForm: FC<IProps> = ({ sites, gliders, onSubmit }) => {
         <Form.Label>Glider</Form.Label>
         <Form.Select {...register('glider_id', { required: true })}>
           {gliders.map((glider) => (
-            <option key={glider.id}>
+            <option key={glider.id} value={glider.id}>
               {glider.manufacturer} - {glider.model}
             </option>
           ))}
@@ -74,6 +89,7 @@ const FlightForm: FC<IProps> = ({ sites, gliders, onSubmit }) => {
           type="time"
           isInvalid={!!errors.start_time}
         />
+        {errors.start_time?.message}
       </Form.Group>
 
       <Form.Group className="m-3">
