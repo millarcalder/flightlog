@@ -9,4 +9,5 @@
       include_role:
         name: what_is_my_cpu_architecture
   roles:
-    - role: viewer_deploy_vm
+    - role: deploy_viewer
+    - role: deploy_nginx

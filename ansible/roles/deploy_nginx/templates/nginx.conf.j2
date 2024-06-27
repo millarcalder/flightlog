@@ -1,6 +1,11 @@
 events {}
 http {
     server {
+        listen 80;
+        deny   all;
+    }
+
+    server {
         listen                     443 ssl;
         server_name                flightlog.millarcalder.com;
         ssl_certificate            /opt/flightlog/ssl/fullchain.pem;
@@ -18,12 +23,14 @@ http {
     }
 
     server {
-        listen                     80;
-        allow                      10.8.8.0/16;
-        deny                       all;
-        server_name                test.millarcalder.com;
+        listen                     443 ssl;
+        server_name                logbook.millarcalder.com;
+        ssl_certificate            /opt/logbook/ssl/fullchain.pem;
+        ssl_certificate_key        /opt/logbook/ssl/privkey.pem;
         proxy_set_header Host      $host;
         proxy_set_header X-Real-IP $remote_addr;
+        allow                      10.8.8.0/16;
+        deny                       all;
 
 
         # TODO: replace these with endpoins for the logbook app

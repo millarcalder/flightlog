@@ -10,12 +10,6 @@
     src: 'backend.env.j2'
     dest: '/opt/flightlog/viewer/backend/.env'
 
-- name: Template out the Nginx config
-  become: yes
-  ansible.builtin.template:
-    src: 'nginx.conf.j2'
-    dest: /opt/flightlog/viewer/nginx.conf
-
 - name: Docker login
   become: yes
   community.docker.docker_login:
@@ -60,22 +54,6 @@
       - name: flightlog
     state: started
     image: 'ghcr.io/millarcalder/{{ frontend_image_name }}:{{ frontend_image_tag }}'
-
-- name: Run the Nginx Docker container
-  become: yes
-  community.docker.docker_container:
-    name: flightlog-viewer-nginx
-    networks:
-      - name: flightlog
-    state: started
-    image: nginx
-    volumes:
-      - '/opt/flightlog/viewer/nginx.conf:/etc/nginx/nginx.conf:ro'
-      - '/etc/letsencrypt/live/flightlog.millarcalder.com/fullchain.pem:/opt/flightlog/ssl/fullchain.pem:ro'
-      - '/etc/letsencrypt/live/flightlog.millarcalder.com/privkey.pem:/opt/flightlog/ssl/privkey.pem:ro'
-    ports:
-      - 443:443
-      - 80:80
 
 - name: Docker logout
   become: yes

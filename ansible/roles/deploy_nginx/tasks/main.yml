@@ -1,0 +1,28 @@
+- name: Create a directory for config files
+  become: yes
+  ansible.builtin.file:
+    path: /opt/nginx
+    state: directory
+
+- name: Template out the Nginx config
+  become: yes
+  ansible.builtin.template:
+    src: 'nginx.conf.j2'
+    dest: /opt/nginx/nginx.conf
+
+- name: Run the Nginx Docker container
+  become: yes
+  community.docker.docker_container:
+    name: nginx
+    networks:
+      - name: flightlog
+    state: started
+    image: nginx
+    volumes:
+      - '/opt/nginx/nginx.conf:/etc/nginx/nginx.conf:ro'
+      - '/etc/letsencrypt/live/flightlog.millarcalder.com/fullchain.pem:/opt/flightlog/ssl/fullchain.pem:ro'
+      - '/etc/letsencrypt/live/flightlog.millarcalder.com/privkey.pem:/opt/flightlog/ssl/privkey.pem:ro'
+      - '/etc/letsencrypt/live/logbook.millarcalder.com/fullchain.pem:/opt/logbook/ssl/fullchain.pem:ro'
+      - '/etc/letsencrypt/live/logbook.millarcalder.com/privkey.pem:/opt/logbook/ssl/privkey.pem:ro'
+    ports:
+      - 443:443

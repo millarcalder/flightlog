@@ -7,5 +7,5 @@
         file: vault.yml
         name: secrets
   roles:
-    - role: wireguard
-    - role: viewer_provision_vm
+    - role: install_wireguard
+    - role: provision_server
