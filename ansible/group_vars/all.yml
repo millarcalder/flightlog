@@ -1,3 +1,2 @@
-namespace: 'flightlog-{{ env_name }}'
 project_dir: '{{ playbook_dir }}/../'
 viewer_domain: flightlog.millarcalder.com
