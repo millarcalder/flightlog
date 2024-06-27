@@ -35,7 +35,7 @@ Table flights {
   stop_time datetime
   max_altitude number [null]  // meters
   wind_speed number [null]    // kmph
-  wind_dir number [null]      // degrees celsius
+  wind_dir number [null]      // degrees
   comments string
   igc_s3 string [null]
   flightlog_viewer_link string [null]
