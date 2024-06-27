@@ -1,27 +1,30 @@
 import { Button, Form } from 'react-bootstrap'
 import { useForm, SubmitHandler } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 import { Glider, Site } from '../../lib/types'
 import { FC } from 'react'
+import { FlightInputs } from '../../lib/types'
 import WindInput from '../WindInput'
-
-type Inputs = {
-  date: Date
-  site_id: number
-  glider_id: number
-  start_time: Date
-  stop_time: Date
-  max_altitude?: number
-  wind_speed?: number
-  wind_dir?: number
-  comments: string
-  igc_file?: File
-}
 
 interface IProps {
   sites: Site[]
   gliders: Glider[]
-  onSubmit: SubmitHandler<Inputs>
+  onSubmit: SubmitHandler<FlightInputs>
 }
+
+const yupSchema = yup.object({
+  date: yup.date().required(),
+  site_id: yup.number().required().positive(),
+  glider_id: yup.number().required().positive(),
+  start_time: yup.date().required(),
+  stop_time: yup.date().required(),
+  max_altitude: yup.number().positive(),
+  wind_speed: yup.number().positive(),
+  wind_dir: yup.number().min(0).max(360),
+  comments: yup.string().required(),
+  igc_file: yup.mixed<File>()
+})
 
 const FlightForm: FC<IProps> = ({ sites, gliders, onSubmit }) => {
   const {
@@ -29,7 +32,9 @@ const FlightForm: FC<IProps> = ({ sites, gliders, onSubmit }) => {
     handleSubmit,
     setValue,
     formState: { errors, isSubmitting }
-  } = useForm<Inputs>()
+  } = useForm({
+    resolver: yupResolver(yupSchema)
+  })
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
@@ -40,16 +45,13 @@ const FlightForm: FC<IProps> = ({ sites, gliders, onSubmit }) => {
           type="date"
           isInvalid={!!errors.date}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.date?.message}
-        </Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="m-3">
         <Form.Label>Site</Form.Label>
         <Form.Select {...register('site_id', { required: true })}>
           {sites.map((site) => (
-            <option key={site.id}>{site.name}</option>
+            <option key={site.id} value={site.id}>{site.name}</option>
           ))}
         </Form.Select>
       </Form.Group>
@@ -72,9 +74,6 @@ const FlightForm: FC<IProps> = ({ sites, gliders, onSubmit }) => {
           type="time"
           isInvalid={!!errors.start_time}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.start_time?.message}
-        </Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="m-3">
@@ -84,9 +83,6 @@ const FlightForm: FC<IProps> = ({ sites, gliders, onSubmit }) => {
           type="time"
           isInvalid={!!errors.stop_time}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.stop_time?.message}
-        </Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="m-3">
@@ -96,9 +92,6 @@ const FlightForm: FC<IProps> = ({ sites, gliders, onSubmit }) => {
           type="number"
           isInvalid={!!errors.max_altitude}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.max_altitude?.message}
-        </Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="m-3">
@@ -108,9 +101,6 @@ const FlightForm: FC<IProps> = ({ sites, gliders, onSubmit }) => {
           type="number"
           isInvalid={!!errors.wind_speed}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.wind_speed?.message}
-        </Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="m-3">
@@ -120,9 +110,6 @@ const FlightForm: FC<IProps> = ({ sites, gliders, onSubmit }) => {
             setValue('wind_dir', parseInt(e.target.value))
           }}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.wind_dir?.message}
-        </Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="m-3">
@@ -133,9 +120,6 @@ const FlightForm: FC<IProps> = ({ sites, gliders, onSubmit }) => {
           rows={3}
           isInvalid={!!errors.comments}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.comments?.message}
-        </Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="m-3">
@@ -145,9 +129,6 @@ const FlightForm: FC<IProps> = ({ sites, gliders, onSubmit }) => {
           {...register('igc_file')}
           isInvalid={!!errors.igc_file}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.igc_file?.message}
-        </Form.Control.Feedback>
       </Form.Group>
 
       <Button variant="primary" type="submit" disabled={isSubmitting}>

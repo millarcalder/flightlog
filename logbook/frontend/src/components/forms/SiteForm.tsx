@@ -1,26 +1,31 @@
 import { FC } from 'react'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 import { Button, Form } from 'react-bootstrap'
 import { useForm, SubmitHandler } from 'react-hook-form'
-
-interface Inputs {
-  name: string
-  description: string
-  latitude: number
-  longitude: number
-  altitude: number
-  country: string
-}
+import { SiteInputs } from '../../lib/types'
 
 interface IProps {
-  onSubmit: SubmitHandler<Inputs>
+  onSubmit: SubmitHandler<SiteInputs>
 }
+
+const yupSchema = yup.object({
+  name: yup.string().required(),
+  description: yup.string().required(),
+  latitude: yup.number().min(-90).max(90).required(),
+  longitude: yup.number().min(-180).max(180).required(),
+  altitude: yup.number().min(0).required(),
+  country: yup.string().required()
+})
 
 const FlightForm: FC<IProps> = (props) => {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting }
-  } = useForm<Inputs>()
+  } = useForm({
+    resolver: yupResolver(yupSchema)
+  })
 
   return (
     <Form onSubmit={handleSubmit(props.onSubmit)} noValidate>
@@ -31,9 +36,6 @@ const FlightForm: FC<IProps> = (props) => {
           type="text"
           isInvalid={!!errors.name}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.name?.message}
-        </Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="m-3">
@@ -43,9 +45,6 @@ const FlightForm: FC<IProps> = (props) => {
           type="text"
           isInvalid={!!errors.country}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.country?.message}
-        </Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="m-3">
@@ -55,9 +54,6 @@ const FlightForm: FC<IProps> = (props) => {
           type="number"
           isInvalid={!!errors.latitude}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.latitude?.message}
-        </Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="m-3">
@@ -67,9 +63,6 @@ const FlightForm: FC<IProps> = (props) => {
           type="number"
           isInvalid={!!errors.longitude}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.longitude?.message}
-        </Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="m-3">
@@ -79,9 +72,6 @@ const FlightForm: FC<IProps> = (props) => {
           type="numer"
           isInvalid={!!errors.altitude}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.altitude?.message}
-        </Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="m-3">
@@ -92,9 +82,6 @@ const FlightForm: FC<IProps> = (props) => {
           rows={3}
           isInvalid={!!errors.description}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.description?.message}
-        </Form.Control.Feedback>
       </Form.Group>
 
       <Button variant="primary" type="submit" disabled={isSubmitting}>

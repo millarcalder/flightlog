@@ -1,23 +1,28 @@
 import { FC } from 'react'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 import { Button, Form } from 'react-bootstrap'
 import { useForm, SubmitHandler } from 'react-hook-form'
-
-type Inputs = {
-  manufacturer: string
-  model: string
-  rating: string
-}
+import { GliderInputs } from '../../lib/types'
 
 interface IProps {
-  onSubmit: SubmitHandler<Inputs>
+  onSubmit: SubmitHandler<GliderInputs>
 }
+
+const yupSchema = yup.object({
+  manufacturer: yup.string().required(),
+  model: yup.string().required(),
+  rating: yup.string().required()
+})
 
 const FlightForm: FC<IProps> = (props) => {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting }
-  } = useForm<Inputs>()
+  } = useForm({
+    resolver: yupResolver(yupSchema)
+  })
 
   return (
     <Form onSubmit={handleSubmit(props.onSubmit)}>
@@ -28,9 +33,6 @@ const FlightForm: FC<IProps> = (props) => {
           type="text"
           isInvalid={!!errors.manufacturer}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.manufacturer?.message}
-        </Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="m-3">
@@ -40,9 +42,6 @@ const FlightForm: FC<IProps> = (props) => {
           type="text"
           isInvalid={!!errors.model}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.model?.message}
-        </Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="m-3">
