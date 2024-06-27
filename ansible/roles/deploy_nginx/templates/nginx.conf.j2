@@ -32,14 +32,8 @@ http {
         allow                      10.8.8.0/16;
         deny                       all;
 
-
-        # TODO: replace these with endpoins for the logbook app
         location / {
-            proxy_pass http://flightlog-viewer-frontend/;
-        }
-
-        location /api/ {
-            proxy_pass http://flightlog-viewer-backend:5000/;
+            proxy_pass http://flightlog-logbook-frontend/;
         }
     }
 }

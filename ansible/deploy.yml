@@ -10,4 +10,5 @@
         name: what_is_my_cpu_architecture
   roles:
     - role: deploy_viewer
+    - role: deploy_logbook
     - role: deploy_nginx

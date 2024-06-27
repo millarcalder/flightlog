@@ -1,0 +1,49 @@
+- name: Docker login
+  become: yes
+  community.docker.docker_login:
+    registry_url: https://ghcr.io/
+    username: millarcalder
+    password: '{{ secrets["docker_token"] }}'
+    reauthorize: yes
+
+- name: Create the flightlog Docker network
+  become: yes
+  docker_network:
+    name: flightlog
+
+- name: Pull the viewer backend Docker Image
+  become: yes
+  community.docker.docker_image:
+    name: 'ghcr.io/millarcalder/{{ backend_image_name }}:{{ backend_image_tag }}'
+    source: pull
+
+- name: Pull the frontend Docker Image
+  become: yes
+  community.docker.docker_image:
+    name: 'ghcr.io/millarcalder/{{ frontend_image_name }}:{{ frontend_image_tag }}'
+    source: pull
+
+# - name: Run the API Docker container
+#   become: yes
+#   community.docker.docker_container:
+#     name: '{{ backend_image_name }}'
+#     networks:
+#       - name: flightlog
+#     state: started
+#     image: 'ghcr.io/millarcalder/{{ backend_image_name }}:{{ backend_image_tag }}'
+#     volumes:
+#       - '/opt/flightlog/logbook/backend/.env:/opt/flightlog/logbook/.env:ro'
+
+- name: Run the frontend Docker container
+  become: yes
+  community.docker.docker_container:
+    name: '{{ frontend_image_name }}'
+    networks:
+      - name: flightlog
+    state: started
+    image: 'ghcr.io/millarcalder/{{ frontend_image_name }}:{{ frontend_image_tag }}'
+
+- name: Docker logout
+  become: yes
+  community.docker.docker_login:
+    state: absent
