@@ -1,5 +1,5 @@
 - name: Deploy to a Web Server
-  hosts: viewer_webserver
+  hosts: webserver
   pre_tasks:
     - name: Load secrets
       include_vars:
