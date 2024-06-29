@@ -4,7 +4,6 @@ interface IProps extends InputHTMLAttributes<HTMLInputElement> {}
 
 const WindInput: FC<IProps> = (props) => {
   const [windDir, setWindDir] = useState(0)
-  const [windSpeed, setWindSpeed] = useState(0)
 
   return (
     <>

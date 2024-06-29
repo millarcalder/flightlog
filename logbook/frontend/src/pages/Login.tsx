@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import authentication from '../lib/authentication'
 import { StoreContext } from '../index'
 import { observer } from 'mobx-react-lite'
-import { Alert, Button, Form, Row, Col } from 'react-bootstrap'
+import { Alert, Button, Form } from 'react-bootstrap'
 
 type Inputs = {
   email: string

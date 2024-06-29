@@ -55,7 +55,7 @@ const Layout = observer((props: PropsWithChildren) => {
             <Modal.Title>Add {store.addEntityModal}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {store.addEntityModal == 'Flight' ? (
+            {store.addEntityModal === 'Flight' ? (
               <FlightForm
                 sites={store.sites}
                 gliders={store.gliders}
@@ -65,7 +65,7 @@ const Layout = observer((props: PropsWithChildren) => {
                   })
                 }}
               />
-            ) : store.addEntityModal == 'Glider' ? (
+            ) : store.addEntityModal === 'Glider' ? (
               <GliderForm
                 onSubmit={(data) => {
                   queries.addGlider(store.accessToken!, data).then((glider) => {
@@ -73,7 +73,7 @@ const Layout = observer((props: PropsWithChildren) => {
                   })
                 }}
               />
-            ) : store.addEntityModal == 'Site' ? (
+            ) : store.addEntityModal === 'Site' ? (
               <SiteForm
                 onSubmit={(data) => {
                   queries.addSite(store.accessToken!, data).then((site) => {

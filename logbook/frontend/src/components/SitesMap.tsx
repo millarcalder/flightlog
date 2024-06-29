@@ -37,7 +37,7 @@ const SitesMap: FC<IProps> = ({
         zoom: 3.5
       }
     }
-  }, [])
+  }, [sites, selectedSite])
 
   useEffect(() => {
     if (selectedSite) {

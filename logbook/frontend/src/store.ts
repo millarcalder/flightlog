@@ -41,7 +41,7 @@ class Store {
       for all observers to catch the event.
     */
     const i = this.sites.findIndex((site) => site.id === flight.site_id)
-    if (i < 0) throw 'Site not found!'
+    if (i < 0) throw Error('Site not found!')
 
     let clone = deepClone(this.sites[i])
     if (!clone.flights) clone.flights = []
@@ -51,7 +51,7 @@ class Store {
   }
 
   getSite(id: number) {
-    return this.sites.find((site) => site.id == id)
+    return this.sites.find((site) => site.id === id)
   }
 
   setGliders(newGliders: Glider[]) {
@@ -63,7 +63,7 @@ class Store {
   }
 
   getGlider(id: number) {
-    return this.gliders.find((glider) => glider.id == id)
+    return this.gliders.find((glider) => glider.id === id)
   }
 
   setAddEntityModal(addEntityModal: AddEntityModal) {

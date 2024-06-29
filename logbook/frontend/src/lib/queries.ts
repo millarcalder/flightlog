@@ -7,23 +7,6 @@ import {
   Flight
 } from './types'
 
-const sitesQuery = `
-{
-    sites {
-        id
-        name
-        description
-        latitude
-        longitude
-        altitude
-
-        flights {
-            id
-            dateOfFlight
-        }
-    }
-}
-`
 
 export interface IQueries {
   fetchGliders(accessToken: string): Promise<Glider[]>
@@ -147,7 +130,7 @@ class MockedQueries implements IQueries {
           this.currGliderId++
           resolve(newGlider)
         } else {
-          throw 'Authorization Error'
+          throw Error('Authorization Error')
         }
       }, 1000)
     })
@@ -194,7 +177,7 @@ class MockedQueries implements IQueries {
           this.currSiteId++
           resolve(newSite)
         } else {
-          throw 'Authorization Error'
+          throw Error('Authorization Error')
         }
       }, 1000)
     })
@@ -221,7 +204,7 @@ class MockedQueries implements IQueries {
           this.currFlightId++
           resolve(newFlight)
         } else {
-          throw 'Authorization Error'
+          throw Error('Authorization Error')
         }
       }, 1000)
     })
