@@ -3,7 +3,7 @@ run-name: Run tests on pull reqeusts and pushes to the main branch
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     types:
       - opened
