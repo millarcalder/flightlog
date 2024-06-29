@@ -66,17 +66,21 @@ const Layout = observer((props: PropsWithChildren) => {
                 }}
               />
             ) : store.addEntityModal == 'Glider' ? (
-              <GliderForm onSubmit={(data) => {
-                queries.addGlider(store.accessToken!, data).then((glider) => {
-                  store.addGlider(glider)
-                })
-              }} />
+              <GliderForm
+                onSubmit={(data) => {
+                  queries.addGlider(store.accessToken!, data).then((glider) => {
+                    store.addGlider(glider)
+                  })
+                }}
+              />
             ) : store.addEntityModal == 'Site' ? (
-              <SiteForm onSubmit={(data) => {
-                queries.addSite(store.accessToken!, data).then((site) => {
-                  store.addSite(site)
-                })
-              }} />
+              <SiteForm
+                onSubmit={(data) => {
+                  queries.addSite(store.accessToken!, data).then((site) => {
+                    store.addSite(site)
+                  })
+                }}
+              />
             ) : null}
           </Modal.Body>
         </Modal>

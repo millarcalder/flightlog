@@ -23,16 +23,22 @@ const yupSchema = yup.object({
     implementation. The time input field provides a string in the format of "14:56", this is
     combined with the value from the date field.
   */
-  start_time: yup.date().when(['date'], (date, schema) => {
-    return schema.transform((_, val) => {
-      return new Date(Date.parse(`${date[0].toDateString()} ${val}`))
+  start_time: yup
+    .date()
+    .when(['date'], (date, schema) => {
+      return schema.transform((_, val) => {
+        return new Date(Date.parse(`${date[0].toDateString()} ${val}`))
+      })
     })
-  }).required(),
-  stop_time: yup.date().when(['date'], (date, schema) => {
-    return schema.transform((_, val) => {
-      return new Date(Date.parse(`${date[0].toDateString()} ${val}`))
+    .required(),
+  stop_time: yup
+    .date()
+    .when(['date'], (date, schema) => {
+      return schema.transform((_, val) => {
+        return new Date(Date.parse(`${date[0].toDateString()} ${val}`))
+      })
     })
-  }).required(),
+    .required(),
 
   max_altitude: yup.number().positive(),
   wind_speed: yup.number().min(0),
@@ -66,7 +72,9 @@ const FlightForm: FC<IProps> = ({ sites, gliders, onSubmit }) => {
         <Form.Label>Site</Form.Label>
         <Form.Select {...register('site_id', { required: true })}>
           {sites.map((site) => (
-            <option key={site.id} value={site.id}>{site.name}</option>
+            <option key={site.id} value={site.id}>
+              {site.name}
+            </option>
           ))}
         </Form.Select>
       </Form.Group>

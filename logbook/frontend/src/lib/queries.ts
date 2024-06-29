@@ -1,4 +1,11 @@
-import { Site, SiteInputs, Glider, GliderInputs, FlightInputs, Flight } from './types'
+import {
+  Site,
+  SiteInputs,
+  Glider,
+  GliderInputs,
+  FlightInputs,
+  Flight
+} from './types'
 
 const sitesQuery = `
 {
