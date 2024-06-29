@@ -79,7 +79,7 @@ const UploadIgcFileModal = (props: StandardModalProps) => {
   const validationSchema = yup.object({
     s3ObjectName: yup
       .string()
-      .matches(/^[a-zA-Z\_]{5,}$/)
+      .matches(/^[a-zA-Z_]{5,}$/)
       .required()
   })
 
@@ -105,10 +105,10 @@ const UploadIgcFileModal = (props: StandardModalProps) => {
           body: formdata
         }
       )
-        .then((res) => {
+        .then(() => {
           navigate(`/${data.s3ObjectName}`)
         })
-        .catch((err) => {
+        .catch(() => {
           setError('s3ObjectName', {
             type: 'server',
             message: 'Server Error'

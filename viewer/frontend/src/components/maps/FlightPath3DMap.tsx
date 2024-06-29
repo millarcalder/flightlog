@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect, useMemo } from 'react'
+import { PropsWithChildren, useMemo } from 'react'
 import DeckGL from '@deck.gl/react'
 import { TerrainLayer } from '@deck.gl/geo-layers'
 import { Position } from '../../types'

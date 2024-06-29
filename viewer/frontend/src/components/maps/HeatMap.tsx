@@ -8,6 +8,9 @@ import {
   generatePathData,
   generatePathLayer
 } from './helpers'
+import MultiColorPathLayer from '../custom_deckgl_layers/multicolor_path_layer/layer'
+import { HeatmapLayer } from 'deck.gl'
+import { HeatmapLayerProps } from '@deck.gl/aggregation-layers/heatmap-layer/heatmap-layer'
 
 interface HeatMapProps {
   positionLogs: Position[]
@@ -26,12 +29,12 @@ const HeatMap = (props: PropsWithChildren<HeatMapProps>) => {
     [props.positionLogs]
   )
 
-  const heatMapLayer = useMemo<any>(
+  const heatMapLayer = useMemo<HeatmapLayer<number[], HeatmapLayerProps<number[]>>>(
     () => generateHeatMapLayer(heatMapData, props.showHeatMapLayer),
     [heatMapData, props.showHeatMapLayer]
   )
 
-  const pathLayer = useMemo<any>(
+  const pathLayer = useMemo<MultiColorPathLayer>(
     () =>
       generatePathLayer({
         pathData,

@@ -61,8 +61,8 @@ const AppOverlay = () => {
     if (!e.target.files) return
     dispatch(setLoading(true))
 
-    let file = e.target.files[0]
-    let formdata = new FormData()
+    const file = e.target.files[0]
+    const formdata = new FormData()
     formdata.append('igc', file)
 
     fetch(`${process.env.REACT_APP_FLIGHTLOG_API_URL}extract-flight-log/file`, {
@@ -81,7 +81,7 @@ const AppOverlay = () => {
           navigate('/')
         })
       })
-      .catch((err) => {
+      .catch(() => {
         dispatch(clearFlightlog())
         navigate('/')
       })
@@ -218,7 +218,7 @@ const AppOverlay = () => {
   )
 }
 
-const ComponentSelector = (props: PropsWithChildren<any>) => {
+const ComponentSelector = (props: PropsWithChildren<object>) => {
   const flightlog = useAppSelector((state) => state.main.flightlog)
   const view = useAppSelector((state) => state.main.view)
   const showPathLayer = useAppSelector(
@@ -307,7 +307,7 @@ const App = () => {
           })
         )
       })
-      .catch((err) => {
+      .catch(() => {
         dispatch(clearFlightlog())
       })
       .finally(() => {

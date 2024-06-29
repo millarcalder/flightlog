@@ -4,7 +4,7 @@ import { faMultiply } from '@fortawesome/free-solid-svg-icons'
 import { CSSProperties } from 'react'
 
 export interface StandardModalProps extends ModalProps {
-  handleClose: () => any
+  handleClose: () => void
   bodyStyle?: CSSProperties
 }
 

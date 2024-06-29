@@ -1,11 +1,11 @@
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import { Position } from '../../types'
-import { useMemo, useState } from 'react'
+import { useMemo, useState, CSSProperties } from 'react'
 
 interface AltitudeGraphProps {
   data: Position[]
-  style?: any
+  style?: CSSProperties
 }
 
 const AltitudeGraph = (props: AltitudeGraphProps) => {
