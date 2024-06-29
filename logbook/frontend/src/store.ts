@@ -43,7 +43,7 @@ class Store {
     const i = this.sites.findIndex((site) => site.id === flight.site_id)
     if (i < 0) throw Error('Site not found!')
 
-    let clone = deepClone(this.sites[i])
+    const clone = deepClone(this.sites[i])
     if (!clone.flights) clone.flights = []
     clone.flights!.push(flight)
 

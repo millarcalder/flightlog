@@ -24,7 +24,7 @@ const Login = observer(() => {
       .then((accessToken) => {
         store.setAccessToken(accessToken)
       })
-      .catch((err: any) => {
+      .catch(() => {
         setError('root', { type: 'custom', message: 'Login failed!' })
       })
   }

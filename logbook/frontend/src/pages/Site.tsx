@@ -88,7 +88,7 @@ const SitePage = observer(() => {
       return
     }
 
-    let siteId = Number(id)
+    const siteId = Number(id)
 
     // Invalid site ID
     if (!Number.isInteger(siteId)) {
@@ -97,7 +97,7 @@ const SitePage = observer(() => {
       return
     }
 
-    let site = store.getSite(siteId)
+    const site = store.getSite(siteId)
 
     // Site not found
     if (site === undefined) {

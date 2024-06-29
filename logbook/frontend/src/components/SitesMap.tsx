@@ -17,7 +17,7 @@ const SitesMap: FC<IProps> = ({
   height = 500,
   width = 500
 }) => {
-  const mapRef = useRef<MapRef>()
+  const mapRef = useRef<MapRef>(null)
 
   const moveSite = (lat: number, lng: number) => {
     mapRef.current?.flyTo({ center: [lat, lng], duration: 2000 })
@@ -50,7 +50,6 @@ const SitesMap: FC<IProps> = ({
   return (
     <>
       <Map
-        // @ts-ignore
         ref={mapRef}
         initialViewState={initialState}
         mapboxAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}

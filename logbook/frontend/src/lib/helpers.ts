@@ -1,5 +1,5 @@
 export const deepClone = <Type extends object>(obj: Type): Type => {
-  let clone: any = {}
+  const clone: any = {} // eslint-disable-line
   for (const [key, value] of Object.entries(obj)) {
     if (typeof value === 'object') {
       if (Array.isArray(value)) clone[key] = [...value]

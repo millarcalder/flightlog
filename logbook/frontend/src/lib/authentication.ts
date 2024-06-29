@@ -23,10 +23,10 @@ class Authentication implements IAuthentication {
       method: 'POST',
       body: formdata
     })
-      .then((res: any) => {
+      .then((res: Response) => {
         if (res.ok) return res.json()
       })
-      .then((token: any) => {
+      .then((token) => {
         return token.access_token
       })
   }

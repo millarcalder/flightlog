@@ -5,9 +5,10 @@ import { StoreContext } from '../index'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
+import { Site } from '../lib/types'
 
 interface IProps {
-  onClick: Function
+  onClick: (site: Site) => void
 }
 
 const SitesList: FC<IProps> = observer(({ onClick }) => {
