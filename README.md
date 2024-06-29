@@ -65,7 +65,7 @@ Deploying is done via Ansible playbooks.
 
  - `dev_machine` - machine to build python wheels and javascript bundles on
  - `build_machine` - machine to build docker images on
- - `viewer_webserver` - machine to deploy the viewer to
+ - `webserver` - machine to deploy the services to
 
 ```
 [dev_machine]
@@ -74,20 +74,23 @@ flightlog-dev ansible_connection=docker remote_user=root project_dir=/workspace/
 [build_machine]
 localhost ansible_connection=local
 
-[viewer_webserver]
+[webserver]
 159.69.46.13 ansible_user=root
 ```
 
 ### Running the Playbooks
 
-Before deploying the viewer or if you are building the docker images on the server, you must provision the server which you are deploying the viewer to.
+*Note: If you are building the docker images on your dev machine, the ansible script will need to be executed from outside of the devcontainer*
 
-After provisioning the VM you will need to setup the letsencrypt SSL certificate manually. [Certbot](https://certbot.eff.org/) is installed for you during the provisioning process.
+Before deploying or building the docker images on a remote server, you need to provision the server.
+
+When deploying the services you will need to setup the letsencrypt SSL certificate manually. [Certbot](https://certbot.eff.org/) is installed for you during the provisioning process.
 
 ```bash
-ansible-playbook ansible/build_containers.yml -i ansible/inventory/foo.ini --ask-vault-password --ask-become-pass
-ansible-playbook ansible/vm_provision.yml -i ansible/inventory/foo.ini --ask-vault-password --ask-become-pass
-ansible-playbook ansible/vm_deploy.yml -i ansible/inventory/foo.ini --ask-vault-password --ask-become-pass
+$ ansible-playbook ansible/build_containers.yml -i ansible/inventory/foo.ini --ask-vault-password
+$ ansible-playbook ansible/provision.yml -i ansible/inventory/foo.ini --ask-vault-password
+# manually setup SSL certs using certbot
+$ ansible-playbook ansible/deploy.yml -i ansible/inventory/foo.ini --ask-vault-password
 ```
 
 ## Helpful links
