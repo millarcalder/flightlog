@@ -1,7 +1,10 @@
 # To build this diagram run the following command:
 # d2 architecture.d2 architecture.svg -t 300 --layout elk --sketch
 
-user: User {
+public_user: Public User {
+  shape: person
+}
+wireguard_user: VPN User {
   shape: person
 }
 
@@ -29,46 +32,46 @@ pypi: PyPi Registry {
   }
 }
 
-vpn: VPN {
-  nomad_cluster: Home Nomad Cluster (Raspberry Pi's) {
-    # style
-    style.multiple: true
-
-    # shapes
-    logbook_api: Logbook API {
-      shape: oval
-    }
-    logbook_website: Logbook Website {
-      shape: oval
-    }
-    s3_cleanup_worker: S3 Cleanup Worker {
-      shape: hexagon
-    }
-    psql: PostgreSQL {
-      shape: cylinder
-    }
-
-    logbook_website -> logbook_api
-    logbook_api -> psql
+server: Hetzner Server {
+  wireguard: Wireguard {
+    shape: hexagon
   }
-}
-
-public_cloud_server: Hetzner Server {
-  # shapes
-  viewer_api: Viewer API {
+  nginx: Nginx Server {
     shape: oval
   }
   viewer_website: Viewer Website {
     shape: oval
   }
+  viewer_api: Viewer API {
+    shape: oval
+  }
+  logbook_website: Logbook Website {
+    shape: oval
+  }
+  logbook_api: Logbook API {
+    shape: oval
+  }
+  s3_cleanup_worker: S3 Cleanup Worker {
+    shape: hexagon
+  }
+  psql: PostgreSQL {
+    shape: cylinder
+  }
+
+  wireguard -> nginx
+  nginx -> viewer_website: Allow All
+  nginx -> logbook_website: Allow Wireguard
+  nginx -> viewer_api: Allow All
+  nginx -> logbook_api: Allow Wireguard
+  logbook_api -> psql
 }
 
-user -> vpn.nomad_cluster.logbook_website: Connected Via VPN
-user -> public_cloud_server.viewer_website: Public
+public_user -> server.nginx
+wireguard_user -> server.wireguard
 
-vpn.nomad_cluster.logbook_api -> aws.logbook_igc_bucket
-vpn.nomad_cluster.s3_cleanup_worker -> aws.viewer_igc_bucket
-public_cloud_server.viewer_api -> aws.viewer_igc_bucket
+server.logbook_api -> aws.logbook_igc_bucket
+server.s3_cleanup_worker -> aws.viewer_igc_bucket
+server.viewer_api -> aws.viewer_igc_bucket
 
-vpn.nomad_cluster.logbook_api -> pypi.igc_parser
-public_cloud_server.viewer_api -> pypi.igc_parser
+server.logbook_api -> pypi.igc_parser
+server.viewer_api -> pypi.igc_parser
