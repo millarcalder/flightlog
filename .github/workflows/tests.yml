@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: spin up docker compose dependencies
-        run: docker compose up -d s3 init_minio_data
+        run: docker compose up -d s3 init_minio_data db
       - name: run viewer backend tests
         run: docker compose run dev /bin/sh -c "cd /workspace/viewer/backend && make developer-setup && make linting && make test"
       - name: run logbook backend tests
