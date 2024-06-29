@@ -1,4 +1,4 @@
-import { Site, Flight, Glider } from './types'
+import { Site, SiteInputs, Glider, GliderInputs, FlightInputs, Flight } from './types'
 
 const sitesQuery = `
 {
@@ -20,7 +20,12 @@ const sitesQuery = `
 
 export interface IQueries {
   fetchGliders(accessToken: string): Promise<Glider[]>
+  addGlider(accessToken: string, input: GliderInputs): Promise<Glider>
+
   fetchSites(accessToken: string): Promise<Site[]>
+  addSite(accessToken: string, input: SiteInputs): Promise<Site>
+
+  addFlight(accessToken: string, input: FlightInputs): Promise<Flight>
 }
 
 class MockedQueries implements IQueries {
@@ -30,7 +35,8 @@ class MockedQueries implements IQueries {
     description: '...',
     latitude: -37.3258,
     longitude: 174.677,
-    altitude: 50
+    altitude: 50,
+    country: 'New Zealand'
   }
   site2 = {
     id: 2,
@@ -38,7 +44,8 @@ class MockedQueries implements IQueries {
     description: '...',
     latitude: 47.098611,
     longitude: 11.32425,
-    altitude: 1788
+    altitude: 1788,
+    country: 'Austria'
   }
   glider1 = {
     id: 1,
@@ -93,9 +100,13 @@ class MockedQueries implements IQueries {
     glider: this.glider1
   }
 
+  currSiteId = 3
+  currGliderId = 3
+  currFlightId = 5
+
   fetchGliders(accessToken: string): Promise<Glider[]> {
     return new Promise((resolve) => {
-      console.log('Mocked gliders request!')
+      console.log('Mocked method: IQueries.fetchGliders')
 
       setTimeout(() => {
         if (accessToken === 'imatoken') {
@@ -114,9 +125,30 @@ class MockedQueries implements IQueries {
     })
   }
 
+  addGlider(accessToken: string, input: GliderInputs): Promise<Glider> {
+    return new Promise((resolve) => {
+      console.log('Mocked method: IQueries.addGlider')
+
+      setTimeout(() => {
+        if (accessToken === 'imatoken') {
+          const newGlider: Glider = {
+            id: this.currGliderId,
+            model: input.model,
+            manufacturer: input.manufacturer,
+            rating: input.rating
+          }
+          this.currGliderId++
+          resolve(newGlider)
+        } else {
+          throw 'Authorization Error'
+        }
+      }, 1000)
+    })
+  }
+
   fetchSites(accessToken: string): Promise<Site[]> {
     return new Promise((resolve) => {
-      console.log('Mocked sites request!')
+      console.log('Mocked method: IQueries.fetchSites')
 
       setTimeout(() => {
         if (accessToken === 'imatoken') {
@@ -132,6 +164,57 @@ class MockedQueries implements IQueries {
           ])
         } else {
           resolve([])
+        }
+      }, 1000)
+    })
+  }
+
+  addSite(accessToken: string, input: SiteInputs): Promise<Site> {
+    return new Promise((resolve) => {
+      console.log('Mocked method: IQueries.addSite')
+
+      setTimeout(() => {
+        if (accessToken === 'imatoken') {
+          const newSite: Site = {
+            id: this.currSiteId,
+            name: input.name,
+            description: input.description,
+            latitude: input.latitude,
+            longitude: input.longitude,
+            altitude: input.altitude,
+            country: input.country
+          }
+          this.currSiteId++
+          resolve(newSite)
+        } else {
+          throw 'Authorization Error'
+        }
+      }, 1000)
+    })
+  }
+
+  addFlight(accessToken: string, input: FlightInputs): Promise<Flight> {
+    return new Promise((resolve) => {
+      console.log('Mocked method: IQueries.addFlight')
+
+      setTimeout(() => {
+        if (accessToken === 'imatoken') {
+          const newFlight: Flight = {
+            id: this.currFlightId,
+            date: input.date,
+            site_id: input.site_id,
+            glider_id: input.glider_id,
+            start_time: input.start_time,
+            stop_time: input.stop_time,
+            max_altitude: input.max_altitude,
+            wind_speed: input.wind_speed,
+            wind_dir: input.wind_dir,
+            comments: input.comments
+          }
+          this.currFlightId++
+          resolve(newFlight)
+        } else {
+          throw 'Authorization Error'
         }
       }, 1000)
     })

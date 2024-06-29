@@ -109,7 +109,7 @@ const SitePage = observer(() => {
     // Success!
     setErrorMessage(null)
     setSite(site)
-  }, [id, store.loading])
+  }, [id, store.loading, store.sites])
 
   return errorMessage ? (
     <Alert variant="danger">{errorMessage}</Alert>

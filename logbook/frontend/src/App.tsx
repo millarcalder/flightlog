@@ -59,12 +59,24 @@ const Layout = observer((props: PropsWithChildren) => {
               <FlightForm
                 sites={store.sites}
                 gliders={store.gliders}
-                onSubmit={(data) => console.log(data)}
+                onSubmit={(data) => {
+                  queries.addFlight(store.accessToken!, data).then((flight) => {
+                    store.addFlight(flight)
+                  })
+                }}
               />
             ) : store.addEntityModal == 'Glider' ? (
-              <GliderForm onSubmit={(data) => console.log(data)} />
+              <GliderForm onSubmit={(data) => {
+                queries.addGlider(store.accessToken!, data).then((glider) => {
+                  store.addGlider(glider)
+                })
+              }} />
             ) : store.addEntityModal == 'Site' ? (
-              <SiteForm onSubmit={(data) => console.log(data)} />
+              <SiteForm onSubmit={(data) => {
+                queries.addSite(store.accessToken!, data).then((site) => {
+                  store.addSite(site)
+                })
+              }} />
             ) : null}
           </Modal.Body>
         </Modal>

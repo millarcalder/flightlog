@@ -35,7 +35,7 @@ const yupSchema = yup.object({
   }).required(),
 
   max_altitude: yup.number().positive(),
-  wind_speed: yup.number().positive(),
+  wind_speed: yup.number().min(0),
   wind_dir: yup.number().min(0).max(360),
   comments: yup.string().required(),
   igc_file: yup.mixed<File>()
