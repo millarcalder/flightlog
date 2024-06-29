@@ -7,7 +7,6 @@ import {
   Flight
 } from './types'
 
-
 export interface IQueries {
   fetchGliders(accessToken: string): Promise<Glider[]>
   addGlider(accessToken: string, input: GliderInputs): Promise<Glider>

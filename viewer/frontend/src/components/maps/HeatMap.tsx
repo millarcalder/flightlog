@@ -29,7 +29,9 @@ const HeatMap = (props: PropsWithChildren<HeatMapProps>) => {
     [props.positionLogs]
   )
 
-  const heatMapLayer = useMemo<HeatmapLayer<number[], HeatmapLayerProps<number[]>>>(
+  const heatMapLayer = useMemo<
+    HeatmapLayer<number[], HeatmapLayerProps<number[]>>
+  >(
     () => generateHeatMapLayer(heatMapData, props.showHeatMapLayer),
     [heatMapData, props.showHeatMapLayer]
   )
