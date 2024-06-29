@@ -1,0 +1,45 @@
+- name: Install required packages
+  ansible.builtin.apt:
+    pkg:
+      - wireguard
+    update_cache: yes
+
+- name: Template a file to /etc/wireguard/wg0.conf
+  notify: Reboot
+  ansible.builtin.template:
+    src: wg0.conf.j2
+    dest: /etc/wireguard/wg0.conf
+
+- name: Allow SSH access with a VPN connection
+  community.general.ufw:
+    state: enabled
+    rule: allow
+    name: OpenSSH
+    # src: 10.8.8.0/16
+
+- name: Allow UDP access over port 51820 for wireguard connections
+  community.general.ufw:
+    state: enabled
+    rule: allow
+    port: 51820
+    proto: udp
+
+- name: Allow HTTP connections from anywhere
+  community.general.ufw:
+    state: enabled
+    rule: allow
+    port: 80
+    proto: tcp
+
+- name: Allow HTTPS connections from anywhere
+  community.general.ufw:
+    state: enabled
+    rule: allow
+    port: 443
+    proto: tcp
+
+- name: Start wg0.service
+  ansible.builtin.systemd_service:
+    enabled: true
+    state: started
+    name: wg-quick@wg0.service

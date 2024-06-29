@@ -1,14 +1,17 @@
 import re
-from viewer.lib.exceptions import InvalidFlightLogName
-from viewer.lib.exceptions import IgcFileNotFound
-from viewer.lib.exceptions import IgcFileTooLarge
-from viewer.lib.exceptions import FlightLogNameAlreadyTaken
-from igc_parser import FlightLog
-from igc_parser import parse_igc_bytes
+
+from igc_parser import FlightLog, parse_igc_bytes
+
+from viewer.lib.exceptions import (
+    FlightLogNameAlreadyTaken,
+    IgcFileNotFound,
+    IgcFileTooLarge,
+    InvalidFlightLogName,
+)
 
 
 def _valid_key(key: str) -> bool:
-    return re.fullmatch(r"^[a-zA-Z\_]{5,}$", key)
+    return bool(re.fullmatch(r"^[a-zA-Z\_]{5,}$", key))
 
 
 def _valid_size_bytes(size_bytes: int, object_size_limit_bytes: int) -> bool:

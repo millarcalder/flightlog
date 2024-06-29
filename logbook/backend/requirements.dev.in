@@ -1,6 +1,14 @@
 black
 build
+faker
+flake8
 httpx
+isort
+mypy
 pip-tools
 pytest
 setuptools
+
+# types stubs for mypy
+types-python-jose
+types-passlib

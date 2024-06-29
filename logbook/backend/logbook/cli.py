@@ -1,10 +1,37 @@
-import click
 import logging
-import os
-import uvicorn
 
-from logbook.config import Settings
-from logbook.webapp.app import init_app
+import click
+import uvicorn
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
+
+from logbook.db.models import Base
+from logbook.tests.data.data import insert_testing_data
+
+
+def _create_testing_db_engine():
+    return create_engine(
+        "postgresql+psycopg://root:secret@flightlog-db:5432/logbook", echo=True
+    )
+
+
+def _setup_auto_auth():
+    """
+    patches the fastapi dependency which decodes the oauth JWT token.
+    """
+    import pytest
+
+    import logbook.webapp.auth
+
+    engine = _create_testing_db_engine()
+
+    def _get_current_user():
+        with Session(engine) as sess:
+            return logbook.webapp.auth.fetch_user("millar9819@gmail.com", sess)
+
+    pytest.MonkeyPatch().setattr(
+        logbook.webapp.auth, "get_current_user", _get_current_user
+    )
 
 
 @click.group()
@@ -26,10 +53,43 @@ def cli(env: str):
         root_logger.addHandler(file_handler)
 
 
-@cli.command()
-@click.option("--env-file")
-@click.option("--reload", is_flag=True)
-def run_webapp(reload: bool, env_file: str | None = None):
+@cli.command(help="Destroy the test database")
+def test_db_up():
+    engine = _create_testing_db_engine()
+    Base.metadata.create_all(engine)
+    with Session(engine) as sess:
+        insert_testing_data(sess)
+        sess.commit()
+    engine.dispose()
+
+
+@cli.command(help="Create and populate the test database")
+def test_db_down():
+    engine = _create_testing_db_engine()
+    Base.metadata.drop_all(engine)
+    engine.dispose()
+
+
+@cli.command(help="Run the web application")
+@click.option("--env-file", help="Specify the file to load environment variables from")
+@click.option(
+    "--auto-auth",
+    is_flag=True,
+    help="Useful for development - automatically login as the user millar9819@gmail.com",
+)
+@click.option(
+    "--reload",
+    is_flag=True,
+    help="Useful for development - reloads the webapp when source code is changed",
+)
+def run_webapp(reload: bool, auto_auth: bool, env_file: str | None = None):
+    if auto_auth:
+        _logger = logging.getLogger()
+        _logger.warning("Running the webapp in auto-auth mode")
+        _setup_auto_auth()
+
+    from logbook.webapp.app import init_app
+
     app = init_app(env_file)
     uvicorn.run(
         app,

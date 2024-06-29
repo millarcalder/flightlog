@@ -14,3 +14,10 @@ build: developer-setup
 test:
 	source .virtualenv/bin/activate; \
 	python -m pytest logbook/tests
+
+linting:
+	source .virtualenv/bin/activate; \
+	python -m black logbook --check; \
+	python -m isort logbook --check-only; \
+	python -m flake8 logbook; \
+	python -m mypy logbook

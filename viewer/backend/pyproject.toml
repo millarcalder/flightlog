@@ -13,3 +13,10 @@ dependencies = {file = "requirements.txt"}
 
 [project.scripts]
 viewer = "viewer.cli:cli"
+
+[tool.isort]
+profile = "black"
+
+[[tool.mypy.overrides]]
+module = ["igc_parser"]
+ignore_missing_imports = true

@@ -1,0 +1,14 @@
+- name: Deploy to a Web Server
+  hosts: viewer_webserver
+  pre_tasks:
+    - name: Load secrets
+      include_vars:
+        file: vault.yml
+        name: secrets
+    - name: What is the CPU architecture of this machine?
+      include_role:
+        name: what_is_my_cpu_architecture
+  roles:
+    - role: deploy_viewer
+    - role: deploy_logbook
+    - role: deploy_nginx

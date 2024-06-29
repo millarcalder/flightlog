@@ -14,3 +14,6 @@ classifiers = [
 
 [project.urls]
 "Homepage" = "https://github.com/millarcalder/flightlog"
+
+[tool.isort]
+profile = "black"

@@ -36,13 +36,16 @@ This repository contains three different projects
 - [Mapbox](https://visgl.github.io/react-map-gl/) - Mapping Framework
 - [S3](https://docs.aws.amazon.com/s3/) - Object Storage
 
+## Architecture
+
+![architecture](architecture.svg)
+
 ## Developer Environment
 
 Requirements:
 
  - [Devcontainers compliant code editor](https://containers.dev/)
  - [Ansible](https://www.ansible.com/)
- - [kubectl](https://kubernetes.io/docs/reference/kubectl/kubectl/) (connected to your Kubernetes cluster)
  - [Docker](https://www.docker.com/)
 
 First you need to open the repository using devcontainers.

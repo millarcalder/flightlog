@@ -14,3 +14,10 @@ build: developer-setup
 test:
 	source .virtualenv/bin/activate; \
 	python -m pytest viewer/tests
+
+linting:
+	source .virtualenv/bin/activate; \
+	python -m black viewer --check; \
+	python -m isort viewer --check-only; \
+	python -m flake8 viewer; \
+	python -m mypy viewer

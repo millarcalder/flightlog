@@ -1,10 +1,8 @@
 from dataclasses import dataclass
-from datetime import datetime
-from datetime import time
+from datetime import datetime, time
 from typing import TypedDict
 
-from igc_parser.exceptions import InvalidIgcFile
-from igc_parser.exceptions import InvalidTrackPointLine
+from igc_parser.exceptions import InvalidIgcFile, InvalidTrackPointLine
 from igc_parser.latlng import haversine
 
 
@@ -28,7 +26,7 @@ class FlightLog:
 
     @property
     def finish(self) -> Position:
-        return self.position_logs
+        return self.position_logs[-1]
 
 
 def parse_igc_bytes(igc: bytes) -> FlightLog:
@@ -46,9 +44,9 @@ def parse_igc_str(igc: str) -> FlightLog:
         raise InvalidIgcFile("An IGC file must have more than two position logs")
 
     position_logs = []
-    dist_travelled_meters = 0
-    max_altitude = None
-    min_altitude = None
+    dist_travelled_meters = 0.0
+    max_altitude = -1
+    min_altitude = -1
 
     for i, line in enumerate(position_lines):
         position = _parse_position_log(line)
@@ -62,10 +60,10 @@ def parse_igc_str(igc: str) -> FlightLog:
                 position["longitude"],
             )
 
-        if max_altitude is None or position["altitude"] > max_altitude:
+        if position["altitude"] > max_altitude:
             max_altitude = position["altitude"]
 
-        if min_altitude is None or position["altitude"] < min_altitude:
+        if position["altitude"] < min_altitude:
             min_altitude = position["altitude"]
 
     return FlightLog(
