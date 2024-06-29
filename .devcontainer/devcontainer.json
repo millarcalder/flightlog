@@ -3,5 +3,14 @@
     "workspaceFolder": "/workspace",
     "service": "dev",
     "runServices": ["s3", "db", "init_minio_data"],
-    "forwardPorts": [3000, 5000]
+    "forwardPorts": [3000, 5000],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "esbenp.prettier-vscode",
+                "wolfmah.ansible-vault-inline"
+            ]
+        }
+    }
 }
