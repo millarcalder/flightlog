@@ -20,6 +20,10 @@ jobs:
         run: docker compose run dev /bin/sh -c "cd /workspace/viewer/backend && make developer-setup && make linting && make test"
       - name: run logbook backend tests
         run: docker compose run dev /bin/sh -c "cd /workspace/logbook/backend && make developer-setup && make linting && make test"
+      - name: run viewer frontent tests
+        run: docker compose run dev /bin/sh -c "cd /workspace/viewer/frontend && make developer-setup && make linting"
+      - name: run logbook frontent tests
+        run: docker compose run dev /bin/sh -c "cd /workspace/logbook/frontend && make developer-setup && make linting"
       - name: run igc-parser tests
         run: docker compose run dev /bin/sh -c "cd /workspace/igc_parser && make developer-setup && make linting && make test"
       - name: tear down docker compose dependencies
