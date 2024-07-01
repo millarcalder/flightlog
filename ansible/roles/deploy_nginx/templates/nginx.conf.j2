@@ -36,4 +36,17 @@ http {
             proxy_pass http://flightlog-logbook-frontend/;
         }
     }
+
+    server {
+        listen                     80;
+        server_name                prometheus.millarcalder.com;
+        proxy_set_header Host      $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        allow                      10.8.8.0/16;
+        deny                       all;
+
+        location / {
+            proxy_pass http://prometheus:9090/;
+        }
+    }
 }

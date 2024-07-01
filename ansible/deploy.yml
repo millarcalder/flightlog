@@ -11,4 +11,5 @@
   roles:
     - role: deploy_viewer
     - role: deploy_logbook
+    - role: deploy_prometheus
     - role: deploy_nginx

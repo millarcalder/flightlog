@@ -1,0 +1,23 @@
+- name: Create a directory for config files
+  become: yes
+  ansible.builtin.file:
+    path: /opt/prometheus
+    state: directory
+
+- name: Template out the Prometheus config
+  become: yes
+  ansible.builtin.template:
+    src: 'prometheus.yml.j2'
+    dest: /opt/prometheus/prometheus.yml
+
+- name: Run the Prometheus Docker container
+  become: yes
+  community.docker.docker_container:
+    name: prometheus
+    state: started
+    image: prom/prometheus
+    networks:
+      - name: flightlog
+    volumes:
+      - /opt/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
