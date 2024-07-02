@@ -1,0 +1,7 @@
+- name: Run the Prometheus Docker container
+  community.docker.docker_container:
+    name: grafana
+    state: started
+    image: grafana/grafana
+    networks:
+      - name: flightlog
