@@ -1,17 +1,41 @@
 - name: Create a directory for config files
-  become: yes
   ansible.builtin.file:
     path: /opt/prometheus
     state: directory
 
+- name: Create a directory for the node exporter
+  ansible.builtin.file:
+    path: /opt/prometheus/node-exporter
+    state: directory
+
+- name: Download prometheus node exporter
+  ansible.builtin.get_url:
+    url: https://github.com/prometheus/node_exporter/releases/download/v1.8.1/node_exporter-1.8.1.linux-amd64.tar.gz
+    dest: /opt/prometheus/node_exporter-1.8.1.linux-amd64.tar.gz
+
+- name: unzip prometheus node exporter
+  ansible.builtin.unarchive:
+    src: /opt/prometheus/node_exporter-1.8.1.linux-amd64.tar.gz
+    dest: /opt/prometheus
+    remote_src: true
+
+- name: template out the prometheus node exporter systemd service
+  ansible.builtin.template:
+    src: 'node-exporter.service.j2'
+    dest: /etc/systemd/system/prometheus-node-exporter.service
+
+- name: enable and start the prometheus node exporter systemd service
+  ansible.builtin.systemd_service:
+    enabled: true
+    state: started
+    name: prometheus-node-exporter.service
+
 - name: Template out the Prometheus config
-  become: yes
   ansible.builtin.template:
     src: 'prometheus.yml.j2'
     dest: /opt/prometheus/prometheus.yml
 
 - name: Run the Prometheus Docker container
-  become: yes
   community.docker.docker_container:
     name: prometheus
     state: started
