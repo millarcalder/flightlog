@@ -105,7 +105,7 @@ const AppOverlay = () => {
           style={{
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center'
+            alignItems: 'start'
           }}
         >
           <Form.Control
@@ -116,7 +116,10 @@ const AppOverlay = () => {
               width: 'auto'
             }}
           />
-          <div>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
             {flightlogFile ? (
               <OverlayTrigger
                 overlay={<Tooltip>Upload</Tooltip>}
