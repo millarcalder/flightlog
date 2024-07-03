@@ -1,6 +1,7 @@
 import { HeatmapLayer } from '@deck.gl/aggregation-layers'
 import MultiColorPathLayer from '../custom_deckgl_layers/multicolor_path_layer/layer'
 import { Position } from '../../types'
+import MobileDetect from 'mobile-detect'
 
 export const generateHeatMapData = (positionLogs: Position[]): number[][] => {
   const res = []
@@ -59,6 +60,7 @@ export const generatePathLayer = ({
   width = 4,
   visible = true
 }: generatePathLayerProps): MultiColorPathLayer => {
+  const md = new MobileDetect(navigator.userAgent)
   return new MultiColorPathLayer({
     id: 'pathlayer',
     data: [
@@ -76,7 +78,8 @@ export const generatePathLayer = ({
     },
     capRounded: true,
     jointRounded: true,
-    billboard: true,
+    // billboard breaks on mobile devices and the path is not visible, so for now lets disable this on mobile 
+    billboard: !md.mobile(),
     visible
   })
 }
