@@ -49,12 +49,13 @@ def init_app(env_file=None) -> FastAPI:
     app_globals.settings = Settings(_env_file=env_file)  # type: ignore
     app_globals.db_engine = create_engine(app_globals.settings.database_uri, echo=True)
 
+    origins = ["*"]
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["http://localhost:3000"],
+        allow_origins=origins,
         allow_credentials=True,
         allow_methods=["*"],
-        allow_headers=["*"],
+        allow_headers=["*"]
     )
 
     return app
