@@ -278,6 +278,7 @@ class GraphQLQueries implements IQueries {
     }).then((res) => {
       return res.json()
     }).then((data): Site[] => {
+      // convert the dateOfFlight field from a string to a Date object
       return data['data']['sites'].map((site: Site) => {
         site.flights = site.flights?.map((flight: Flight) => {
           flight.dateOfFlight = new Date(flight.dateOfFlight)
