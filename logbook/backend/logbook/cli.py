@@ -82,7 +82,17 @@ def test_db_down():
     is_flag=True,
     help="Useful for development - reloads the webapp when source code is changed",
 )
-def run_webapp(reload: bool, auto_auth: bool, env_file: str | None = None):
+@click.option(
+    "--debug",
+    is_flag=True,
+    help="Useful for development - starts debugpy listening on port 5678",
+)
+def run_webapp(reload: bool, auto_auth: bool, debug: bool, env_file: str | None = None):
+    if debug:
+        import debugpy
+        debugpy.listen(("localhost", 5678))
+        debugpy.wait_for_client()
+
     if auto_auth:
         _logger = logging.getLogger()
         _logger.warning("Running the webapp in auto-auth mode")

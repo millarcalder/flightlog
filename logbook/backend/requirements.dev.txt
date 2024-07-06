@@ -20,6 +20,8 @@ click==8.1.7
     # via
     #   black
     #   pip-tools
+debugpy==1.8.2
+    # via -r requirements.dev.in
 faker==24.11.0
     # via -r requirements.dev.in
 flake8==7.0.0
