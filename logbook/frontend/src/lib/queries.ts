@@ -50,41 +50,41 @@ class MockedQueries implements IQueries {
   }
   flight1 = {
     id: 1,
-    date: new Date('01-01-2024'),
-    site_id: 1, // Kariotahi
-    glider_id: 1, // GIN Bolero
-    start_time: new Date('01-01-2024T12:00:00'),
-    stop_time: new Date('01-01-2024T12:30:00'),
+    dateOfFlight: new Date('01-01-2024'),
+    siteId: 1, // Kariotahi
+    gliderId: 1, // GIN Bolero
+    startTime: new Date('01-01-2024T12:00:00'),
+    stopTime: new Date('01-01-2024T12:30:00'),
     comments: '...',
     glider: this.glider1
   }
   flight2 = {
     id: 2,
-    date: new Date('01-01-2023'),
-    site_id: 2, // Stubai
-    glider_id: 1, // GIN Bolero
-    start_time: new Date('01-01-2024T12:00:00'),
-    stop_time: new Date('01-01-2024T12:30:00'),
+    dateOfFlight: new Date('01-01-2023'),
+    siteId: 2, // Stubai
+    gliderId: 1, // GIN Bolero
+    startTime: new Date('01-01-2024T12:00:00'),
+    stopTime: new Date('01-01-2024T12:30:00'),
     comments: '...',
     glider: this.glider1
   }
   flight3 = {
     id: 3,
-    date: new Date('01-01-2023'),
-    site_id: 2, // Stubai
-    glider_id: 1, // GIN Bolero
-    start_time: new Date('01-01-2024T13:00:00'),
-    stop_time: new Date('01-01-2024T13:30:00'),
+    dateOfFlight: new Date('01-01-2023'),
+    siteId: 2, // Stubai
+    gliderId: 1, // GIN Bolero
+    startTime: new Date('01-01-2024T13:00:00'),
+    stopTime: new Date('01-01-2024T13:30:00'),
     comments: '...',
     glider: this.glider1
   }
   flight4 = {
     id: 4,
-    date: new Date('02-01-2023'),
-    site_id: 2, // Stubai
-    glider_id: 1, // GIN Bolero
-    start_time: new Date('02-01-2024T13:00:00'),
-    stop_time: new Date('02-01-2024T13:30:00'),
+    dateOfFlight: new Date('02-01-2023'),
+    siteId: 2, // Stubai
+    gliderId: 1, // GIN Bolero
+    startTime: new Date('02-01-2024T13:00:00'),
+    stopTime: new Date('02-01-2024T13:30:00'),
     comments: '...',
     glider: this.glider1
   }
@@ -190,14 +190,14 @@ class MockedQueries implements IQueries {
         if (accessToken === 'imatoken') {
           const newFlight: Flight = {
             id: this.currFlightId,
-            date: input.date,
-            site_id: input.site_id,
-            glider_id: input.glider_id,
-            start_time: input.start_time,
-            stop_time: input.stop_time,
-            max_altitude: input.max_altitude,
-            wind_speed: input.wind_speed,
-            wind_dir: input.wind_dir,
+            dateOfFlight: input.dateOfFlight,
+            siteId: input.siteId,
+            gliderId: input.gliderId,
+            startTime: input.startTime,
+            stopTime: input.stopTime,
+            maxAltitude: input.maxAltitude,
+            windSpeed: input.windSpeed,
+            windDir: input.windDir,
             comments: input.comments
           }
           this.currFlightId++

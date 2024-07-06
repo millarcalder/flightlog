@@ -40,7 +40,7 @@ class Store {
       Need to make a deep clone of the site and then reassign the entire sites list
       for all observers to catch the event.
     */
-    const i = this.sites.findIndex((site) => site.id === flight.site_id)
+    const i = this.sites.findIndex((site) => site.id === flight.siteId)
     if (i < 0) throw Error('Site not found!')
 
     const clone = deepClone(this.sites[i])

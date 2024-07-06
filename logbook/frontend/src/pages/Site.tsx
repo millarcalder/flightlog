@@ -46,7 +46,7 @@ const SiteComponent: FC<{ site: Site }> = ({ site }) => {
               {site.flights?.map((flight) => {
                 return (
                   <tr key={flight.id}>
-                    <td>{flight.date.toDateString()}</td>
+                    <td>{flight.dateOfFlight.toDateString()}</td>
                     <td>
                       {flight.glider
                         ? `${flight.glider.manufacturer} - ${flight.glider.model}`

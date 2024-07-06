@@ -35,31 +35,31 @@ export interface Site {
 }
 
 export interface FlightInputs {
-  date: Date
-  site_id: number
-  glider_id: number
-  start_time: Date
-  stop_time: Date
-  max_altitude?: number
-  wind_speed?: number
-  wind_dir?: number
+  dateOfFlight: Date
+  siteId: number
+  gliderId: number
+  startTime: Date
+  stopTime: Date
+  maxAltitude?: number
+  windSpeed?: number
+  windDir?: number
   comments: string
-  igc_file?: File
+  igcFile?: File
 }
 
 export interface Flight {
   id: number
-  date: Date
-  site_id: number
-  glider_id: number
-  start_time: Date
-  stop_time: Date
-  max_altitude?: number
-  wind_speed?: number
-  wind_dir?: number
+  dateOfFlight: Date
+  siteId: number
+  gliderId: number
+  startTime: Date
+  stopTime: Date
+  maxAltitude?: number
+  windSpeed?: number
+  windDir?: number
   comments: string
-  igc_s3?: string
-  flightlog_viewer_link?: string
+  igcS3?: string
+  flightlogViewerLink?: string
 
   site?: Site
   glider?: Glider
