@@ -36,7 +36,7 @@ def insert_testing_data(sess: Session):
         email_address="millar9819@gmail.com",
         first_name="Millar",
         last_name="Calder",
-        hashed_password="$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
+        hashed_password="$2b$12$kHvtKLe4vLfLbKqaW4mltee7MZdaCwSV9Qbr2zp9B4JZsu8DS9kqO",
     )
     luke_skywalker = User(
         email_address="lukeskywalker@gmail.com",
