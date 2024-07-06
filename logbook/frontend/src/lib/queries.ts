@@ -210,5 +210,92 @@ class MockedQueries implements IQueries {
   }
 }
 
-const queries = new MockedQueries()
+class GraphQLQueries implements IQueries {
+  fetchGliders(accessToken: string): Promise<Glider[]> {
+    return fetch(`${process.env.REACT_APP_LOGBOOK_API}/graphql`, {
+      method: 'POST',
+       headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+       },
+       body: JSON.stringify({
+        query: `{
+          gliders {
+            id
+            model
+            manufacturer
+            rating
+          }
+        }`
+      })
+    }).then((res) => {
+      return res.json()
+    }).then((data) => {
+      return data['data']['gliders']
+    })
+  }
+
+  addGlider(accessToken: string, input: GliderInputs): Promise<Glider> {
+    throw 'Not Implemented'
+  }
+
+  fetchSites(accessToken: string): Promise<Site[]> {
+    return fetch(`${process.env.REACT_APP_LOGBOOK_API}/graphql`, {
+      method: 'POST',
+       headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+       },
+       body: JSON.stringify({
+        query: `{
+          sites {
+            id
+            name
+            description
+            latitude
+            longitude
+            altitude
+            country
+            flights {
+              id
+              dateOfFlight
+              siteId
+              gliderId
+              startTime
+              stopTime
+              maxAltitude
+              windSpeed
+              windDir
+              comments
+              igcS3
+              flightlogViewerLink
+            }
+          }
+        }`
+      })
+    }).then((res) => {
+      return res.json()
+    }).then((data): Site[] => {
+      return data['data']['sites'].map((site: Site) => {
+        site.flights = site.flights?.map((flight: Flight) => {
+          flight.dateOfFlight = new Date(flight.dateOfFlight)
+          return flight
+        })
+        return site
+      })
+    })
+  }
+
+  addSite(accessToken: string, input: SiteInputs): Promise<Site> {
+    throw 'Not Implemented'
+  }
+
+  addFlight(accessToken: string, input: FlightInputs): Promise<Flight> {
+    throw 'Not Implemented'
+  }
+}
+
+const queries = process.env.REACT_APP_MOCK_QUERIES ? new MockedQueries() : new GraphQLQueries()
 export default queries

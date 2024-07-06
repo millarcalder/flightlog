@@ -19,7 +19,7 @@ class Authentication implements IAuthentication {
     const formdata = new FormData()
     formdata.append('username', email)
     formdata.append('password', password)
-    return fetch(process.env.REACT_APP_AUTH_URL!, {
+    return fetch(`${process.env.REACT_APP_LOGBOOK_API}/token`, {
       method: 'POST',
       body: formdata
     })
@@ -32,7 +32,7 @@ class Authentication implements IAuthentication {
   }
 }
 
-const authentication = process.env.REACT_APP_AUTH_URL
-  ? new Authentication()
-  : new MockedAuthentication()
+const authentication = process.env.REACT_APP_MOCK_QUERIES
+  ? new MockedAuthentication()
+  : new Authentication()
 export default authentication
