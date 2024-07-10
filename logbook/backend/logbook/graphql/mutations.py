@@ -16,7 +16,6 @@ class FlightMutations:
         self,
         info: strawberry.Info,
         date_of_flight: date,
-        user_id: int,
         site_id: int,
         glider_id: int,
         start_time: datetime,
@@ -31,7 +30,7 @@ class FlightMutations:
         # Validate by instantiating pydantic model
         flight_input = FlightInput(
             date_of_flight=date_of_flight,
-            user_id=user_id,
+            user_id=info.context.user_id,
             site_id=site_id,
             glider_id=glider_id,
             start_time=start_time,
@@ -58,14 +57,13 @@ class GliderMutations:
     def add(
         self,
         info: strawberry.Info,
-        user_id: int,
         model: str,
         manufacturer: str,
         rating: str
     ) -> Glider:
         # Validate by instantiating pydantic model
         glider_input = GliderInput(
-            user_id=user_id,
+            user_id=info.context.user_id,
             model=model,
             manufacturer=manufacturer,
             rating=rating

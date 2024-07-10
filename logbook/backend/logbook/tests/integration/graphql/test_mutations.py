@@ -7,7 +7,6 @@ def test_add_flight(context):
             flight {
                 add(
                     dateOfFlight: "2024-01-01",
-                    userId: 1,
                     siteId: 1,
                     gliderId:1,
                     startTime: "2024-01-01 12:00:00",
@@ -41,7 +40,6 @@ def test_add_flight__invalid_date(context):
             flight {
                 add(
                     dateOfFlight: "foo",
-                    userId: 1,
                     siteId: 1,
                     gliderId:1,
                     startTime: "2024-01-01 12:00:00",
@@ -76,7 +74,6 @@ def test_add_flight__invalid_altitude(context):
             flight {
                 add(
                     dateOfFlight: "2024-01-01",
-                    userId: 1,
                     siteId: 1,
                     gliderId:1,
                     startTime: "2024-01-01 12:00:00",
@@ -107,7 +104,6 @@ def test_add_glider(context):
         mutation {
             glider {
                 add(
-                    userId: 1,
                     model: "foo",
                     manufacturer: "bar",
                     rating: "EN-A"
