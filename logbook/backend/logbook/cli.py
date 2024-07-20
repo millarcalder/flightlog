@@ -21,16 +21,16 @@ def _setup_auto_auth():
     """
     import pytest
 
-    import logbook.webapp.auth
+    import logbook.backend.logbook.webapp.routers.auth
 
     engine = _create_testing_db_engine()
 
     def _get_current_user():
         with Session(engine) as sess:
-            return logbook.webapp.auth.fetch_user("millar9819@gmail.com", sess)
+            return logbook.backend.logbook.webapp.routers.auth.fetch_user("millar9819@gmail.com", sess)
 
     pytest.MonkeyPatch().setattr(
-        logbook.webapp.auth, "get_current_user", _get_current_user
+        logbook.backend.logbook.webapp.routers.auth, "get_current_user", _get_current_user
     )
 
 

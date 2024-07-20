@@ -9,16 +9,8 @@ from strawberry.fastapi import GraphQLRouter
 import logbook.webapp.app_globals as app_globals
 from logbook.config import Settings
 from logbook.graphql.schema import CustomContext, schema
-from logbook.webapp.auth import get_current_user
-from logbook.webapp.auth import router as auth_router
-
-
-def get_db_sess():
-    sess = Session(app_globals.db_engine)
-    try:
-        yield sess
-    finally:
-        sess.close()
+from logbook.backend.logbook.webapp.dependencies import get_current_user, get_db_sess
+from logbook.backend.logbook.webapp.routers.auth import router as auth_router
 
 
 @asynccontextmanager
