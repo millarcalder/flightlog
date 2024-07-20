@@ -9,8 +9,8 @@ from strawberry.fastapi import GraphQLRouter
 import logbook.webapp.app_globals as app_globals
 from logbook.config import Settings
 from logbook.graphql.schema import CustomContext, schema
-from logbook.backend.logbook.webapp.dependencies import get_current_user, get_db_sess
-from logbook.backend.logbook.webapp.routers.auth import router as auth_router
+from logbook.webapp.dependencies import get_current_user, get_db_sess
+from logbook.webapp.routers.auth import router as auth_router
 
 
 @asynccontextmanager
