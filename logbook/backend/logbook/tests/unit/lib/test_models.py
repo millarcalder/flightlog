@@ -68,7 +68,6 @@ def test_validation_functions__invalid(func, val):
             FlightInput,
             {
                 "date_of_flight": date(2024, 1, 1),
-                "user_id": 1,
                 "site_id": 1,
                 "glider_id": 1,
                 "start_time": datetime(2024, 1, 1, 12, 0),

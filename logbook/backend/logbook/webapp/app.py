@@ -10,6 +10,7 @@ import logbook.webapp.app_globals as app_globals
 from logbook.config import Settings
 from logbook.graphql.schema import CustomContext, schema
 from logbook.webapp.dependencies import get_current_user, get_db_sess
+from logbook.webapp.routers.api import router as api_router
 from logbook.webapp.routers.auth import router as auth_router
 
 
@@ -32,6 +33,7 @@ app = FastAPI(lifespan=_lifespan)
 app.include_router(
     GraphQLRouter(schema, context_getter=_graphql_context), prefix="/graphql"
 )
+app.include_router(api_router)
 app.include_router(auth_router)
 
 

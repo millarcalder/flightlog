@@ -2,7 +2,6 @@ import strawberry
 from sqlalchemy.orm import Session
 from strawberry.fastapi import BaseContext
 
-from logbook.graphql.mutations import Mutation
 from logbook.graphql.queries import Query
 
 
@@ -12,4 +11,4 @@ class CustomContext(BaseContext):
         self.db_sess = db_sess
 
 
-schema = strawberry.Schema(query=Query, mutation=Mutation)
+schema = strawberry.Schema(query=Query)

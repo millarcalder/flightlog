@@ -53,7 +53,6 @@ class User(BaseModel):
 class GliderInput(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    user_id: int
     model: str
     manufacturer: str
     rating: str
@@ -61,13 +60,13 @@ class GliderInput(BaseModel):
 
 class Glider(GliderInput):
     id: int
+    user_id: int
 
 
 class FlightInput(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     date_of_flight: date
-    user_id: int
     site_id: int
     glider_id: int
     start_time: datetime
@@ -82,3 +81,4 @@ class FlightInput(BaseModel):
 
 class Flight(FlightInput):
     id: int
+    user_id: int
