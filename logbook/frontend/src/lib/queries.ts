@@ -295,7 +295,7 @@ class GraphQLQueries implements IQueries {
   }
 
   addFlight(accessToken: string, input: FlightInputs): Promise<Flight> {
-    return fetch(`${process.env.REACT_APP_LOGBOOK_API}/graphql`, {
+    return fetch(`${process.env.REACT_APP_LOGBOOK_API}/api/flight`, {
       method: 'POST',
        headers: {
         'Content-Type': 'application/json',
@@ -303,40 +303,20 @@ class GraphQLQueries implements IQueries {
         'Authorization': `Bearer ${accessToken}`
        },
        body: JSON.stringify({
-        query: `mutation {
-          flight {
-            add(
-              dateOfFlight: "${format(input.dateOfFlight, "yyyy-MM-dd")}",
-              siteId: ${input.siteId},
-              gliderId: ${input.gliderId},
-              startTime: "${input.startTime.toJSON()}",
-              stopTime: "${input.stopTime.toJSON()}",
-              maxAltitude: ${input.maxAltitude},
-              windSpeed: ${input.windSpeed},
-              windDir: ${input.windDir},
-              comments: "${input.comments}"
-            ) {
-              id
-              dateOfFlight
-              siteId
-              gliderId
-              startTime
-              stopTime
-              maxAltitude
-              windSpeed
-              windDir
-              comments
-              igcS3
-              flightlogViewerLink
-            }
-          }
-        }`
-      })
+        dateOfFlight: format(input.dateOfFlight, "yyyy-MM-dd"),
+        siteId: input.siteId,
+        gliderId: input.gliderId,
+        startTime: input.startTime.toJSON(),
+        stopTime: input.stopTime.toJSON(),
+        maxAltitude: input.maxAltitude,
+        windSpeed: input.windSpeed,
+        windDir: input.windDir,
+        comments: input.comments
+       })
     }).then((res) => {
-      return res.json()
-    }).then((data): Flight => {
+      if (res.ok) return res.json()
+    }).then((flight): Flight => {
       // convert the dateOfFlight field from a string to a Date object
-      let flight: Flight = data['data']['flight']['add']
       flight.dateOfFlight = new Date(flight.dateOfFlight)
       return flight
     })
