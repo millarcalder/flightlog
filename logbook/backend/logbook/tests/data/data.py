@@ -33,16 +33,16 @@ def insert_testing_data(sess: Session):
     sess.add_all([stubai, pukerua_bay])
 
     millar_calder = User(
-        email_address="millar9819@gmail.com",
-        first_name="Millar",
-        last_name="Calder",
-        hashed_password="$2b$12$kHvtKLe4vLfLbKqaW4mltee7MZdaCwSV9Qbr2zp9B4JZsu8DS9kqO",
+        emailAddress="millar9819@gmail.com",
+        firstName="Millar",
+        lastName="Calder",
+        hashedPassword="$2b$12$kHvtKLe4vLfLbKqaW4mltee7MZdaCwSV9Qbr2zp9B4JZsu8DS9kqO",
     )
     luke_skywalker = User(
-        email_address="lukeskywalker@gmail.com",
-        first_name="Luke",
-        last_name="Skywalker",
-        hashed_password="...",
+        emailAddress="lukeskywalker@gmail.com",
+        firstName="Luke",
+        lastName="Skywalker",
+        hashedPassword="...",
     )
     sess.add_all([millar_calder, luke_skywalker])
     sess.flush()  # send inserts to the DB so we can access generated IDs
@@ -60,24 +60,24 @@ def insert_testing_data(sess: Session):
     sess.flush()  # send inserts to the DB so we can access generated IDs
 
     flight_1 = Flight(
-        date_of_flight=date(2023, 1, 1),
+        dateOfFlight=date(2023, 1, 1),
         user=millar_calder,
         site=pukerua_bay,
         glider=gin_bolero,
-        start_time=datetime(2023, 1, 1, 14, 0),
-        stop_time=datetime(2023, 1, 1, 15, 0),
-        max_altitude=150,
-        wind_speed=20,
-        wind_dir=155,
+        startTime=datetime(2023, 1, 1, 14, 0),
+        stopTime=datetime(2023, 1, 1, 15, 0),
+        maxAltitude=150,
+        windSpeed=20,
+        windDir=155,
         comments="...",
     )
     flight_2 = Flight(
-        date_of_flight=date(3033, 1, 1),
+        dateOfFlight=date(3033, 1, 1),
         user=luke_skywalker,
         site=death_star,
         glider=millennium_falcon,
-        start_time=datetime(3033, 1, 1, 4, 0, 4),
-        stop_time=datetime(3033, 1, 1, 4, 0, 4),
+        startTime=datetime(3033, 1, 1, 4, 0, 4),
+        stopTime=datetime(3033, 1, 1, 4, 0, 4),
         comments="...",
     )
     sess.add_all([flight_1, flight_2])

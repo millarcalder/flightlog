@@ -12,7 +12,7 @@ router = APIRouter(prefix="/api")
 def add_flight(input: FlightInput, current_user: User = Depends(get_current_user), db_sess: Session = Depends(get_db_sess)):
     db_sess.begin()
     try:
-        flight_orm = FlightOrm(**input.model_dump(), user_id=current_user.id)
+        flight_orm = FlightOrm(**input.model_dump(), userId=current_user.id)
         db_sess.add(flight_orm)
         db_sess.flush()
         flight = Flight.model_validate(flight_orm)
@@ -26,7 +26,7 @@ def add_flight(input: FlightInput, current_user: User = Depends(get_current_user
 def add_glider(input: GliderInput, current_user: User = Depends(get_current_user), db_sess: Session = Depends(get_db_sess)):
     db_sess.begin()
     try:
-        glider_orm = GliderOrm(**input.model_dump(), user_id=current_user.id)
+        glider_orm = GliderOrm(**input.model_dump(), userId=current_user.id)
         db_sess.add(glider_orm)
         db_sess.flush()
         glider = Glider.model_validate(glider_orm)

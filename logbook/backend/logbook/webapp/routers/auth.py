@@ -32,7 +32,7 @@ async def login_for_access_token(
         minutes=app_globals.settings.access_token_expire_minutes
     )
     token = generate_access_token(
-        data=TokenData(sub=user.email_address),
+        data=TokenData(sub=user.emailAddress),
         expires_delta=access_token_expires,
         secret_key=app_globals.settings.password_hash_secret_key,
         algorithm=app_globals.settings.password_hash_algorithm,

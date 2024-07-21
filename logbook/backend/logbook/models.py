@@ -44,10 +44,10 @@ class User(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    email_address: str
-    first_name: str
-    last_name: str
-    hashed_password: str
+    emailAddress: str
+    firstName: str
+    lastName: str
+    hashedPassword: str
 
 
 class GliderInput(BaseModel):
@@ -60,25 +60,25 @@ class GliderInput(BaseModel):
 
 class Glider(GliderInput):
     id: int
-    user_id: int
+    userId: int
 
 
 class FlightInput(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    date_of_flight: date
-    site_id: int
-    glider_id: int
-    start_time: datetime
-    stop_time: datetime
-    max_altitude: Altitude | None = Field(default=None)
-    wind_speed: float | None = Field(default=None)
-    wind_dir: float | None = Field(default=None)
+    dateOfFlight: date
+    siteId: int
+    gliderId: int
+    startTime: datetime
+    stopTime: datetime
+    maxAltitude: Altitude | None = Field(default=None)
+    windSpeed: float | None = Field(default=None)
+    windDir: float | None = Field(default=None)
     comments: str = Field(default="")
-    igc_s3: str | None = Field(default=None)
-    flightlog_viewer_link: str | None = Field(default=None)
+    igcS3: str | None = Field(default=None)
+    flightlogViewerLink: str | None = Field(default=None)
 
 
 class Flight(FlightInput):
     id: int
-    user_id: int
+    userId: int

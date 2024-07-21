@@ -25,10 +25,10 @@ class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    email_address: Mapped[str] = mapped_column(String())
-    first_name: Mapped[str] = mapped_column(String())
-    last_name: Mapped[str] = mapped_column(String())
-    hashed_password: Mapped[str] = mapped_column(String())
+    emailAddress: Mapped[str] = mapped_column(String())
+    firstName: Mapped[str] = mapped_column(String())
+    lastName: Mapped[str] = mapped_column(String())
+    hashedPassword: Mapped[str] = mapped_column(String())
 
     gliders: Mapped[list["Glider"]] = relationship("Glider", back_populates="user")
     flights: Mapped[list["Flight"]] = relationship("Flight", back_populates="user")
@@ -38,7 +38,7 @@ class Glider(Base):
     __tablename__ = "gliders"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_id = mapped_column(ForeignKey("users.id"))
+    userId = mapped_column(ForeignKey("users.id"))
     model: Mapped[str] = mapped_column(String())
     manufacturer: Mapped[str] = mapped_column(String())
     rating: Mapped[str] = mapped_column(String())
@@ -51,18 +51,18 @@ class Flight(Base):
     __tablename__ = "flights"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    date_of_flight: Mapped[date] = mapped_column(Date())
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    site_id: Mapped[int] = mapped_column(ForeignKey("sites.id"))
-    glider_id: Mapped[int] = mapped_column(ForeignKey("gliders.id"))
-    start_time: Mapped[datetime] = mapped_column(DateTime())
-    stop_time: Mapped[datetime] = mapped_column(DateTime())
-    max_altitude: Mapped[int | None] = mapped_column(Integer())
-    wind_speed: Mapped[float | None] = mapped_column(Float())
-    wind_dir: Mapped[float | None] = mapped_column(Float())
+    dateOfFlight: Mapped[date] = mapped_column(Date())
+    userId: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    siteId: Mapped[int] = mapped_column(ForeignKey("sites.id"))
+    gliderId: Mapped[int] = mapped_column(ForeignKey("gliders.id"))
+    startTime: Mapped[datetime] = mapped_column(DateTime())
+    stopTime: Mapped[datetime] = mapped_column(DateTime())
+    maxAltitude: Mapped[int | None] = mapped_column(Integer())
+    windSpeed: Mapped[float | None] = mapped_column(Float())
+    windDir: Mapped[float | None] = mapped_column(Float())
     comments: Mapped[str] = mapped_column(String())
-    igc_s3: Mapped[str | None] = mapped_column(String())
-    flightlog_viewer_link: Mapped[str | None] = mapped_column(String())
+    igcS3: Mapped[str | None] = mapped_column(String())
+    flightlogViewerLink: Mapped[str | None] = mapped_column(String())
 
     user: Mapped["User"] = relationship("User", back_populates="flights")
     glider: Mapped[list["Glider"]] = relationship("Glider", back_populates="flights")

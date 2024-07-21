@@ -32,7 +32,7 @@ def _generate_password_hash(password) -> str:
 
 def fetch_user(email_address: str, sess: Session) -> User:
     user = sess.execute(
-        select(DBUser).where(DBUser.email_address == email_address)
+        select(DBUser).where(DBUser.emailAddress == email_address)
     ).first()
     if not user:
         raise AuthenticationException("User not found")
@@ -41,7 +41,7 @@ def fetch_user(email_address: str, sess: Session) -> User:
 
 def authenticate_user(email_address: str, password: str, sess: Session) -> User:
     user = fetch_user(email_address, sess)
-    if not _verify_password(password, user.hashed_password):
+    if not _verify_password(password, user.hashedPassword):
         raise AuthenticationException("Incorrect password")
     return user
 
