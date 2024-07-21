@@ -10,9 +10,9 @@ def test_post_flight(client, access_token):
             "maxAltitude": 100,
             "windSpeed": 10,
             "windDir": 12.23,
-            "comments": "..."
+            "comments": "...",
         },
-        headers={"Authorization": f"Bearer {access_token.access_token}"}
+        headers={"Authorization": f"Bearer {access_token.access_token}"},
     )
     assert res.status_code == 200
     assert res.json() == {
@@ -28,18 +28,15 @@ def test_post_flight(client, access_token):
         "windDir": 12.23,
         "comments": "...",
         "flightlogViewerLink": None,
-        "igcS3": None
+        "igcS3": None,
     }
+
 
 def test_post_glider(client, access_token):
     res = client.post(
         "/api/glider",
-        json={
-            "model": "FOO",
-            "manufacturer": "BAR",
-            "rating": "Z"
-        },
-        headers={"Authorization": f"Bearer {access_token.access_token}"}
+        json={"model": "FOO", "manufacturer": "BAR", "rating": "Z"},
+        headers={"Authorization": f"Bearer {access_token.access_token}"},
     )
     assert res.status_code == 200
     assert res.json() == {
@@ -47,27 +44,9 @@ def test_post_glider(client, access_token):
         "userId": 1,
         "model": "FOO",
         "manufacturer": "BAR",
-        "rating": "Z"
+        "rating": "Z",
     }
 
-def test_post_glider(client, access_token):
-    res = client.post(
-        "/api/glider",
-        json={
-            "model": "FOO",
-            "manufacturer": "BAR",
-            "rating": "Z"
-        },
-        headers={"Authorization": f"Bearer {access_token.access_token}"}
-    )
-    assert res.status_code == 200
-    assert res.json() == {
-        "id": 3,
-        "userId": 1,
-        "model": "FOO",
-        "manufacturer": "BAR",
-        "rating": "Z"
-    }
 
 def test_post_site(client, access_token):
     res = client.post(
@@ -78,9 +57,9 @@ def test_post_site(client, access_token):
             "latitude": 12.34,
             "longitude": 123.45,
             "altitude": 100,
-            "country": "Pandora"
+            "country": "Pandora",
         },
-        headers={"Authorization": f"Bearer {access_token.access_token}"}
+        headers={"Authorization": f"Bearer {access_token.access_token}"},
     )
     assert res.status_code == 200
     assert res.json() == {
@@ -90,5 +69,5 @@ def test_post_site(client, access_token):
         "latitude": 12.34,
         "longitude": 123.45,
         "altitude": 100,
-        "country": "Pandora"
+        "country": "Pandora",
     }

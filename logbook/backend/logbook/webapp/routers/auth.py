@@ -5,15 +5,9 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 import logbook.webapp.app_globals as app_globals
-from logbook.webapp.exceptions import HTTPUnauthenticatedException
-from logbook.auth import (
-    Token,
-    TokenData,
-    authenticate_user,
-    generate_access_token,
-)
+from logbook.auth import Token, TokenData, authenticate_user, generate_access_token
 from logbook.exceptions import AuthenticationException
-
+from logbook.webapp.exceptions import HTTPUnauthenticatedException
 
 router = APIRouter()
 

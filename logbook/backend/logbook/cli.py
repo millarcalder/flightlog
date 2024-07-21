@@ -90,6 +90,7 @@ def test_db_down():
 def run_webapp(reload: bool, auto_auth: bool, debug: bool, env_file: str | None = None):
     if debug:
         import debugpy
+
         debugpy.listen(("localhost", 5678))
         debugpy.wait_for_client()
 

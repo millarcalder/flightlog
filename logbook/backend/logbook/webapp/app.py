@@ -3,7 +3,6 @@ from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
 from strawberry.fastapi import GraphQLRouter
 
 import logbook.webapp.app_globals as app_globals
@@ -49,7 +48,7 @@ def init_app(env_file=None) -> FastAPI:
         allow_origins=origins,
         allow_credentials=True,
         allow_methods=["*"],
-        allow_headers=["*"]
+        allow_headers=["*"],
     )
 
     return app

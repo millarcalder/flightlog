@@ -10,6 +10,7 @@ from logbook.webapp.exceptions import HTTPUnauthenticatedException
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
+
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(
@@ -32,6 +33,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         raise HTTPUnauthenticatedException
 
     return user
+
 
 def get_db_sess():
     sess = Session(app_globals.db_engine)
