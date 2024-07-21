@@ -62,6 +62,7 @@ const Layout = observer((props: PropsWithChildren) => {
                 onSubmit={(data) => {
                   queries.addFlight(store.accessToken!, data).then((flight) => {
                     store.addFlight(flight)
+                    store.setAddEntityModal(undefined)
                   })
                 }}
               />

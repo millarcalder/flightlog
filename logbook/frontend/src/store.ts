@@ -66,7 +66,7 @@ class Store {
     return this.gliders.find((glider) => glider.id === id)
   }
 
-  setAddEntityModal(addEntityModal: AddEntityModal) {
+  setAddEntityModal(addEntityModal?: AddEntityModal) {
     this.addEntityModal = addEntityModal
   }
 
