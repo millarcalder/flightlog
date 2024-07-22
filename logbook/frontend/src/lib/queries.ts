@@ -238,7 +238,17 @@ class GraphQLQueries implements IQueries {
   }
 
   addGlider(accessToken: string, input: GliderInputs): Promise<Glider> {
-    throw 'Not Implemented'
+    return fetch(`${process.env.REACT_APP_LOGBOOK_API}/api/glider`, {
+      method: 'POST',
+       headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+       },
+       body: JSON.stringify(input)
+    }).then((res) => {
+      if (res.ok) return res.json()
+    })
   }
 
   fetchSites(accessToken: string): Promise<Site[]> {
@@ -291,7 +301,21 @@ class GraphQLQueries implements IQueries {
   }
 
   addSite(accessToken: string, input: SiteInputs): Promise<Site> {
-    throw 'Not Implemented'
+    return fetch(`${process.env.REACT_APP_LOGBOOK_API}/api/site`, {
+      method: 'POST',
+       headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+       },
+       body: JSON.stringify(input)
+    }).then((res) => {
+      if (res.ok) return res.json()
+    }).then((site): Site => {
+      // the site will have zero flights initially
+      site.flights = []
+      return site
+    })
   }
 
   addFlight(accessToken: string, input: FlightInputs): Promise<Flight> {

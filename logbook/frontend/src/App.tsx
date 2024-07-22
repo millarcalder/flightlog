@@ -71,6 +71,7 @@ const Layout = observer((props: PropsWithChildren) => {
                 onSubmit={(data) => {
                   queries.addGlider(store.accessToken!, data).then((glider) => {
                     store.addGlider(glider)
+                    store.setAddEntityModal(undefined)
                   })
                 }}
               />
@@ -79,6 +80,7 @@ const Layout = observer((props: PropsWithChildren) => {
                 onSubmit={(data) => {
                   queries.addSite(store.accessToken!, data).then((site) => {
                     store.addSite(site)
+                    store.setAddEntityModal(undefined)
                   })
                 }}
               />
