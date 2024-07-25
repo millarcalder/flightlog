@@ -2,7 +2,7 @@
     "dockerComposeFile": "../docker-compose.yml",
     "workspaceFolder": "/workspace",
     "service": "dev",
-    "runServices": ["s3", "db", "init_minio_data"],
+    "runServices": ["s3", "init_minio_data"],
     "forwardPorts": [3000, 5000],
     "customizations": {
         "vscode": {

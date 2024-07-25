@@ -16,3 +16,5 @@ node_modules/
 
 ansible/inventory/
 ansible/ansible.cfg
+
+testing.db

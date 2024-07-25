@@ -11,7 +11,7 @@ from logbook.tests.data.data import insert_testing_data
 
 def _create_testing_db_engine():
     return create_engine(
-        "postgresql+psycopg://root:secret@flightlog-db:5432/logbook", echo=True
+        "sqlite:///testing.db", echo=True
     )
 
 
