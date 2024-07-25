@@ -63,7 +63,7 @@ server: Hetzner Server {
   nginx -> logbook_website: Allow Wireguard
   nginx -> viewer_api: Allow All
   nginx -> logbook_api: Allow Wireguard
-  logbook_api -> psql
+  logbook_api -> sqlite
 }
 
 public_user -> server.nginx
