@@ -10,9 +10,7 @@ from logbook.tests.data.data import insert_testing_data
 
 
 def _create_testing_db_engine():
-    return create_engine(
-        "sqlite:///testing.db", echo=True
-    )
+    return create_engine("sqlite:///testing.db", echo=True)
 
 
 def _setup_auto_auth():

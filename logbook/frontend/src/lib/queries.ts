@@ -215,12 +215,12 @@ class GraphQLQueries implements IQueries {
   fetchGliders(accessToken: string): Promise<Glider[]> {
     return fetch(`${process.env.REACT_APP_LOGBOOK_API}/graphql`, {
       method: 'POST',
-       headers: {
+      headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${accessToken}`
-       },
-       body: JSON.stringify({
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({
         query: `{
           gliders {
             id
@@ -230,22 +230,24 @@ class GraphQLQueries implements IQueries {
           }
         }`
       })
-    }).then((res) => {
-      return res.json()
-    }).then((data) => {
-      return data['data']['gliders']
     })
+      .then((res) => {
+        return res.json()
+      })
+      .then((data) => {
+        return data['data']['gliders']
+      })
   }
 
   addGlider(accessToken: string, input: GliderInputs): Promise<Glider> {
     return fetch(`${process.env.REACT_APP_LOGBOOK_API}/api/glider`, {
       method: 'POST',
-       headers: {
+      headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${accessToken}`
-       },
-       body: JSON.stringify(input)
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify(input)
     }).then((res) => {
       if (res.ok) return res.json()
     })
@@ -254,12 +256,12 @@ class GraphQLQueries implements IQueries {
   fetchSites(accessToken: string): Promise<Site[]> {
     return fetch(`${process.env.REACT_APP_LOGBOOK_API}/graphql`, {
       method: 'POST',
-       headers: {
+      headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${accessToken}`
-       },
-       body: JSON.stringify({
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({
         query: `{
           sites {
             id
@@ -286,48 +288,52 @@ class GraphQLQueries implements IQueries {
           }
         }`
       })
-    }).then((res) => {
-      return res.json()
-    }).then((data): Site[] => {
-      // convert the dateOfFlight field from a string to a Date object
-      return data['data']['sites'].map((site: Site) => {
-        site.flights = site.flights?.map((flight: Flight) => {
-          flight.dateOfFlight = new Date(flight.dateOfFlight)
-          return flight
-        })
-        return site
-      })
     })
+      .then((res) => {
+        return res.json()
+      })
+      .then((data): Site[] => {
+        // convert the dateOfFlight field from a string to a Date object
+        return data['data']['sites'].map((site: Site) => {
+          site.flights = site.flights?.map((flight: Flight) => {
+            flight.dateOfFlight = new Date(flight.dateOfFlight)
+            return flight
+          })
+          return site
+        })
+      })
   }
 
   addSite(accessToken: string, input: SiteInputs): Promise<Site> {
     return fetch(`${process.env.REACT_APP_LOGBOOK_API}/api/site`, {
       method: 'POST',
-       headers: {
+      headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${accessToken}`
-       },
-       body: JSON.stringify(input)
-    }).then((res) => {
-      if (res.ok) return res.json()
-    }).then((site): Site => {
-      // the site will have zero flights initially
-      site.flights = []
-      return site
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify(input)
     })
+      .then((res) => {
+        if (res.ok) return res.json()
+      })
+      .then((site): Site => {
+        // the site will have zero flights initially
+        site.flights = []
+        return site
+      })
   }
 
   addFlight(accessToken: string, input: FlightInputs): Promise<Flight> {
     return fetch(`${process.env.REACT_APP_LOGBOOK_API}/api/flight`, {
       method: 'POST',
-       headers: {
+      headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${accessToken}`
-       },
-       body: JSON.stringify({
-        dateOfFlight: format(input.dateOfFlight, "yyyy-MM-dd"),
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({
+        dateOfFlight: format(input.dateOfFlight, 'yyyy-MM-dd'),
         siteId: input.siteId,
         gliderId: input.gliderId,
         startTime: input.startTime.toJSON(),
@@ -336,16 +342,20 @@ class GraphQLQueries implements IQueries {
         windSpeed: input.windSpeed,
         windDir: input.windDir,
         comments: input.comments
-       })
-    }).then((res) => {
-      if (res.ok) return res.json()
-    }).then((flight): Flight => {
-      // convert the dateOfFlight field from a string to a Date object
-      flight.dateOfFlight = new Date(flight.dateOfFlight)
-      return flight
+      })
     })
+      .then((res) => {
+        if (res.ok) return res.json()
+      })
+      .then((flight): Flight => {
+        // convert the dateOfFlight field from a string to a Date object
+        flight.dateOfFlight = new Date(flight.dateOfFlight)
+        return flight
+      })
   }
 }
 
-const queries = process.env.REACT_APP_MOCK_QUERIES ? new MockedQueries() : new GraphQLQueries()
+const queries = process.env.REACT_APP_MOCK_QUERIES
+  ? new MockedQueries()
+  : new GraphQLQueries()
 export default queries

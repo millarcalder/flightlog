@@ -78,7 +78,7 @@ export const generatePathLayer = ({
     },
     capRounded: true,
     jointRounded: true,
-    // billboard breaks on mobile devices and the path is not visible, so for now lets disable this on mobile 
+    // billboard breaks on mobile devices and the path is not visible, so for now lets disable this on mobile
     billboard: !md.mobile(),
     visible
   })

@@ -116,10 +116,12 @@ const AppOverlay = () => {
               width: 'auto'
             }}
           />
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column'
-          }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
             {flightlogFile ? (
               <OverlayTrigger
                 overlay={<Tooltip>Upload</Tooltip>}
