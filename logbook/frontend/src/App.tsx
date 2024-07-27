@@ -50,6 +50,7 @@ const Layout = observer((props: PropsWithChildren) => {
           onHide={() => {
             store.clearAddEntityModal()
           }}
+          size="lg"
         >
           <Modal.Header closeButton>
             <Modal.Title>Add {store.addEntityModal}</Modal.Title>

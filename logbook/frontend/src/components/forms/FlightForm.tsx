@@ -1,4 +1,4 @@
-import { Button, Form } from 'react-bootstrap'
+import { Button, Form, Row, Col } from 'react-bootstrap'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -60,15 +60,6 @@ const FlightForm: FC<IProps> = ({ sites, gliders, onSubmit }) => {
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <Form.Group className="m-3">
-        <Form.Label>Date</Form.Label>
-        <Form.Control
-          {...register('dateOfFlight', { required: true })}
-          type="date"
-          isInvalid={!!errors.dateOfFlight}
-        />
-      </Form.Group>
-
-      <Form.Group className="m-3">
         <Form.Label>Site</Form.Label>
         <Form.Select {...register('siteId', { required: true })}>
           {sites.map((site) => (
@@ -90,50 +81,65 @@ const FlightForm: FC<IProps> = ({ sites, gliders, onSubmit }) => {
         </Form.Select>
       </Form.Group>
 
-      <Form.Group className="m-3">
-        <Form.Label>Start Time</Form.Label>
-        <Form.Control
-          {...register('startTime', { required: true })}
-          type="time"
-          isInvalid={!!errors.startTime}
-        />
-      </Form.Group>
+      <Row>
+        <Col>
+          <Form.Group className="m-3">
+            <Form.Label>Date</Form.Label>
+            <Form.Control
+              {...register('dateOfFlight', { required: true })}
+              type="date"
+              isInvalid={!!errors.dateOfFlight}
+            />
+          </Form.Group>
 
-      <Form.Group className="m-3">
-        <Form.Label>Stop Time</Form.Label>
-        <Form.Control
-          {...register('stopTime', { required: true })}
-          type="time"
-          isInvalid={!!errors.stopTime}
-        />
-      </Form.Group>
+          <Form.Group className="m-3">
+            <Form.Label>Wind Direction</Form.Label>
+            <br />
+            <WindInput
+              onChange={(e) => {
+                setValue('windDir', parseInt(e.target.value))
+              }}
+            />
+          </Form.Group>
+        </Col>
+        <Col>
+          <Form.Group className="m-3">
+            <Form.Label>Start Time</Form.Label>
+            <Form.Control
+              {...register('startTime', { required: true })}
+              type="time"
+              isInvalid={!!errors.startTime}
+            />
+          </Form.Group>
 
-      <Form.Group className="m-3">
-        <Form.Label>Maximum Altitude</Form.Label>
-        <Form.Control
-          {...register('maxAltitude', { required: true })}
-          type="number"
-          isInvalid={!!errors.maxAltitude}
-        />
-      </Form.Group>
+          <Form.Group className="m-3">
+            <Form.Label>Stop Time</Form.Label>
+            <Form.Control
+              {...register('stopTime', { required: true })}
+              type="time"
+              isInvalid={!!errors.stopTime}
+            />
+          </Form.Group>
 
-      <Form.Group className="m-3">
-        <Form.Label>Wind Speed</Form.Label>
-        <Form.Control
-          {...register('windSpeed', { required: true })}
-          type="number"
-          isInvalid={!!errors.windSpeed}
-        />
-      </Form.Group>
+          <Form.Group className="m-3">
+            <Form.Label>Maximum Altitude</Form.Label>
+            <Form.Control
+              {...register('maxAltitude', { required: true })}
+              type="number"
+              isInvalid={!!errors.maxAltitude}
+            />
+          </Form.Group>
 
-      <Form.Group className="m-3">
-        <Form.Label>Wind Direction</Form.Label>
-        <WindInput
-          onChange={(e) => {
-            setValue('windDir', parseInt(e.target.value))
-          }}
-        />
-      </Form.Group>
+          <Form.Group className="m-3">
+            <Form.Label>Wind Speed</Form.Label>
+            <Form.Control
+              {...register('windSpeed', { required: true })}
+              type="number"
+              isInvalid={!!errors.windSpeed}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
 
       <Form.Group className="m-3">
         <Form.Label>Comments</Form.Label>

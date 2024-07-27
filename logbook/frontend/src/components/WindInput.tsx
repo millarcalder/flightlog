@@ -7,19 +7,6 @@ const WindInput: FC<IProps> = (props) => {
 
   return (
     <>
-      <input
-        {...props}
-        type="range"
-        min={0}
-        max={360}
-        defaultValue={0}
-        onChange={(e) => {
-          setWindDir(parseInt(e.target.value))
-          if (props.onChange) props.onChange(e)
-        }}
-      />
-      <span>{windDir}°</span>
-      <br />
       <svg
         width={200}
         height={200}
@@ -27,6 +14,7 @@ const WindInput: FC<IProps> = (props) => {
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
       >
+        <text x={20} y={20}>{windDir}°</text>
         <circle
           r={117.5}
           cx={120}
@@ -58,6 +46,22 @@ const WindInput: FC<IProps> = (props) => {
           <line x1={20} y1={115} x2={40} y2={100} style={{ stroke: 'black' }} />
         </g>
       </svg>
+      <br />
+      <input
+        {...props}
+        type="range"
+        min={0}
+        max={360}
+        defaultValue={0}
+        onChange={(e) => {
+          setWindDir(parseInt(e.target.value))
+          if (props.onChange) props.onChange(e)
+        }}
+        style={{
+          width: "100%",
+          maxWidth: 200
+        }}
+      />
     </>
   )
 }
