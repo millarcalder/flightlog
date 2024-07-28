@@ -58,8 +58,6 @@ export interface Flight {
   windSpeed?: number
   windDir?: number
   comments: string
-  igcS3?: string
-  flightlogViewerLink?: string
 
   site?: Site
   glider?: Glider

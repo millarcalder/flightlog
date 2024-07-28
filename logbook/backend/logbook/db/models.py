@@ -61,8 +61,6 @@ class Flight(Base):
     windSpeed: Mapped[float | None] = mapped_column(Float())
     windDir: Mapped[float | None] = mapped_column(Float())
     comments: Mapped[str] = mapped_column(String())
-    igcS3: Mapped[str | None] = mapped_column(String())
-    flightlogViewerLink: Mapped[str | None] = mapped_column(String())
 
     user: Mapped["User"] = relationship("User", back_populates="flights")
     glider: Mapped[list["Glider"]] = relationship("Glider", back_populates="flights")

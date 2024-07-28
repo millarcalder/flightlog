@@ -75,8 +75,6 @@ class FlightInput(BaseModel):
     windSpeed: float | None = Field(default=None)
     windDir: float | None = Field(default=None)
     comments: str = Field(default="")
-    igcS3: str | None = Field(default=None)
-    flightlogViewerLink: str | None = Field(default=None)
 
 
 class Flight(FlightInput):

@@ -110,8 +110,6 @@ class Flight:
     windSpeed: float | None
     windDir: float | None
     comments: str
-    igcS3: str | None
-    flightlogViewerLink: str | None
 
     glider: Glider = strawberry.field(resolver=get_glider_for_flight)
     site: Site = strawberry.field(resolver=get_site_for_flight)

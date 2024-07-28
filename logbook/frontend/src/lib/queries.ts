@@ -282,8 +282,6 @@ class GraphQLQueries implements IQueries {
               windSpeed
               windDir
               comments
-              igcS3
-              flightlogViewerLink
             }
           }
         }`

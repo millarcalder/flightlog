@@ -27,8 +27,6 @@ def test_post_flight(client, access_token):
         "windSpeed": 10,
         "windDir": 12.23,
         "comments": "...",
-        "flightlogViewerLink": None,
-        "igcS3": None,
     }
 
 
