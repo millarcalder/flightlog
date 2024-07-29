@@ -44,7 +44,7 @@ export interface FlightInputs {
   windSpeed?: number
   windDir?: number
   comments: string
-  igcFile?: File
+  igcFile?: FileList
 }
 
 export interface Flight {

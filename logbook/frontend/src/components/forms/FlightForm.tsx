@@ -44,7 +44,7 @@ const yupSchema = yup.object({
   windSpeed: yup.number().min(0),
   windDir: yup.number().min(0).max(360),
   comments: yup.string().required(),
-  igcFile: yup.mixed<File>()
+  igcFile: yup.mixed<FileList>()
 })
 
 const FlightForm: FC<IProps> = ({ sites, gliders, onSubmit }) => {

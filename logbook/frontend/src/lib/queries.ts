@@ -15,6 +15,7 @@ export interface IQueries {
   fetchSites(accessToken: string): Promise<Site[]>
   addSite(accessToken: string, input: SiteInputs): Promise<Site>
 
+  uploadIgcFile(accessToken: string, flightId: number, igcFile: File): Promise<null>
   addFlight(accessToken: string, input: FlightInputs): Promise<Flight>
 }
 
@@ -183,6 +184,20 @@ class MockedQueries implements IQueries {
     })
   }
 
+  uploadIgcFile(accessToken: string, flightId: number, igcFile: File): Promise<null> {
+    return new Promise((resolve) => {
+      console.log('Mocked method: IQueries.uploadIgcFile')
+
+      setTimeout(() => {
+        if (accessToken === 'imatoken') {
+          resolve(null)
+        } else {
+          throw Error('Authorization Error')
+        }
+      }, 1000)
+    })
+  }
+
   addFlight(accessToken: string, input: FlightInputs): Promise<Flight> {
     return new Promise((resolve) => {
       console.log('Mocked method: IQueries.addFlight')
@@ -211,7 +226,7 @@ class MockedQueries implements IQueries {
   }
 }
 
-class GraphQLQueries implements IQueries {
+class APIQueries implements IQueries {
   fetchGliders(accessToken: string): Promise<Glider[]> {
     return fetch(`${process.env.REACT_APP_LOGBOOK_API}/graphql`, {
       method: 'POST',
@@ -322,6 +337,23 @@ class GraphQLQueries implements IQueries {
       })
   }
 
+  uploadIgcFile(accessToken: string, flightId: number, igcFile: File): Promise<null> {
+    const formdata = new FormData()
+    formdata.append('igc', igcFile)
+
+    return fetch(`${process.env.REACT_APP_LOGBOOK_API}/api/flight/${flightId}/upload-igc`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: formdata
+    })
+      .then((res) => {
+        if (res.ok) return null
+        throw "Unauthenticated"
+      })
+  }
+
   addFlight(accessToken: string, input: FlightInputs): Promise<Flight> {
     return fetch(`${process.env.REACT_APP_LOGBOOK_API}/api/flight`, {
       method: 'POST',
@@ -355,5 +387,5 @@ class GraphQLQueries implements IQueries {
 
 const queries = process.env.REACT_APP_MOCK_QUERIES
   ? new MockedQueries()
-  : new GraphQLQueries()
+  : new APIQueries()
 export default queries
