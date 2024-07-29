@@ -6,6 +6,23 @@ from logbook.db.models import Flight, Glider, Site, User
 
 
 def insert_testing_data(sess: Session):
+    # Insert Users
+    chewbacca = User(
+        emailAddress="chewie@gmail.com",
+        firstName="Chewbacca",
+        lastName="AKA Chewie",
+        hashedPassword="$2b$12$kHvtKLe4vLfLbKqaW4mltee7MZdaCwSV9Qbr2zp9B4JZsu8DS9kqO",  # enter
+    )
+    luke_skywalker = User(
+        emailAddress="lukeskywalker@gmail.com",
+        firstName="Luke",
+        lastName="Skywalker",
+        hashedPassword="$2b$12$kygd6KDhdd3gsDA4uOhGTuh7U5H3qUaK5Igf7u7XvmddeXXpNjOhO",  # 123qwe
+    )
+    sess.add_all([chewbacca, luke_skywalker])
+    sess.flush()  # send inserts to the DB so we can access generated IDs
+
+    # Insert Sites
     pukerua_bay = Site(
         name="Pukerua Bay",
         description="...",
@@ -31,24 +48,11 @@ def insert_testing_data(sess: Session):
         country="Unknown",
     )
     sess.add_all([stubai, pukerua_bay])
-
-    millar_calder = User(
-        emailAddress="millar9819@gmail.com",
-        firstName="Millar",
-        lastName="Calder",
-        hashedPassword="$2b$12$kHvtKLe4vLfLbKqaW4mltee7MZdaCwSV9Qbr2zp9B4JZsu8DS9kqO",
-    )
-    luke_skywalker = User(
-        emailAddress="lukeskywalker@gmail.com",
-        firstName="Luke",
-        lastName="Skywalker",
-        hashedPassword="...",
-    )
-    sess.add_all([millar_calder, luke_skywalker])
     sess.flush()  # send inserts to the DB so we can access generated IDs
 
+    # Insert Gliders
     gin_bolero = Glider(
-        user=millar_calder, model="Bolero 6", manufacturer="GIN", rating="EN-A"
+        user=chewbacca, model="Bolero 6", manufacturer="GIN", rating="EN-A"
     )
     millennium_falcon = Glider(
         user=luke_skywalker,
@@ -59,9 +63,10 @@ def insert_testing_data(sess: Session):
     sess.add_all([gin_bolero, millennium_falcon])
     sess.flush()  # send inserts to the DB so we can access generated IDs
 
+    # Insert Flights
     flight_1 = Flight(
         dateOfFlight=date(2023, 1, 1),
-        user=millar_calder,
+        user=chewbacca,
         site=pukerua_bay,
         glider=gin_bolero,
         startTime=datetime(2023, 1, 1, 14, 0),
@@ -81,3 +86,4 @@ def insert_testing_data(sess: Session):
         comments="...",
     )
     sess.add_all([flight_1, flight_2])
+    sess.flush()  # send inserts to the DB so we can access generated IDs

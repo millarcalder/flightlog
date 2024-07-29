@@ -25,7 +25,7 @@ def _setup_auto_auth():
 
     def _get_current_user():
         with Session(engine) as sess:
-            return logbook.webapp.routers.auth.fetch_user("millar9819@gmail.com", sess)
+            return logbook.webapp.routers.auth.fetch_user("chewie@gmail.com", sess)
 
     pytest.MonkeyPatch().setattr(
         logbook.webapp.routers.auth, "get_current_user", _get_current_user
@@ -73,7 +73,7 @@ def test_db_down():
 @click.option(
     "--auto-auth",
     is_flag=True,
-    help="Useful for development - automatically login as the user millar9819@gmail.com",
+    help="Useful for development - automatically login as the user chewie@gmail.com",
 )
 @click.option(
     "--reload",
