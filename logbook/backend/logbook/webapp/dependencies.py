@@ -1,3 +1,5 @@
+import boto3
+
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
@@ -41,3 +43,12 @@ def get_db_sess():
         yield sess
     finally:
         sess.close()
+
+
+def get_s3_resource():
+    return boto3.resource(
+        "s3",
+        endpoint_url=app_globals.settings.s3_endpoint_url,
+        aws_access_key_id=app_globals.settings.aws_access_key_id,
+        aws_secret_access_key=app_globals.settings.aws_secret_access_key,
+    )

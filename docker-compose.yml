@@ -23,6 +23,7 @@ services:
       /bin/sh -c "
       /usr/bin/mc alias set flightlog_minio http://s3:9000 root 1234qwer;
       /usr/bin/mc mb flightlog_minio/flightlog-igc-files;
+      /usr/bin/mc mb flightlog_minio/logbook-igc-files;
       exit 0;
       "
     networks:

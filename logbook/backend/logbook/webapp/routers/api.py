@@ -1,9 +1,12 @@
-from fastapi import APIRouter, Depends
+import logbook.webapp.app_globals as app_globals
+
+from fastapi import APIRouter, Depends, HTTPException, File
 from sqlalchemy.orm import Session
 
 from logbook.db.models import Flight as FlightOrm
 from logbook.db.models import Glider as GliderOrm
 from logbook.db.models import Site as SiteOrm
+from logbook.db.queries import fetch_flight_by_filters
 from logbook.models import (
     Flight,
     FlightInput,
@@ -13,7 +16,7 @@ from logbook.models import (
     SiteInput,
     User,
 )
-from logbook.webapp.dependencies import get_current_user, get_db_sess
+from logbook.webapp.dependencies import get_current_user, get_db_sess, get_s3_resource
 
 router = APIRouter(prefix="/api")
 
@@ -23,7 +26,7 @@ def add_flight(
     input: FlightInput,
     current_user: User = Depends(get_current_user),
     db_sess: Session = Depends(get_db_sess),
-):
+) -> Flight:
     db_sess.begin()
     try:
         flight_orm = FlightOrm(**input.model_dump(), userId=current_user.id)
@@ -42,7 +45,7 @@ def add_glider(
     input: GliderInput,
     current_user: User = Depends(get_current_user),
     db_sess: Session = Depends(get_db_sess),
-):
+) -> Glider:
     db_sess.begin()
     try:
         glider_orm = GliderOrm(**input.model_dump(), userId=current_user.id)
@@ -61,7 +64,7 @@ def add_site(
     input: SiteInput,
     current_user: User = Depends(get_current_user),
     db_sess: Session = Depends(get_db_sess),
-):
+) -> Site:
     db_sess.begin()
     try:
         site_orm = SiteOrm(**input.model_dump())
@@ -73,3 +76,19 @@ def add_site(
     except Exception as exc:
         db_sess.rollback()
         raise exc
+
+
+@router.put("/flight/{flight_id}/upload-igc")
+def attach_igc_to_flight(
+    flight_id: int,
+    igc: bytes = File(),
+    current_user: User = Depends(get_current_user),
+    db_sess: Session = Depends(get_db_sess),
+    s3_resource = Depends(get_s3_resource)
+):
+    flight_orm = fetch_flight_by_filters(db_sess, {"id": flight_id, "userId": current_user.id})
+    if flight_orm is None:
+        raise HTTPException(404)
+
+    obj = s3_resource.Object(app_globals.settings.igc_files_bucket, f"{flight_id}")
+    obj.put(Body=igc, ContentType="binary/octet-stream")
