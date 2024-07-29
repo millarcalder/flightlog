@@ -15,7 +15,11 @@ export interface IQueries {
   fetchSites(accessToken: string): Promise<Site[]>
   addSite(accessToken: string, input: SiteInputs): Promise<Site>
 
-  uploadIgcFile(accessToken: string, flightId: number, igcFile: File): Promise<null>
+  uploadIgcFile(
+    accessToken: string,
+    flightId: number,
+    igcFile: File
+  ): Promise<null>
   addFlight(accessToken: string, input: FlightInputs): Promise<Flight>
 }
 
@@ -184,7 +188,11 @@ class MockedQueries implements IQueries {
     })
   }
 
-  uploadIgcFile(accessToken: string, flightId: number, igcFile: File): Promise<null> {
+  uploadIgcFile(
+    accessToken: string,
+    flightId: number, // eslint-disable-line
+    igcFile: File // eslint-disable-line
+  ): Promise<null> {
     return new Promise((resolve) => {
       console.log('Mocked method: IQueries.uploadIgcFile')
 
@@ -337,21 +345,27 @@ class APIQueries implements IQueries {
       })
   }
 
-  uploadIgcFile(accessToken: string, flightId: number, igcFile: File): Promise<null> {
+  uploadIgcFile(
+    accessToken: string,
+    flightId: number,
+    igcFile: File
+  ): Promise<null> {
     const formdata = new FormData()
     formdata.append('igc', igcFile)
 
-    return fetch(`${process.env.REACT_APP_LOGBOOK_API}/api/flight/${flightId}/upload-igc`, {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      },
-      body: formdata
+    return fetch(
+      `${process.env.REACT_APP_LOGBOOK_API}/api/flight/${flightId}/upload-igc`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        },
+        body: formdata
+      }
+    ).then((res) => {
+      if (res.ok) return null
+      throw 'Unauthenticated'
     })
-      .then((res) => {
-        if (res.ok) return null
-        throw "Unauthenticated"
-      })
   }
 
   addFlight(accessToken: string, input: FlightInputs): Promise<Flight> {

@@ -66,9 +66,15 @@ const Layout = observer((props: PropsWithChildren) => {
 
                     // now upload the IGC file if one was provided
                     if (data.igcFile) {
-                      queries.uploadIgcFile(store.accessToken!, flight.id, data.igcFile[0]).then(() => {
-                        store.setAddEntityModal(undefined)
-                      })
+                      queries
+                        .uploadIgcFile(
+                          store.accessToken!,
+                          flight.id,
+                          data.igcFile[0]
+                        )
+                        .then(() => {
+                          store.setAddEntityModal(undefined)
+                        })
                     } else {
                       store.setAddEntityModal(undefined)
                     }
