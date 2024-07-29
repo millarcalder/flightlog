@@ -11,13 +11,15 @@ def insert_testing_data(sess: Session):
         emailAddress="chewie@gmail.com",
         firstName="Chewbacca",
         lastName="AKA Chewie",
-        hashedPassword="$2b$12$kHvtKLe4vLfLbKqaW4mltee7MZdaCwSV9Qbr2zp9B4JZsu8DS9kqO",  # enter
+        # password: enter
+        hashedPassword="$2b$12$kHvtKLe4vLfLbKqaW4mltee7MZdaCwSV9Qbr2zp9B4JZsu8DS9kqO",
     )
     luke_skywalker = User(
         emailAddress="lukeskywalker@gmail.com",
         firstName="Luke",
         lastName="Skywalker",
-        hashedPassword="$2b$12$kygd6KDhdd3gsDA4uOhGTuh7U5H3qUaK5Igf7u7XvmddeXXpNjOhO",  # 123qwe
+        # password: 123qwe
+        hashedPassword="$2b$12$kygd6KDhdd3gsDA4uOhGTuh7U5H3qUaK5Igf7u7XvmddeXXpNjOhO",
     )
     sess.add_all([chewbacca, luke_skywalker])
     sess.flush()  # send inserts to the DB so we can access generated IDs

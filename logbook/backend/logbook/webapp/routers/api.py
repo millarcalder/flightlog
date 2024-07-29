@@ -1,8 +1,7 @@
-import logbook.webapp.app_globals as app_globals
-
-from fastapi import APIRouter, Depends, HTTPException, File
+from fastapi import APIRouter, Depends, File, HTTPException
 from sqlalchemy.orm import Session
 
+import logbook.webapp.app_globals as app_globals
 from logbook.db.models import Flight as FlightOrm
 from logbook.db.models import Glider as GliderOrm
 from logbook.db.models import Site as SiteOrm
@@ -84,9 +83,11 @@ def attach_igc_to_flight(
     igc: bytes = File(),
     current_user: User = Depends(get_current_user),
     db_sess: Session = Depends(get_db_sess),
-    s3_resource = Depends(get_s3_resource)
+    s3_resource=Depends(get_s3_resource),
 ):
-    flight_orm = fetch_flight_by_filters(db_sess, {"id": flight_id, "userId": current_user.id})
+    flight_orm = fetch_flight_by_filters(
+        db_sess, {"id": flight_id, "userId": current_user.id}
+    )
     if flight_orm is None:
         raise HTTPException(404)
 

@@ -1,10 +1,11 @@
-import botocore
 import os
+from pathlib import Path
+
+import botocore
 import botocore.errorfactory
 import botocore.exceptions
 import pytest
 
-from pathlib import Path
 from logbook.tests.integration import IGC_FILES_BUCKET
 
 test_file_path = (
@@ -85,6 +86,7 @@ def test_post_site(client, access_token_chewie):
         "country": "Pandora",
     }
 
+
 def test_upload_igc(client, access_token_chewie, s3_resource):
     # Add flight
     res = client.post(
@@ -111,7 +113,7 @@ def test_upload_igc(client, access_token_chewie, s3_resource):
     res = client.put(
         f"/api/flight/{flight_id}/upload-igc",
         headers={"Authorization": f"Bearer {access_token_chewie.access_token}"},
-        files={"igc": igc}
+        files={"igc": igc},
     )
     assert res.status_code == 200
 
@@ -119,7 +121,9 @@ def test_upload_igc(client, access_token_chewie, s3_resource):
     assert s3_resource.Object(IGC_FILES_BUCKET, f"{flight_id}").get()
 
 
-def test_upload_igc__unauthorized(client, access_token_chewie, access_token_lukeskywalker, s3_resource):
+def test_upload_igc__unauthorized(
+    client, access_token_chewie, access_token_lukeskywalker, s3_resource
+):
     # Add flight
     res = client.post(
         "/api/flight",
@@ -145,7 +149,7 @@ def test_upload_igc__unauthorized(client, access_token_chewie, access_token_luke
     res = client.put(
         f"/api/flight/{flight_id}/upload-igc",
         headers={"Authorization": f"Bearer {access_token_lukeskywalker.access_token}"},
-        files={"igc": igc}
+        files={"igc": igc},
     )
     assert res.status_code == 404
 

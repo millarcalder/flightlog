@@ -1,5 +1,4 @@
 import boto3
-
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt

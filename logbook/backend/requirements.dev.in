@@ -11,5 +11,6 @@ pytest
 setuptools
 
 # types stubs for mypy
+boto3-stubs
 types-python-jose
 types-passlib

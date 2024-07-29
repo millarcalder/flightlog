@@ -14,7 +14,9 @@ const WindInput: FC<IProps> = (props) => {
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <text x={20} y={20}>{windDir}°</text>
+        <text x={20} y={20}>
+          {windDir}°
+        </text>
         <circle
           r={117.5}
           cx={120}
@@ -58,7 +60,7 @@ const WindInput: FC<IProps> = (props) => {
           if (props.onChange) props.onChange(e)
         }}
         style={{
-          width: "100%",
+          width: '100%',
           maxWidth: 200
         }}
       />
