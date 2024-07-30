@@ -24,6 +24,8 @@
       - '/etc/letsencrypt/live/flightlog.millarcalder.com/privkey.pem:/opt/flightlog/ssl/privkey.pem:ro'
       - '/etc/letsencrypt/live/logbook.millarcalder.com/fullchain.pem:/opt/logbook/ssl/fullchain.pem:ro'
       - '/etc/letsencrypt/live/logbook.millarcalder.com/privkey.pem:/opt/logbook/ssl/privkey.pem:ro'
+      - '/etc/letsencrypt/live/logbook-api.millarcalder.com/fullchain.pem:/opt/logbook-api/ssl/fullchain.pem:ro'
+      - '/etc/letsencrypt/live/logbook-api.millarcalder.com/privkey.pem:/opt/logbook-api/ssl/privkey.pem:ro'
     ports:
       - 443:443
       - 80:80

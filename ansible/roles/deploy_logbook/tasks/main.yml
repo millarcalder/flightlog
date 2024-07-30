@@ -1,3 +1,15 @@
+- name: Create a directory for config files
+  become: yes
+  ansible.builtin.file:
+    path: /opt/flightlog/logbook/backend
+    state: directory
+
+- name: Template out the backend .env file
+  become: yes
+  ansible.builtin.template:
+    src: 'backend.env.j2'
+    dest: '/opt/flightlog/logbook/backend/.env'
+
 - name: Docker login
   become: yes
   community.docker.docker_login:
@@ -11,7 +23,7 @@
   docker_network:
     name: flightlog
 
-- name: Pull the viewer backend Docker Image
+- name: Pull the logbook backend Docker Image
   become: yes
   community.docker.docker_image:
     name: 'ghcr.io/millarcalder/{{ backend_image_name }}:{{ backend_image_tag }}'
@@ -23,16 +35,18 @@
     name: 'ghcr.io/millarcalder/{{ frontend_image_name }}:{{ frontend_image_tag }}'
     source: pull
 
-# - name: Run the API Docker container
-#   become: yes
-#   community.docker.docker_container:
-#     name: '{{ backend_image_name }}'
-#     networks:
-#       - name: flightlog
-#     state: started
-#     image: 'ghcr.io/millarcalder/{{ backend_image_name }}:{{ backend_image_tag }}'
-#     volumes:
-#       - '/opt/flightlog/logbook/backend/.env:/opt/flightlog/logbook/.env:ro'
+- name: Run the API Docker container
+  become: yes
+  community.docker.docker_container:
+    name: '{{ backend_image_name }}'
+    command: --env-file /opt/flightlog/logbook/.env
+    networks:
+      - name: flightlog
+    state: started
+    image: 'ghcr.io/millarcalder/{{ backend_image_name }}:{{ backend_image_tag }}'
+    volumes:
+      - '/opt/flightlog/logbook/backend/.env:/opt/flightlog/logbook/.env:ro'
+      - '/opt/flightlog/logbook/backend/logbook.db:/opt/flightlog/logbook/logbook.db'
 
 - name: Run the frontend Docker container
   become: yes
