@@ -32,6 +32,17 @@ def fetch_sites(sess: Session, filters: Filters = {}) -> Sequence[Site]:
     return sess.execute(stmt).scalars().all()
 
 
+def fetch_flights_by_user_id_and_site_ids(
+    sess: Session, user_id: int, site_ids: list[int]
+) -> Sequence[Flight]:
+    stmt = (
+        select(Flight)
+        .where(Flight.userId == user_id)
+        .where(Flight.siteId.in_(site_ids))
+    )
+    return sess.execute(stmt).scalars().all()
+
+
 def fetch_site(sess: Session, id: int) -> Site | None:
     stmt = _build_stmt(Site, {"id": id})
     return sess.execute(stmt).scalar()
