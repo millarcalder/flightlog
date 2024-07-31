@@ -1,8 +1,13 @@
-from datetime import date, datetime
+import logging
+import random
+from datetime import date, datetime, timedelta
 
+from faker import Faker
 from sqlalchemy.orm import Session
 
 from logbook.db.models import Flight, Glider, Site, User
+
+_logger = logging.getLogger()
 
 
 def insert_testing_data(sess: Session):
@@ -89,3 +94,133 @@ def insert_testing_data(sess: Session):
     )
     sess.add_all([flight_1, flight_2])
     sess.flush()  # send inserts to the DB so we can access generated IDs
+
+
+def generate_fake_testing_data(sess: Session):
+    NUM_USERS = 100
+    NUM_SITES = 1000
+    RANGE_GLIDERS_PER_USER = 5
+    RANGE_SITES_FLOWN_PER_USER = 100
+    RANGE_FLIGHTS_PER_USER_PER_SITE = 100
+    POSSIBLE_GLIDERS = [
+        ("GIN", "Bolero 6", "EN-A"),
+        ("GIN", "Bolero 7", "EN-A"),
+        ("GIN", "Yeti 6", "EN-A"),
+        ("GIN", "Evora", "EN-B"),
+        ("GIN", "Calypso 2", "EN-B"),
+        ("GIN", "Bonanza 3", "EN-C"),
+    ]
+
+    fake = Faker()
+
+    _logger.info(f"Generating {NUM_USERS} users...")
+    users: list[User] = [
+        # We should have one known user
+        User(
+            emailAddress="chewie@gmail.com",
+            firstName="Chewbacca",
+            lastName="AKA Chewie",
+            # password: enter
+            hashedPassword="$2b$12$kHvtKLe4vLfLbKqaW4mltee7MZdaCwSV9Qbr2zp9B4JZsu8DS9kqO",
+        )
+    ]
+    for _ in range(NUM_USERS):
+        first_name = fake.first_name()
+        last_name = fake.last_name()
+        users.append(
+            User(
+                emailAddress=f"{first_name}{last_name}@foo.bar",
+                firstName=first_name,
+                lastName=last_name,
+                # password: enter
+                hashedPassword="$2b$12$kHvtKLe4vLfLbKqaW4mltee7MZdaCwSV9Qbr2zp9B4JZsu8DS9kqO",
+            )
+        )
+    _logger.info(f"Finished generating {NUM_USERS} users")
+
+    _logger.info(f"Generating {NUM_SITES} sites...")
+    sites = []
+    for _ in range(NUM_SITES):
+        # TODO: location_on_land doesn't provide an altitude so I'm using a random int for now
+        place = fake.location_on_land()
+        sites.append(
+            Site(
+                name=place[2],
+                description="...",
+                latitude=float(place[0]),
+                longitude=float(place[1]),
+                altitude=fake.random_int(min=0, max=2000),
+                country=place[4],
+            )
+        )
+    _logger.info(f"Finished generating {NUM_SITES} sites")
+
+    sess.add_all(users)
+    sess.add_all(sites)
+    sess.flush()
+
+    _logger.info(
+        f"Generating between 1 and {RANGE_GLIDERS_PER_USER} gliders for each user..."
+    )
+    gliders = []
+    for user in users:
+        _logger.info(f"Generating gliders for user ID {user.id}...")
+        for _ in range(random.randint(1, RANGE_GLIDERS_PER_USER)):
+            user_glider = random.choice(POSSIBLE_GLIDERS)
+            gliders.append(
+                Glider(
+                    user=user,
+                    model=user_glider[0],
+                    manufacturer=user_glider[1],
+                    rating=user_glider[2],
+                )
+            )
+    _logger.info(f"Finished generating {len(gliders)} gliders...")
+
+    sess.add_all(gliders)
+    sess.flush()
+
+    _logger.info("Generating flights for each user...")
+    flights = []
+    for user in users:
+        _logger.info(f"Generating flights for user ID {user.id}...")
+        for site in random.choices(sites, k=RANGE_SITES_FLOWN_PER_USER):
+            for _ in range(random.randint(1, RANGE_FLIGHTS_PER_USER_PER_SITE)):
+                start_date = fake.date_between(date(2000, 1, 1), date(2024, 1, 1))
+                start_time = fake.date_time_between(
+                    datetime(2024, 1, 1, 8, 0, 0), datetime(2024, 1, 1, 17, 0, 0)
+                )
+                stop_time = fake.date_time_between(
+                    start_time + timedelta(minutes=5), datetime(2024, 1, 1, 17, 0, 0)
+                )
+
+                flight_glider: Glider = random.choice(user.gliders)
+                flights.append(
+                    Flight(
+                        dateOfFlight=start_date,
+                        user=user,
+                        site=site,
+                        glider=flight_glider,
+                        startTime=datetime(
+                            start_date.year,
+                            start_date.month,
+                            start_date.day,
+                            start_time.hour,
+                            start_time.minute,
+                            start_time.second,
+                        ),
+                        stopTime=datetime(
+                            start_date.year,
+                            start_date.month,
+                            start_date.day,
+                            stop_time.hour,
+                            stop_time.minute,
+                            stop_time.second,
+                        ),
+                        comments=fake.sentence(nb_words=10),
+                    )
+                )
+    _logger.info(f"Finished generating {len(flights)} flights...")
+
+    sess.add_all(flights)
+    sess.commit()

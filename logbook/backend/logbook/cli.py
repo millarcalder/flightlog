@@ -5,12 +5,14 @@ import uvicorn
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
+import logbook.webapp.dependencies  # noqa: F401
+from logbook.auth import fetch_user
 from logbook.db.models import Base
-from logbook.tests.data.data import insert_testing_data
+from logbook.tests.data.data import generate_fake_testing_data, insert_testing_data
 
 
 def _create_testing_db_engine():
-    return create_engine("sqlite:///testing.db", echo=True)
+    return create_engine("sqlite:///testing.db")
 
 
 def _setup_auto_auth():
@@ -25,10 +27,10 @@ def _setup_auto_auth():
 
     def _get_current_user():
         with Session(engine) as sess:
-            return logbook.webapp.routers.auth.fetch_user("chewie@gmail.com", sess)
+            return fetch_user("chewie@gmail.com", sess)
 
     pytest.MonkeyPatch().setattr(
-        logbook.webapp.routers.auth, "get_current_user", _get_current_user
+        logbook.webapp.dependencies, "get_current_user", _get_current_user
     )
 
 
@@ -52,12 +54,15 @@ def cli(env: str):
 
 
 @cli.command(help="Destroy the test database")
-def test_db_up():
+@click.option("--fake-data", is_flag=True)
+def test_db_up(fake_data: bool):
     engine = _create_testing_db_engine()
     Base.metadata.create_all(engine)
     with Session(engine) as sess:
-        insert_testing_data(sess)
-        sess.commit()
+        if fake_data:
+            generate_fake_testing_data(sess)
+        else:
+            insert_testing_data(sess)
     engine.dispose()
 
 
