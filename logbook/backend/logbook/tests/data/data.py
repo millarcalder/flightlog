@@ -97,8 +97,8 @@ def insert_testing_data(sess: Session):
 
 
 def generate_fake_testing_data(sess: Session):
-    NUM_USERS = 100
-    NUM_SITES = 1000
+    NUM_USERS = 500
+    NUM_SITES = 2500
     RANGE_GLIDERS_PER_USER = 5
     RANGE_SITES_FLOWN_PER_USER = 100
     RANGE_FLIGHTS_PER_USER_PER_SITE = 100
@@ -181,8 +181,8 @@ def generate_fake_testing_data(sess: Session):
     sess.flush()
 
     _logger.info("Generating flights for each user...")
-    flights = []
     for user in users:
+        flights = []
         _logger.info(f"Generating flights for user ID {user.id}...")
         for site in random.choices(sites, k=RANGE_SITES_FLOWN_PER_USER):
             for _ in range(random.randint(1, RANGE_FLIGHTS_PER_USER_PER_SITE)):
@@ -220,7 +220,7 @@ def generate_fake_testing_data(sess: Session):
                         comments=fake.sentence(nb_words=10),
                     )
                 )
+        sess.add_all(flights)
     _logger.info(f"Finished generating {len(flights)} flights...")
 
-    sess.add_all(flights)
     sess.commit()
