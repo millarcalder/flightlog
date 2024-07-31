@@ -8,6 +8,7 @@ isort
 mypy
 pip-tools
 pytest
+pytest-asyncio
 setuptools
 
 # types stubs for mypy

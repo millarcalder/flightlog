@@ -26,7 +26,8 @@ def test_sites(context, country, site_names):
         assert {"name": site_name} in result.data["sites"]
 
 
-def test_sites__relations(context):
+@pytest.mark.asyncio
+async def test_sites__relations(context):
     query = """
         query {
             sites {
@@ -37,7 +38,7 @@ def test_sites__relations(context):
             }
         }
     """
-    result = schema.execute_sync(query, context_value=context)
+    result = await schema.execute(query, context_value=context)
     assert "sites" in result.data
     assert {"name": "Stubai - Elfer", "flights": [{"dateOfFlight": "2023-01-01"}]}
 
@@ -79,7 +80,8 @@ def test_gliders__relations(context):
     ]
 
 
-def test_flights__relations(context):
+@pytest.mark.asyncio
+async def test_flights__relations(context):
     query = """
     query {
         flights {
@@ -94,7 +96,7 @@ def test_flights__relations(context):
         }
     }
     """
-    result = schema.execute_sync(query, context_value=context)
+    result = await schema.execute(query, context_value=context)
     assert "flights" in result.data
     assert result.data["flights"] == [
         {
