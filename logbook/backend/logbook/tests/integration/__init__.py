@@ -1,6 +1,6 @@
 import os
 
-DATABASE_URI = "sqlite:///testing.db"
+DATABASE_URI = "sqlite:///integration_testing.db"
 IGC_FILES_BUCKET = "logbook-igc-files"
 S3_ENDPOINT_URL = "http://flightlog-s3:9000/"
 AWS_ACCESS_KEY_ID = "root"

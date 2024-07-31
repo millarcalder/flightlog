@@ -18,3 +18,4 @@ ansible/inventory/
 ansible/ansible.cfg
 
 testing.db
+integration_testing.db
