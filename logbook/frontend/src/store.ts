@@ -35,6 +35,12 @@ class Store {
     this.sites.push(newSite)
   }
 
+  setSiteFlights(site: Site, flights: Flight[]) {
+    const clone = deepClone(site)
+    clone.flights = flights
+    this.sites = this.sites.map((site) => (site.id === clone.id ? clone : site))
+  }
+
   addFlight(flight: Flight) {
     /*
       Need to make a deep clone of the site and then reassign the entire sites list
@@ -44,9 +50,11 @@ class Store {
     if (i < 0) throw Error('Site not found!')
 
     const clone = deepClone(this.sites[i])
-    if (!clone.flights) clone.flights = []
-    clone.flights!.push(flight)
 
+    // If the flights on this site have not been loaded, then no need to add this flight
+    if (!clone.flights) return
+
+    clone.flights!.push(flight)
     this.sites = this.sites.map((site) => (site.id === clone.id ? clone : site))
   }
 

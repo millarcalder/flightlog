@@ -14,6 +14,7 @@ export interface IQueries {
 
   fetchSites(accessToken: string): Promise<Site[]>
   addSite(accessToken: string, input: SiteInputs): Promise<Site>
+  fetchSiteFlights(accessToken: string, siteId: number): Promise<Flight[]>
 
   uploadIgcFile(
     accessToken: string,
@@ -147,16 +148,7 @@ class MockedQueries implements IQueries {
 
       setTimeout(() => {
         if (accessToken === 'imatoken') {
-          resolve([
-            {
-              ...this.site1,
-              flights: [this.flight1]
-            },
-            {
-              ...this.site2,
-              flights: [this.flight2, this.flight3, this.flight4]
-            }
-          ])
+          resolve([{ ...this.site1 }, { ...this.site2 }])
         } else {
           resolve([])
         }
@@ -185,6 +177,20 @@ class MockedQueries implements IQueries {
           throw Error('Authorization Error')
         }
       }, 1000)
+    })
+  }
+
+  fetchSiteFlights(accessToken: string, siteId: number): Promise<Flight[]> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if (siteId == 1) {
+          resolve([this.flight1])
+        } else if (siteId == 2) {
+          resolve([this.flight2, this.flight3, this.flight4])
+        } else {
+          resolve([])
+        }
+      })
     })
   }
 
@@ -294,18 +300,6 @@ class APIQueries implements IQueries {
             longitude
             altitude
             country
-            flights {
-              id
-              dateOfFlight
-              siteId
-              gliderId
-              startTime
-              stopTime
-              maxAltitude
-              windSpeed
-              windDir
-              comments
-            }
           }
         }`
       })
@@ -314,14 +308,7 @@ class APIQueries implements IQueries {
         return res.json()
       })
       .then((data): Site[] => {
-        // convert the dateOfFlight field from a string to a Date object
-        return data['data']['sites'].map((site: Site) => {
-          site.flights = site.flights?.map((flight: Flight) => {
-            flight.dateOfFlight = new Date(flight.dateOfFlight)
-            return flight
-          })
-          return site
-        })
+        return data['data']['sites']
       })
   }
 
@@ -342,6 +329,50 @@ class APIQueries implements IQueries {
         // the site will have zero flights initially
         site.flights = []
         return site
+      })
+  }
+
+  fetchSiteFlights(accessToken: string, siteId: number): Promise<Flight[]> {
+    return fetch(`${process.env.REACT_APP_LOGBOOK_API}/graphql`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({
+        query: `{
+          flights (siteId: ${siteId}) {
+            id
+            dateOfFlight
+            siteId
+            gliderId
+            startTime
+            stopTime
+            maxAltitude
+            windSpeed
+            windDir
+            comments
+
+            glider {
+              id
+              manufacturer
+              model
+              rating
+            }
+          }
+        }`
+      })
+    })
+      .then((res) => {
+        return res.json()
+      })
+      .then((data): Flight[] => {
+        // convert the dateOfFlight field from a string to a Date object
+        return data['data']['flights'].map((flight: Flight) => {
+          flight.dateOfFlight = new Date(flight.dateOfFlight)
+          return flight
+        })
       })
   }
 

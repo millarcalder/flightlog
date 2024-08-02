@@ -1,18 +1,3 @@
-export interface GliderInputs {
-  manufacturer: string
-  model: string
-  rating: string
-}
-
-export interface Glider {
-  id: number
-  model: string
-  manufacturer: string
-  rating: string
-
-  flights?: Flight[]
-}
-
 export interface SiteInputs {
   name: string
   description: string
@@ -22,16 +7,10 @@ export interface SiteInputs {
   country: string
 }
 
-export interface Site {
-  id: number
-  name: string
-  description: string
-  latitude: number
-  longitude: number
-  altitude: number
-  country: string
-
-  flights?: Flight[]
+export interface GliderInputs {
+  manufacturer: string
+  model: string
+  rating: string
 }
 
 export interface FlightInputs {
@@ -47,6 +26,27 @@ export interface FlightInputs {
   igcFile?: FileList
 }
 
+export interface Glider {
+  id: number
+  model: string
+  manufacturer: string
+  rating: string
+
+  flights?: Flight[]
+}
+
+export interface Site {
+  id: number
+  name: string
+  description: string
+  latitude: number
+  longitude: number
+  altitude: number
+  country: string
+
+  flights?: Flight[]
+}
+
 export interface Flight {
   id: number
   dateOfFlight: Date
@@ -59,6 +59,5 @@ export interface Flight {
   windDir?: number
   comments: string
 
-  site?: Site
   glider?: Glider
 }

@@ -5,6 +5,7 @@ import { StoreContext } from '../index'
 import { Site } from '../lib/types'
 import SitesMap from '../components/SitesMap'
 import { Alert, Container, Row, Col, Table } from 'react-bootstrap'
+import queries from '../lib/queries'
 
 const SiteComponent: FC<{ site: Site }> = ({ site }) => {
   return (
@@ -109,6 +110,15 @@ const SitePage = observer(() => {
     // Success!
     setErrorMessage(null)
     setSite(site)
+
+    // Load the flights if they are not already initialized
+    if (!site.flights) {
+      store.setLoading(true)
+      queries.fetchSiteFlights(store.accessToken!, site.id).then((flights) => {
+        store.setSiteFlights(site, flights)
+        store.setLoading(false)
+      })
+    }
   }, [id, store.loading, store.sites])
 
   return errorMessage ? (
