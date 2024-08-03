@@ -81,4 +81,6 @@ class Flight(FlightInput):
     id: int
     userId: int
 
+
+class AddFlightResponse(Flight):
     glider: Glider | None = Field(default=None)

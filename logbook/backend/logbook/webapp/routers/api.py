@@ -7,6 +7,7 @@ from logbook.db.models import Glider as GliderOrm
 from logbook.db.models import Site as SiteOrm
 from logbook.db.queries import fetch_flight_by_filters, fetch_glider
 from logbook.models import (
+    AddFlightResponse,
     Flight,
     FlightInput,
     Glider,
@@ -25,7 +26,7 @@ def add_flight(
     input: FlightInput,
     current_user: User = Depends(get_current_user),
     db_sess: Session = Depends(get_db_sess),
-) -> Flight:
+) -> AddFlightResponse:
     db_sess.begin()
     try:
         # Make sure to also return the linked glider model like the UI expects
@@ -36,7 +37,7 @@ def add_flight(
         db_sess.flush()
 
         glider = Glider.model_validate(glider_orm)
-        flight = Flight.model_validate(flight_orm)
+        flight = AddFlightResponse.model_validate(flight_orm)
         flight.glider = glider
 
         db_sess.commit()
