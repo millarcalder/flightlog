@@ -3,6 +3,7 @@ import random
 from datetime import date, datetime, timedelta
 
 from faker import Faker
+from faker.providers.geo import Provider as GeoProvider
 from sqlalchemy.orm import Session
 
 from logbook.db.models import Flight, Glider, Site, User
@@ -97,11 +98,10 @@ def insert_testing_data(sess: Session):
 
 
 def generate_fake_testing_data(sess: Session):
-    NUM_USERS = 500
-    NUM_SITES = 2500
-    RANGE_GLIDERS_PER_USER = 5
-    RANGE_SITES_FLOWN_PER_USER = 100
-    RANGE_FLIGHTS_PER_USER_PER_SITE = 100
+    NUM_USERS = 5
+    RANGE_GLIDERS_PER_USER = 20
+    RANGE_SITES_FLOWN_PER_USER = 1500
+    RANGE_FLIGHTS_PER_USER_PER_SITE = 500
     POSSIBLE_GLIDERS = [
         ("GIN", "Bolero 6", "EN-A"),
         ("GIN", "Bolero 7", "EN-A"),
@@ -124,7 +124,7 @@ def generate_fake_testing_data(sess: Session):
             hashedPassword="$2b$12$kHvtKLe4vLfLbKqaW4mltee7MZdaCwSV9Qbr2zp9B4JZsu8DS9kqO",
         )
     ]
-    for _ in range(NUM_USERS):
+    for _ in range(NUM_USERS - 1):
         first_name = fake.first_name()
         last_name = fake.last_name()
         users.append(
@@ -138,11 +138,12 @@ def generate_fake_testing_data(sess: Session):
         )
     _logger.info(f"Finished generating {NUM_USERS} users")
 
-    _logger.info(f"Generating {NUM_SITES} sites...")
+    # fake.location_on_land() - I want all of them!
+    places_on_land = GeoProvider.land_coords
+    _logger.info(f"Generating {len(places_on_land)} sites...")
     sites = []
-    for _ in range(NUM_SITES):
+    for place in places_on_land:
         # TODO: location_on_land doesn't provide an altitude so I'm using a random int for now
-        place = fake.location_on_land()
         sites.append(
             Site(
                 name=place[2],
@@ -153,7 +154,7 @@ def generate_fake_testing_data(sess: Session):
                 country=place[4],
             )
         )
-    _logger.info(f"Finished generating {NUM_SITES} sites")
+    _logger.info(f"Finished generating {len(places_on_land)} sites")
 
     sess.add_all(users)
     sess.add_all(sites)
@@ -222,5 +223,48 @@ def generate_fake_testing_data(sess: Session):
                 )
         sess.add_all(flights)
     _logger.info(f"Finished generating {len(flights)} flights...")
+
+    # let's also add a user with very few flights
+    luke_skywalker = User(
+        emailAddress="lukeskywalker@gmail.com",
+        firstName="Luke",
+        lastName="Skywalker",
+        # password: 123qwe
+        hashedPassword="$2b$12$kygd6KDhdd3gsDA4uOhGTuh7U5H3qUaK5Igf7u7XvmddeXXpNjOhO",
+    )
+    sess.add(luke_skywalker)
+    sess.flush()
+
+    lukes_glider = Glider(
+        user=luke_skywalker,
+        model=POSSIBLE_GLIDERS[0][0],
+        manufacturer=POSSIBLE_GLIDERS[0][1],
+        rating=POSSIBLE_GLIDERS[0][2],
+    )
+    sess.add(lukes_glider)
+    sess.flush()
+
+    flight_1 = Flight(
+        dateOfFlight=date(2023, 1, 1),
+        user=luke_skywalker,
+        site=sites[0],
+        glider=lukes_glider,
+        startTime=datetime(2023, 1, 1, 14, 0),
+        stopTime=datetime(2023, 1, 1, 15, 0),
+        maxAltitude=150,
+        windSpeed=20,
+        windDir=155,
+        comments="...",
+    )
+    flight_2 = Flight(
+        dateOfFlight=date(3033, 1, 1),
+        user=luke_skywalker,
+        site=sites[1],
+        glider=lukes_glider,
+        startTime=datetime(3033, 1, 1, 4, 0, 4),
+        stopTime=datetime(3033, 1, 1, 4, 0, 4),
+        comments="...",
+    )
+    sess.add_all([flight_1, flight_2])
 
     sess.commit()
