@@ -4,6 +4,7 @@ import { observer } from 'mobx-react-lite'
 import { StoreContext } from '../index'
 import { Site } from '../lib/types'
 import SitesMap from '../components/SitesMap'
+import FlightsTable from '../components/FlightsTable'
 import { Alert, Container, Row, Col, Table } from 'react-bootstrap'
 import queries from '../lib/queries'
 
@@ -17,7 +18,7 @@ const SiteComponent: FC<{ site: Site }> = ({ site }) => {
       </Row>
       <Row className="mt-3">
         <Col>
-          <Table>
+          <Table striped bordered hover>
             <tbody>
               <tr>
                 <th>Name</th>
@@ -35,30 +36,9 @@ const SiteComponent: FC<{ site: Site }> = ({ site }) => {
           </Table>
         </Col>
         <Col>
-          <Table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Glider</th>
-                <th>Comments</th>
-              </tr>
-            </thead>
-            <tbody>
-              {site.flights?.map((flight) => {
-                return (
-                  <tr key={flight.id}>
-                    <td>{flight.dateOfFlight.toDateString()}</td>
-                    <td>
-                      {flight.glider
-                        ? `${flight.glider.manufacturer} - ${flight.glider.model}`
-                        : ''}
-                    </td>
-                    <td>{flight.comments}</td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </Table>
+          <div style={{ maxHeight: 400, overflow: 'scroll' }}>
+            <FlightsTable flights={site.flights ? site.flights : []} />
+          </div>
         </Col>
       </Row>
     </Container>
