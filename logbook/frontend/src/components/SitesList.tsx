@@ -1,11 +1,12 @@
-import { useContext, FC } from 'react'
+import { useContext, FC, useState, useMemo } from 'react'
 import { observer } from 'mobx-react-lite'
-import { ListGroup, ListGroupItem } from 'react-bootstrap'
+import { Form, ListGroup, ListGroupItem, InputGroup } from 'react-bootstrap'
 import { StoreContext } from '../index'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
+import { faArrowUpRightFromSquare, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
 import { Site } from '../lib/types'
+import Fuse from 'fuse.js'
 
 interface IProps {
   onClick: (site: Site) => void
@@ -13,10 +14,32 @@ interface IProps {
 
 const SitesList: FC<IProps> = observer(({ onClick }) => {
   const store = useContext(StoreContext)
+  const [searchPattern, setSearchPattern] = useState<string>("")
 
-  return (
+  const results = useMemo(() => {
+    if (searchPattern.length === 0) return store.sites
+    const fuse = new Fuse(store.sites, {
+      keys: [
+        "name",
+        "country"
+      ]
+    })
+    return fuse.search(searchPattern).map((val) => val.item)
+  }, [store.sites, searchPattern])
+
+  return <>
     <ListGroup>
-      {store.sites.map((site) => (
+      <ListGroupItem className='p-0'>
+        <InputGroup>
+          <Form.Control name="search" type='search' placeholder='Search...' className='border-0' onChange={(e) => {
+            setSearchPattern(e.target.value)
+          }} />
+          <InputGroup.Text className='border-0'>
+            <FontAwesomeIcon icon={faSearch} />
+          </InputGroup.Text>
+        </InputGroup>
+      </ListGroupItem>
+      {results.slice(0, 10).map((site) => (
         <ListGroupItem action key={site.id} onClick={() => onClick(site)}>
           <div
             style={{
@@ -36,7 +59,7 @@ const SitesList: FC<IProps> = observer(({ onClick }) => {
         </ListGroupItem>
       ))}
     </ListGroup>
-  )
+  </>
 })
 
 export default SitesList
