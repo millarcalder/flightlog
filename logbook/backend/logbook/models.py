@@ -80,3 +80,5 @@ class FlightInput(BaseModel):
 class Flight(FlightInput):
     id: int
     userId: int
+
+    glider: Glider | None = Field(default=None)

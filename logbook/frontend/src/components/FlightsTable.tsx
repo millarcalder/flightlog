@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC, useMemo, useState } from 'react'
 import { Flight, Glider } from '../lib/types'
 import { Table } from 'react-bootstrap'
 import {
@@ -52,10 +52,10 @@ const columns = [
 ]
 
 const FlightsTable: FC<{ flights: Flight[] }> = ({ flights }) => {
-  const [data, _setData] = useState(() => [...flights])
   const [sorting, setSorting] = useState<SortingState>([
     { id: 'dateOfFlight', desc: true }
   ])
+  const data = useMemo(() => [...flights], [flights])
 
   const table = useReactTable({
     data,

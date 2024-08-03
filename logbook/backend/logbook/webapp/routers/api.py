@@ -5,7 +5,7 @@ import logbook.webapp.app_globals as app_globals
 from logbook.db.models import Flight as FlightOrm
 from logbook.db.models import Glider as GliderOrm
 from logbook.db.models import Site as SiteOrm
-from logbook.db.queries import fetch_flight_by_filters
+from logbook.db.queries import fetch_flight_by_filters, fetch_glider
 from logbook.models import (
     Flight,
     FlightInput,
@@ -28,10 +28,17 @@ def add_flight(
 ) -> Flight:
     db_sess.begin()
     try:
+        # Make sure to also return the linked glider model like the UI expects
+        glider_orm = fetch_glider(db_sess, input.gliderId)
         flight_orm = FlightOrm(**input.model_dump(), userId=current_user.id)
+
         db_sess.add(flight_orm)
         db_sess.flush()
+
+        glider = Glider.model_validate(glider_orm)
         flight = Flight.model_validate(flight_orm)
+        flight.glider = glider
+
         db_sess.commit()
         return flight
     except Exception as exc:

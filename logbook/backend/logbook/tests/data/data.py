@@ -95,6 +95,7 @@ def insert_testing_data(sess: Session):
     )
     sess.add_all([flight_1, flight_2])
     sess.flush()  # send inserts to the DB so we can access generated IDs
+    sess.commit()
 
 
 def generate_fake_testing_data(sess: Session):
