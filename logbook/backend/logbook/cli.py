@@ -8,7 +8,6 @@ from sqlalchemy.orm import Session
 import logbook.webapp.dependencies  # noqa: F401
 from logbook.auth import fetch_user
 from logbook.db.models import Base
-from logbook.tests.data.data import generate_fake_testing_data, insert_testing_data
 
 
 def _create_testing_db_engine():
@@ -56,6 +55,8 @@ def cli(env: str):
 @cli.command(help="Destroy the test database")
 @click.option("--fake-data", is_flag=True)
 def test_db_up(fake_data: bool):
+    # Import here so these aren't imported in production
+    from logbook.tests.data.data import generate_fake_testing_data, insert_testing_data
     engine = _create_testing_db_engine()
     Base.metadata.create_all(engine)
     with Session(engine) as sess:
