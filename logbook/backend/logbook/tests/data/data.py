@@ -171,8 +171,8 @@ def generate_fake_testing_data(sess: Session):
             gliders.append(
                 Glider(
                     user=user,
-                    model=user_glider[0],
-                    manufacturer=user_glider[1],
+                    manufacturer=user_glider[0],
+                    model=user_glider[1],
                     rating=user_glider[2],
                 )
             )
